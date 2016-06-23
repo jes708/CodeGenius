@@ -60,6 +60,13 @@ gulp.task('testServerJS', function () {
 	}).pipe(mocha({ reporter: 'spec' }));
 });
 
+gulp.task('testModelJS', function() {
+  require('babel-register');
+  return gulp.src('.server/db/models/Annotations/Annotation/spec.js', {
+    read: false
+  }).pipe(mocha({ reporter: 'spec'}));
+})
+
 gulp.task('testServerJSWithCoverage', function (done) {
     gulp.src('./server/**/*.js')
         .pipe(istanbul({

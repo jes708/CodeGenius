@@ -2,5 +2,4 @@
 var db = require('./_db');
 module.exports = db;
 
-require('./models/user')(db);
-
+var User = require('./models/user');

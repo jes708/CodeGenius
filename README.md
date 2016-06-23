@@ -27,6 +27,11 @@
 |  |    ^-- should this be stored
 |  |        with REACT components instead of separate?
 +-- resources
+|   +-- images
+|   +-- mockups and UI/UX
++-- seed
+    +-- index.js <== replacing seed.js
+    +-- ...other seed files
 +-- server
 |   +-- app
 |   +-- db
@@ -46,7 +51,8 @@
 +-- gulpfile.js <== automagical command line goodness
 +-- package.json <== every npm you ever need
 +-- Procfile <== for heroku setup
-+-- seed
-    +-- index.js <== replacing seed.js
-    +-- ...other seed files
++-- conf.json <== jsdoc configuration
 ```
+
+
+# Want to add your skills? Please See Our [Contributor Guidelines]("./contributing.md")

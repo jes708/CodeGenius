@@ -4,22 +4,18 @@ chai.use(require('chai-as-promised'));
 var should = chai.should();
 
 var Sequelize = require('sequelize');
-var dbURI = 'postgres://localhost:5432/testing-fsg';
-var db = new Sequelize(dbURI, {
-    logging: false
-});
+var db = require(global._dbPath);
 
 require('./index.js')(db);
-require('../../sharedTests.js')
-
+var sharedTests = require('../../sharedTests.js');
 
 var Rubric = db.model('rubric');
 
 describe('Rubric', function(){
-  beforeEach('Sync DB', SyncDB.bind(this, db));
-  it('exists', exists.bind(this, Rubric))
-  it( 'can access class methods', classTest.bind(this, Rubric))
-  it( 'can access instance methods', instanceTest.bind(this, Rubric))
+  beforeEach('Sync DB', sharedTests.SyncDB.bind(this, db));
+  it('exists', sharedTests.exists.bind(this, Rubric))
+  it( 'can access class methods', sharedTests.classTest.bind(this, Rubric))
+  it( 'can access instance methods', sharedTests.instanceTest.bind(this, Rubric))
 
   describe('fields', function(){
     it('url')

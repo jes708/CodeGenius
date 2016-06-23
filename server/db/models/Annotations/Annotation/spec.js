@@ -4,10 +4,9 @@ chai.use(require('chai-as-promised'));
 var should = chai.should();
 
 var Sequelize = require('sequelize');
-var dbURI = 'postgres://localhost:5432/testing-fsg';
-var db = new Sequelize(dbURI, {
-    logging: false
-});
+
+
+var db = require(global._dbPath)
 
 require('./index.js')(db);
 require('../../sharedTests.js')

@@ -1,7 +1,7 @@
 'use strict';
 
 /** shared tests for models */
-
+module.exports = { SyncDB, exists, classTest, instanceTest };
 function SyncDB( db ) {
   return db.sync( {
     force: true

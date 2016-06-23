@@ -2,7 +2,7 @@ var sinon = require('sinon');
 var expect = require('chai').expect;
 var Sequelize = require('sequelize');
 var db = require('../../../server/db');
-var supertest = require('supertest');
+// var supertest = require('supertest');
 
 var User = db.model('user');
 

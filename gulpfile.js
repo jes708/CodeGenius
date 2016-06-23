@@ -16,6 +16,7 @@ var mocha = require('gulp-mocha');
 var karma = require('karma').server;
 var istanbul = require('gulp-istanbul');
 var notify = require('gulp-notify');
+var path = require('path')
 
 // Development tasks
 // --------------------------------------------------------------
@@ -64,7 +65,8 @@ gulp.task('testServerJS', function () {
 
 gulp.task('testModelJS', function() {
   require('babel-register');
-  return gulp.src('.server/db/models/Annotations/Annotation/spec.js', {
+  global._dbPath = path.join(__dirname, "./server/db/_db.js");
+  return gulp.src('./server/db/models/**/**/*.js', {
     read: false
   }).pipe(mocha({ reporter: 'spec'}));
 })

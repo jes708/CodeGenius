@@ -3,11 +3,28 @@ var crypto = require('crypto');
 var _ = require('lodash');
 var Sequelize = require('sequelize');
 
-module.exports = function (db) {
+var db = require('../_db');
 
-    db.define('user', {
-        email: {
+module.exports = db.define('user', {
+        username: {
             type: Sequelize.STRING
+        },
+        name: {
+            type: Sequelize.STRING
+        },
+        photo: {
+            type: Sequelize.STRING,
+            validate: {
+                isUrl: true
+            }
+        },
+        email: {
+            unique: true,
+            type: Sequelize.STRING,
+            allowNull: false,
+            validate: {
+                isEmail: true
+            }
         },
         password: {
             type: Sequelize.STRING
@@ -15,13 +32,7 @@ module.exports = function (db) {
         salt: {
             type: Sequelize.STRING
         },
-        twitter_id: {
-            type: Sequelize.STRING
-        },
-        facebook_id: {
-            type: Sequelize.STRING
-        },
-        google_id: {
+        github_id: {
             type: Sequelize.STRING
         }
     }, {
@@ -54,7 +65,4 @@ module.exports = function (db) {
         }
     });
 
-
-
-};
 

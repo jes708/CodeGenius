@@ -17,6 +17,7 @@ var karma = require('karma').server;
 var istanbul = require('gulp-istanbul');
 var notify = require('gulp-notify');
 var path = require('path')
+var webpack = require('gulp-webpack')
 
 // Development tasks
 // --------------------------------------------------------------
@@ -42,17 +43,24 @@ gulp.task('lintJS', function () {
 
 });
 
-gulp.task('buildJS', ['lintJS'], function () {
-    return gulp.src(['./browser/js/app.js', './browser/js/**/*.js'])
-        .pipe(plumber())
-        .pipe(sourcemaps.init())
-        .pipe(concat('main.js'))
-        .pipe(babel({
-            presets: ['es2015']
-        }))
-        .pipe(sourcemaps.write())
-        .pipe(gulp.dest('./public'));
-});
+// gulp.task('buildJS', ['lintJS'], function () {
+//     return gulp.src(['./browser/js/app.js', './browser/js/**/*.js'])
+//         .pipe(plumber())
+//         .pipe(sourcemaps.init())
+//         .pipe(concat('main.js'))
+//         .pipe(babel({
+//             presets: ['es2015']
+//         }))
+//         .pipe(sourcemaps.write())
+//         .pipe(gulp.dest('./public'));
+// });
+
+gulp.task('buildJS', function () {
+  return gulp.src('./browser/js/app.js')
+  .pipe(webpack(require('./webpack.config.js')))
+  .pipe(gulp.dest('./public'))
+})
+
 
 gulp.task('testServerJS', function () {
     require('babel-register');

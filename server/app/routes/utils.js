@@ -8,7 +8,7 @@ module.exports = {
   createAdminUser,
   createGuest,
   createLocalUser,
-  credentials,
+  Credentials,
   db,
   describeIt,
   ensureAuthenticated,
@@ -20,7 +20,8 @@ module.exports = {
   joinRootPath,
   logInAgent,
   logOutAgent,
-  responder: responder,
+  respondWith404,
+  responder,
   routerUse,
   Sequelize,
   should,
@@ -37,20 +38,22 @@ const bluebird = bluebirdForTests();
 //declarations
 const appPath = joinRootPath( "./server/app" );
 const dbPath = joinRootPath( "./server/db" );
-global.paths = {routeUtils: joinRootPath( './server/app/routes/utils.js')}
+global.paths = {routerUtils: joinRootPath( './server/app/routes/utils.js')}
 
-function addUser( userInfo ) {
-  return getModel('user')
-  .findOrCreate( userInfo )
+function addUser( credentials ) {
+
+  // console.log(credentials);
+  return getModel('user').create( credentials )
+  .then( result => {
+    
+  })
+  .catch( err => console.log('oh no there was an error here!', err))
 }
 
 function bluebirdForTests() {
+
   const Bluebird = require( 'bluebird' );
   return Bluebird;
-}
-
-function createAgent( ) {
-  return supertest().agent( getApp() )
 }
 
 function createAdminUser( userInfo ) {
@@ -58,24 +61,32 @@ function createAdminUser( userInfo ) {
   return createLocalUser( userInfo )
 }
 
+function createAgent( ) {
+
+  return supertest().agent( getApp() );
+}
+
 function createGuest() {
   return createAgent();
 }
 
 function createLocalUser( userInfo ) {
-  return bluebird.all( [addUser(userInfo), createAgent()])
-    .spread( (userInstance, agent) => loginAgent( agent, userInfo, userInstance ) )
+
+  return addUser(userInfo).then( ()=> {
+
+    return createAgent()})
 }
 
-function credentials( username, password, isAdmin, options ) {
+function Credentials( username, password, email ) {
   return {
     username,
     password,
-    isAdmin
+    email
   }
 }
 
 function db() {
+
   return require( dbPath )
 }
 
@@ -103,21 +114,30 @@ function forceSyncDb(){
   return syncDb(true);
 }
 
+function getApp() {
+
+  let theDb = db();
+  let app = require( appPath )(theDb)
+  return app;
+}
+
+function getUserModel(){
+  return require('./../../db/models/user')
+}
+
 function getModel( model ) {
-  return db()
-    .model( model );
+
+  const _db = db();
+  // console.dir(_db.models.user);
+  return _db.models[model];
 }
 
 function getModels( models ) {
   return models.map( model => getModel( model ) )
 }
 
-function getApp() {
-  return require( appPath )( db() );
-}
-
 function joinRootPath( targetPath ) {
-  return path.join( './../../', targetPath )
+  return path.join( './../../../', targetPath )
 }
 
 function logInAgent( agent, userInfo ) {
@@ -129,21 +149,6 @@ function logInAgent( agent, userInfo ) {
 function logOutAgent( agent ) {
   return agent.post( '/logout' )
 }
-
-function Sequelize() {
-  return require( 'sequelize' )
-}
-
-function should() {
-  return require( 'chai' )
-    .should()
-}
-
-function supertest() {
-  return require( 'supertest-as-promised' )( bluebirdForTests()
-    .Promise )
-}
-
 function respondWith404(router){
   router.use(function (req, res) {
       res.status(404).end();
@@ -164,6 +169,27 @@ function routerUse(router){
     return router.use( route, require(path) )
   }
 }
+
+function Sequelize() {
+  return require( 'sequelize' )
+}
+
+function should() {
+  return require( 'chai' )
+    .should()
+}
+
+function supertest() {
+
+  return require( 'supertest-as-promised' )( bluebirdForTests().Promise )
+}
+
+// function* errorTag(msg = ''){
+//   let i = 0
+//   while(true){
+//     yield console.log(i++, msg);
+//   }
+// }
 
 function syncDb(force = false) {
   return db().sync( {force} );

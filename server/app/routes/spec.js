@@ -11,7 +11,7 @@ const {
   createAdminUser,
   createGuest,
   createLocalUser,
-  credentials,
+  Credentials,
   db,
   describeIt,
   ensureAuthenticated,
@@ -33,6 +33,9 @@ const {
 
 console.log('starting utils')
 describe( 'utils.', function(){
+  beforeEach(function(){
+    forceSyncDb();
+  })
   console.log('got here');
   describeIt( 'describeIt', 'joins together describe and it for describe statements that only have one assertion')
   console.log('got there');
@@ -41,9 +44,28 @@ describe( 'utils.', function(){
   describeIt( 'addUser', 'adds a user to the database' )
   describeIt( 'createGuest', 'creates a guest user')
   describeIt( 'createLocalUser', 'creates a local user and attempts to log in')
-  describeIt( 'credentials', 'takes credentials and returns an object that can be used by user model')
+  describeIt( 'Credentials', 'return a Credentials object that can be used by user model')
   describeIt( 'db()', 'fetches the db module')
-  describeIt( 'ensureAuthenticated', 'calls next() if user is authenticated. Otherwise returns 401')
+
+
+  describe( 'ensureAuthenticated', function(){
+    it('calls next() if user is authenticated.', function(){
+      const bobsCredentials = new Credentials('bob', 'reallyStrongPassword', 'bob@bob.com');
+      const bobTheUser = createLocalUser(bobsCredentials).then( bob => {
+        console.log(bob);
+        return bob
+      })
+      bobTheUser.then( bob => bob.post('/api/v1/secret-stash') )
+                .send(bobsCredentials)
+                .then( response => response.should.be.an.array)
+    });
+    it('Otherwise returns 401', function(){
+      return true;
+    })
+  });
+
+
+
   describeIt('_err', 'standardizes error handling into an object form')
   describeIt('forceSyncDb', 'calls syncDb with force=true')
   describeIt('getApp', 'requires the app module')

@@ -10,5 +10,3 @@ var db = require(global._dbPath)
 
 require('./index.js')(db);
 require('../../sharedTests.js')
-
-

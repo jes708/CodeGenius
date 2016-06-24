@@ -3,7 +3,7 @@ var crypto = require( 'crypto' );
 var _ = require( 'lodash' );
 var Sequelize = require( 'sequelize' );
 
-/** Question methods */
+/** Response methods */
 module.exports = {
   class: function(db){
     return {};
@@ -14,8 +14,12 @@ module.exports = {
 }
 
 function addAssociations(db){
-  const Assessment = db.models['assessment'];
+  const QuestionResponse = db.models['assessment'];
   const Question = db.models['question'];
+  const StudentTest = db.models['StudentTest'];
+  const Location = db.models['location'];
 
-  Question.belongsTo(Assessment)
+  QuestionResponse.belongsTo(Question)
+  QuestionResponse.belongsTo(StudentTest)
+  QuestionResponse.belongsTo(Location)
 }

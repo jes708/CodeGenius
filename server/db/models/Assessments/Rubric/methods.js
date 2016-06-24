@@ -12,3 +12,10 @@ module.exports = {
     return {};
   }
 }
+
+function addAssociations(db){
+  const Rubric = db.models['rubric'];
+  const Question = db.models['question'];
+
+  Rubric.belongsTo(Question);
+}

@@ -6,7 +6,7 @@ var Sequelize = require( 'sequelize' );
 /** Response definitions */
 module.exports = function(db){
     return {
-      description: {
+      content: {
         type: Sequelize.STRING
       }
     }

@@ -3,13 +3,10 @@ var crypto = require( 'crypto' );
 var _ = require( 'lodash' );
 var Sequelize = require( 'sequelize' );
 
-/** annotation definitions */
+/** Response definitions */
 module.exports = function(db){
     return {
-      description: {
-        type: Sequelize.STRING
-      },
-      color: {
+      score: {
         type: Sequelize.STRING
       }
     }

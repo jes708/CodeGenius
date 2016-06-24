@@ -14,8 +14,11 @@ module.exports = {
 }
 
 function addAssociations(db){
-  const Assessment = db.models['assessment'];
-  const Question = db.models['question'];
+  const Team = db.models['team'];
+  const Organization = db.models['organization'];
+  const User = db.models['user'];
+  const UserTeam = db.models['userTeam'];
 
-  Question.belongsTo(Assessment)
+  Team.belongsTo(Organization);
+  Team.belongsToMany(User, {through: UserTeam});
 }

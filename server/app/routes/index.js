@@ -1,11 +1,13 @@
 'use strict';
 var router = require('express').Router();
+const util = require(global.paths.routeUtils);
+const routerUse = util.routerUse(router);
+const respond = util.responder(router);
+
 module.exports = router;
 
-router.use('/api', require('./api'))
+routerUse('/api', './api')
 
 // Make sure this is after all of
 // the registered routes!
-router.use(function (req, res) {
-    res.status(404).end();
-});
+respond.with404();

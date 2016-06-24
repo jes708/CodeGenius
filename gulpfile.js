@@ -73,7 +73,7 @@ gulp.task('testModelJS', function() {
 
 gulp.task('testRouterJS', function(){
   require('babel-register');
-  // global.dbPath = path.join(__dirname, "./server/db");
+  global.dbPath = path.join(__dirname, "./server/db");
   return gulp.src('./server/app/routes/**/spec.js', {
     read: false
   }).pipe(mocha({ reporter: 'spec'}));

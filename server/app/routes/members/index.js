@@ -2,14 +2,8 @@
 var router = require('express').Router();
 module.exports = router;
 var _ = require('lodash');
-
-var ensureAuthenticated = function (req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.status(401).end();
-    }
-};
+const utils = require(global.paths.routerUtils);
+const {ensureAuthenticated, respondWith404} = utils;
 
 router.get('/secret-stash', ensureAuthenticated, function (req, res) {
 
@@ -30,3 +24,5 @@ router.get('/secret-stash', ensureAuthenticated, function (req, res) {
     res.send(_.shuffle(theStash));
 
 });
+
+respondWith404();

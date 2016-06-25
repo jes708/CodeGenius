@@ -1,8 +1,9 @@
 'use strict';
 var router = require('express').Router();
 const utils = require(global.paths.routerUtils);
-const routerUse = utils.routerUse(router);
-const {respondWith404} = utils
+// const respond = util.responder(router);
+const {respondWith404, bindRouterToUse} = utils
+const routerUse = bindRouterToUse(router);
 
 module.exports = router;
 

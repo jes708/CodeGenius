@@ -38,7 +38,8 @@ export default class Navbar extends Component {
           <ul className="nav navbar-nav">
             {this.renderNavItems()}
           </ul>
-          <button className="btn login-button">Login</button>
+          <Link to='signup' className="btn login-button">Sign Up</Link>
+          <Link to='login' className="btn login-button">Login</Link>
         </div>
       </nav>
     )

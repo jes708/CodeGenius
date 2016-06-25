@@ -9,7 +9,7 @@
 /** dependencies */
 const definitions = require('./definitions')
 const methods = require('./methods')
-const db = require(global._dbPath);
+const db = require('../../../_db');
 
 module.exports = db.define('template',
   /** defined in ./definitions */

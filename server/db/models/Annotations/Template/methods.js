@@ -5,15 +5,10 @@ var Sequelize = require( 'sequelize' );
 
 /** annotation methods */
 module.exports = {
-  class(db){
-    return {
-      test,
-      addAssociations: addAssociations.bind(this, db)
-    };
+  class: function(db){
+    return {};
   },
-  instance(db){
-    return {
-      test
-    };
+  instance: function(db){
+    return {};
   }
 }

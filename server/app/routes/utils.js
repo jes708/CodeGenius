@@ -4,8 +4,10 @@
 module.exports = {
   appPath,
   dbPath,
+  bindRouterToUse,
   bluebirdForTests,
   createAdminUser,
+  createAgent,
   createGuest,
   createLocalUser,
   Credentials,
@@ -21,8 +23,7 @@ module.exports = {
   logInAgent,
   logOutAgent,
   respondWith404,
-  responder,
-  routerUse,
+  // responder,
   Sequelize,
   should,
   supertest,
@@ -45,9 +46,15 @@ function addUser( credentials ) {
   // console.log(credentials);
   return getModel('user').create( credentials )
   .then( result => {
-    
+
   })
   .catch( err => console.log('oh no there was an error here!', err))
+}
+
+function bindRouterToUse(router){
+  return function routerUse(route, path){
+    return router.use( route, require(path) )
+  }
 }
 
 function bluebirdForTests() {
@@ -61,9 +68,9 @@ function createAdminUser( userInfo ) {
   return createLocalUser( userInfo )
 }
 
-function createAgent( ) {
+function createAgent( app = getApp() ) {
 
-  return supertest().agent( getApp() );
+  return supertest().agent( app );
 }
 
 function createGuest() {
@@ -164,12 +171,6 @@ class responder {
   }
 }
 
-function routerUse(router){
-  return function use(route, path){
-    return router.use( route, require(path) )
-  }
-}
-
 function Sequelize() {
   return require( 'sequelize' )
 }
@@ -183,13 +184,6 @@ function supertest() {
 
   return require( 'supertest-as-promised' )( bluebirdForTests().Promise )
 }
-
-// function* errorTag(msg = ''){
-//   let i = 0
-//   while(true){
-//     yield console.log(i++, msg);
-//   }
-// }
 
 function syncDb(force = false) {
   return db().sync( {force} );

@@ -8,7 +8,7 @@ module.exports = function(db){
     return {
       role: {
         type: Sequelize.ENUM,
-        values: ['student', 'teacher']
+        values: ['student', 'instructor']
       }
     }
 }

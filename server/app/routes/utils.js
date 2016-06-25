@@ -10,12 +10,14 @@ module.exports = {
   createAgent,
   createGuest,
   createLocalUser,
+  createLocalUsers,
   Credentials,
   db,
   describeIt,
   ensureAuthenticated,
   _err,
   forceSyncDb,
+  generateUsers,
   getApp,
   getModel,
   getModels,
@@ -38,22 +40,20 @@ const bluebird = bluebirdForTests();
 
 //declarations
 const appPath = joinRootPath( "./server/app" );
-const dbPath = joinRootPath( "./server/db" );
-global.paths = {routerUtils: joinRootPath( './server/app/routes/utils.js')}
-
-function addUser( credentials ) {
-
-  // console.log(credentials);
-  return getModel('user').create( credentials )
-  .then( result => {
-
-  })
-  .catch( err => console.log('oh no there was an error here!', err))
+const dbPath = path.join( __dirname, '../../db/index.js' );
+global.paths = {
+  routerUtils: path.join( __dirname, 'utils.js' )
 }
 
-function bindRouterToUse(router){
-  return function routerUse(route, path){
-    return router.use( route, require(path) )
+function addUser( credentials ) {
+  return getModel( 'user' )
+    .create( credentials )
+    .catch( err => console.log( 'oh no there was an error here!', err ) )
+}
+
+function bindRouterToUse( router ) {
+  return function routerUse( route, path ) {
+    return router.use( route, require( path ) )
   }
 }
 
@@ -70,7 +70,8 @@ function createAdminUser( userInfo ) {
 
 function createAgent( app = getApp() ) {
 
-  return supertest().agent( app );
+  return supertest()
+    .agent( app );
 }
 
 function createGuest() {
@@ -79,9 +80,15 @@ function createGuest() {
 
 function createLocalUser( userInfo ) {
 
-  return addUser(userInfo).then( ()=> {
+  return addUser( userInfo )
+    .then( () => {
 
-    return createAgent()})
+      return createAgent()
+    } )
+}
+
+function createLocalUsers( userInfoArray ) {
+  return userInfoArray.map( createLocalUser )
 }
 
 function Credentials( username, password, email ) {
@@ -93,23 +100,33 @@ function Credentials( username, password, email ) {
 }
 
 function db() {
-
   return require( dbPath )
 }
 
-function describeIt( describeStmt, itStmt, callback = function(){}, callWithDone ){
-  return describe( describeStmt, function() {
+function describeIt( describeStmt, itStmt, callback = function () {}, callWithDone ) {
+  return describe( describeStmt, function () {
     it( itStmt, callback( callWithDone ? done : undefined ) )
-  })
+  } )
 }
 
-function ensureAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-        next();
-    } else {
-        res.status(401).end();
-    }
+function ensureAuthenticated( req, res, next ) {
+  if ( req.isAuthenticated() ) {
+    next();
+  } else {
+    res.status( 401 )
+      .end();
+  }
 }
+
+function ensureIsAdmin( req, res, next ) {
+  if ( !req.user.isAdmin ) {
+    res.status( 401 )
+      .end();
+  } else {
+    next();
+  }
+}
+
 
 function _err( err ) {
   return {
@@ -117,26 +134,39 @@ function _err( err ) {
   };
 }
 
-function forceSyncDb(){
-  return syncDb(true);
+function forceSyncDb() {
+  return syncDb( true );
+}
+
+/**
+ * takes an array of user data and generates instantiated users, adding them to the database as well.
+ * side effect: adds users to the database.
+ * @param  {Array.<Array.<String>>} users [an array of user data]
+ * @return {Array.<Object>}       [an array of user agent objects]
+ */
+function generateUsers( users ) {
+  return users
+    .map( user => [ user, user + user + user, `${user}@${user}.${user}` ] )
+    .map( ( [ username, email, password ] ) => new Credentials( username, email, password ) )
+    .map( userInfo => createLocalUser( userInfo ) )
 }
 
 function getApp() {
 
   let theDb = db();
-  let app = require( appPath )(theDb)
+  let app = require( appPath )( theDb )
   return app;
 }
 
-function getUserModel(){
-  return require('./../../db/models/user')
+function getUserModel() {
+  return require( './../../db/models/user' )
 }
 
 function getModel( model ) {
 
   const _db = db();
   // console.dir(_db.models.user);
-  return _db.models[model];
+  return _db.models[ model ];
 }
 
 function getModels( models ) {
@@ -156,18 +186,20 @@ function logInAgent( agent, userInfo ) {
 function logOutAgent( agent ) {
   return agent.post( '/logout' )
 }
-function respondWith404(router){
-  router.use(function (req, res) {
-      res.status(404).end();
-  });
+
+function respondWith404( router ) {
+  router.use( function ( req, res ) {
+    res.status( 404 )
+      .end();
+  } );
 }
 
 class responder {
-  constructor(router){
+  constructor( router ) {
     this.router = router;
   }
-  with404(){
-    respondWith404(this.router);
+  with404() {
+    respondWith404( this.router );
   }
 }
 
@@ -182,9 +214,13 @@ function should() {
 
 function supertest() {
 
-  return require( 'supertest-as-promised' )( bluebirdForTests().Promise )
+  return require( 'supertest-as-promised' )( bluebirdForTests()
+    .Promise )
 }
 
-function syncDb(force = false) {
-  return db().sync( {force} );
+function syncDb( force = false ) {
+  return db()
+    .sync( {
+      force
+    } );
 }

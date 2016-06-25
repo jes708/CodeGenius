@@ -2,20 +2,10 @@
 
 import React, { Component, PropTypes } from 'react'
 import Formsy from 'formsy-react'
-import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import { grey900, amber700 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 import { FormsyText } from 'formsy-material-ui/lib'
-
-const muiTheme = getMuiTheme({
-  palette: {
-    primary1Color: grey900,
-    accent1Color: amber700
-  }
-})
 
 const styles = {
   form: {
@@ -42,7 +32,6 @@ export default class AuthForm extends Component {
     super(props)
     this.state = {
       canSubmit: true,
-      formType: this.props.location.pathname
     }
   }
 
@@ -79,87 +68,83 @@ export default class AuthForm extends Component {
 
   renderLoginForm () {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
-        <Paper style={styles.paperStyle}>
-          {this.renderGitHubButton()}
-          <Formsy.Form
-            onValid={this.enableButton.bind(this)}
-            onInValid={this.disableButton.bind(this)}
-            onValidSubmit={this.submitForm.bind(this)}>
-            <FormsyText
-              name="email"
-              type="email"
-              required
-              floatingLabelText="Email"
+      <Paper style={styles.paperStyle}>
+        {this.renderGitHubButton()}
+        <Formsy.Form
+          onValid={this.enableButton.bind(this)}
+          onInValid={this.disableButton.bind(this)}
+          onValidSubmit={this.submitForm.bind(this)}>
+          <FormsyText
+            name="email"
+            type="email"
+            required
+            floatingLabelText="Email"
+          />
+          <FormsyText
+            name="password"
+            type="password"
+            required
+            floatingLabelText="Password"
+          />
+          <div style={Object.assign(styles.button, styles.fullWidth)}>
+            <RaisedButton
+              type="submit"
+              label='Login'
+              secondary={true}
+              style={styles.fullWidth}
+              disabled={!this.state.canSubmit}
             />
-            <FormsyText
-              name="password"
-              type="password"
-              required
-              floatingLabelText="Password"
-            />
-            <div style={Object.assign(styles.button, styles.fullWidth)}>
-              <RaisedButton
-                type="submit"
-                label='Login'
-                secondary={true}
-                style={styles.fullWidth}
-                disabled={!this.state.canSubmit}
-              />
-            </div>
-          </Formsy.Form>
-        </Paper>
-      </MuiThemeProvider>
+          </div>
+        </Formsy.Form>
+      </Paper>
     )
   }
 
   renderSignupForm () {
     return (
-      <MuiThemeProvider muiTheme={getMuiTheme(muiTheme)}>
-        <Paper style={styles.paperStyle}>
-          {this.renderGitHubButton()}
-          <Formsy.Form
-            onValid={this.enableButton.bind(this)}
-            onInValid={this.disableButton.bind(this)}
-            onValidSubmit={this.submitForm.bind(this)}>
-            <FormsyText
-              name="name"
-              type="name"
-              required
-              floatingLabelText="Name"
+      <Paper style={styles.paperStyle}>
+        {this.renderGitHubButton()}
+        <Formsy.Form
+          onValid={this.enableButton.bind(this)}
+          onInValid={this.disableButton.bind(this)}
+          onValidSubmit={this.submitForm.bind(this)}>
+          <FormsyText
+            name="name"
+            type="name"
+            required
+            floatingLabelText="Name"
+          />
+          <FormsyText
+            name="email"
+            type="email"
+            required
+            floatingLabelText="Email"
+          />
+          <FormsyText
+            name="password"
+            type="password"
+            required
+            floatingLabelText="Password"
+          />
+          <div style={Object.assign(styles.button, styles.fullWidth)}>
+            <RaisedButton
+              type="submit"
+              label='Sign Up'
+              secondary={true}
+              style={styles.fullWidth}
+              disabled={!this.state.canSubmit}
             />
-            <FormsyText
-              name="email"
-              type="email"
-              required
-              floatingLabelText="Email"
-            />
-            <FormsyText
-              name="password"
-              type="password"
-              required
-              floatingLabelText="Password"
-            />
-            <div style={Object.assign(styles.button, styles.fullWidth)}>
-              <RaisedButton
-                type="submit"
-                label='Sign Up'
-                secondary={true}
-                style={styles.fullWidth}
-                disabled={!this.state.canSubmit}
-              />
-            </div>
-          </Formsy.Form>
-        </Paper>
-      </MuiThemeProvider>
+          </div>
+        </Formsy.Form>
+      </Paper>
     )
   }
 
   render () {
     let form
-    if (this.state.formType === 'login') {
+    if (this.props.location.pathname === 'login') {
       form = this.renderLoginForm()
-    } else if (this.state.formType === 'signup') {
+    } else if (this.props.location.pathname === 'signup') {
       form = this.renderSignupForm()
     }
 

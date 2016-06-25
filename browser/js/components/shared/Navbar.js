@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
+require('./Navbar.scss')
 
 export default class Navbar extends Component {
   constructor(props) {
@@ -9,18 +10,21 @@ export default class Navbar extends Component {
     this.state = {
       items: [
         { label: 'Home', path: '/' },
-        { label: 'About', path: 'about' }
+        { label: 'About', path: 'about' },
+        { label: 'Members Only', path: 'membersOnly', auth: true }
       ]
     }
   }
 
   renderNavItems () {
     return this.state.items.map((item, i) => {
-      return (
-        <li key={i}>
-          <Link to={item.path}>{item.label}</Link>
-        </li>
-      )
+      if (!item.auth) {
+        return (
+          <li key={i}>
+            <Link to={item.path}>{item.label}</Link>
+          </li>
+        )
+      }
     })
   }
 
@@ -39,4 +43,8 @@ export default class Navbar extends Component {
       </nav>
     )
   }
+}
+
+Navbar.propTypes = {
+
 }

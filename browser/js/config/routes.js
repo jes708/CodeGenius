@@ -5,7 +5,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import Main from '../components/Main'
 import Home from '../components/Home'
 import About from '../components/About'
-import Login from '../components/Login'
+// import Login from '../components/Login'
 
 
 const routes = (

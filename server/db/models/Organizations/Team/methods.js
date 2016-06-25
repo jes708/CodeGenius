@@ -6,7 +6,9 @@ var Sequelize = require( 'sequelize' );
 /** Question methods */
 module.exports = {
   class: function(db){
-    return {};
+    return {
+      addAssociations
+    };
   },
   instance: function(db){
     return {};

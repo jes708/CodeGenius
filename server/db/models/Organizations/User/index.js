@@ -2,7 +2,7 @@
 
 /**
  *
- * Question Model
+ * User Model
  *
  */
 

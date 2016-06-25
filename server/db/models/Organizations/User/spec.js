@@ -6,5 +6,5 @@ var should = chai.should();
 var Sequelize = require('sequelize');
 var db = require(global._dbPath);
 
-require('./index.js')(db);
+const User = require('./index.js');
 var sharedTests = require('../../sharedTests.js');

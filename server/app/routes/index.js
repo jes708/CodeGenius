@@ -2,7 +2,6 @@
 var router = require('express').Router();
 const utils = require(global.paths.routerUtils);
 const routerUse = utils.routerUse(router);
-// const respond = util.responder(router);
 const {respondWith404} = utils
 
 module.exports = router;

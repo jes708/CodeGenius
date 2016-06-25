@@ -72,6 +72,14 @@ gulp.task('testServerJS', function () {
 //   }).pipe(mocha({ reporter: 'spec'}));
 // })
 
+gulp.task('testRouterJS', function(){
+  require('babel-register');
+  global.dbPath = path.join(__dirname, "./server/db");
+  return gulp.src('./server/app/routes/**/spec.js', {
+    read: false
+  }).pipe(mocha({ reporter: 'spec'}));
+})
+
 gulp.task('testServerJSWithCoverage', function (done) {
     //testing environment variable
     process.env.NODE_ENV = 'testing';

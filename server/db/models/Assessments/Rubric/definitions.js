@@ -6,8 +6,11 @@ var Sequelize = require( 'sequelize' );
 /** Rubric definitions */
 module.exports = function(db){
     return {
-      description: {
+      criterion: {
         type: Sequelize.STRING
+      },
+      points: {
+        type: Sequelize.INTEGER
       }
     }
 }

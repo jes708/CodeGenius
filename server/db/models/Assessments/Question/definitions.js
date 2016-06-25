@@ -6,8 +6,11 @@ var Sequelize = require( 'sequelize' );
 /** Question definitions */
 module.exports = function(db){
     return {
-      description: {
-        type: Sequelize.STRING
+      prompt: {
+        type: Sequelize.TEXT
+      },
+      answer: {
+        type: Sequelize.TEXT
       }
     }
 }

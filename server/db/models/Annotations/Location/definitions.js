@@ -6,8 +6,23 @@ var Sequelize = require( 'sequelize' );
 /** annotation definitions */
 module.exports = function(db){
     return {
-      description: {
-        type: Sequelize.STRING
+      url: {
+        type: Sequelize.TEXT,
+        validate: {
+          isUrl: true
+        }
+      },
+      startLine: {
+        type: Sequelize.INTEGER
+      },
+      endLine: {
+        type: Sequelize.INTEGER
+      },
+      startChar: {
+        type: Sequelize.INTEGER
+      },
+      endChar: {
+        type: Sequelize.INTEGER
       }
     }
 }

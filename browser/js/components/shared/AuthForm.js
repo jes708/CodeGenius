@@ -79,6 +79,7 @@ export default class AuthForm extends Component {
             type="email"
             required
             floatingLabelText="Email"
+            validations='isEmail'
           />
           <FormsyText
             name="password"
@@ -113,18 +114,21 @@ export default class AuthForm extends Component {
             type="name"
             required
             floatingLabelText="Name"
+            validations='isWords'
           />
           <FormsyText
             name="email"
             type="email"
             required
             floatingLabelText="Email"
+            validations='isEmail'
           />
           <FormsyText
             name="password"
             type="password"
             required
             floatingLabelText="Password"
+            validates='minlength:6'
           />
           <div style={Object.assign(styles.button, styles.fullWidth)}>
             <RaisedButton

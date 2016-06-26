@@ -21,30 +21,11 @@ const {
   team: Team,
   organization: Organization
 } = models;
-const Resource = User;
-
-router.use( ( req, res, next ) => {
-  req.options = {
-    include: [
-      Team, Organization
-    ],
-    attributes: {
-      exclude: [
-        'email', 'password', 'salt'
-      ]
-    }
-  }
-  next();
-} )
+const Resource = Team;
 
 /** see documentation at https://www.npmjs.com/package/sequelize-handlers */
 router.get( '/', sequelizeHandlers.query( Resource ) );
-router.get( '/:id', ( req, res, next ) => {
-  if ( req.user && req.user.id === req.params.id ) {
-    req.options.attributes.exclude = [ 'salt' ];
-    next()
-  }
-}, sequelizeHandlers.get( Resource ) );
+router.get( '/:id', sequelizeHandlers.get( Resource ) );
 router.post( '/', ensureAuthenticated, sequelizeHandlers.create( Resource ) );
 router.put( '/:id', ensureAuthenticated, sequelizeHandlers.update( Resource ) );
 router.delete( '/:id', ensureAuthenticated, sequelizeHandlers.remove( Resource ) );

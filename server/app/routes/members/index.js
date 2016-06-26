@@ -2,7 +2,7 @@
 var router = require('express').Router();
 module.exports = router;
 var _ = require('lodash');
-const utils = require(global.paths.routerUtils);
+const utils = require('../utils');
 const {ensureAuthenticated, respondWith404} = utils;
 
 router.get('/secret-stash', ensureAuthenticated, function (req, res) {

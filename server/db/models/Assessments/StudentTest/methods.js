@@ -6,7 +6,9 @@ var Sequelize = require( 'sequelize' );
 /** Rubric methods */
 module.exports = {
   class: function(db){
-    return {};
+    return {
+      addAssociations
+    };
   },
   instance: function(db){
     return {};

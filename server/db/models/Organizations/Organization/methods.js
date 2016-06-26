@@ -20,7 +20,6 @@ function addAssociations(db){
   const Organization = db.models['organization'];
   const User = db.models['user'];
   const UserOrganization = db.models['userOrganization'];
-  console.dir(Object.keys(db.models));
 
   Organization.belongsToMany(User, {through: UserOrganization});
 }

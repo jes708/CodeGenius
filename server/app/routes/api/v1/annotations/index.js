@@ -1,16 +1,23 @@
 'use strict';
 var router = require('express').Router();
+var _ = require('lodash');
+
+const sequelizeHandlers = require( 'sequelize-handlers' );
+const bluebird = require( 'bluebird' );
+const utils = require('../../../utils');
+const {ensureAuthenticated, ensureIsAdmin, Credentials, respondWith404, _err, db} = utils;
+const Annotation = db().models.annotation;
+const Resource = Annotation;
+
+/** see documentation at https://www.npmjs.com/package/sequelize-handlers */
+
+router.get(   '/',  sequelizeHandlers.query(Resource));
+router.get(   '/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
+router.post(  '/',  ensureAuthenticated,     sequelizeHandlers.create(Resource));
+router.put(   '/:id', ensureAuthenticated, sequelizeHandlers.update(Resource));
+router.delete('/:id',  ensureAuthenticated,     sequelizeHandlers.remove(Resource));
+
+
+respondWith404(router);
+
 module.exports = router;
-
-// router.use('/users', require('./users'));
-// router.use('/annotations', require('./annotations'));
-// router.use('/questions', require('.assessments/questions'));
-// router.use('/evaluations', require('.assessments/evaluations'));
-// router.use('/assessments', require('.assessments/assessments'));
-
-
-// Make sure this is after all of
-// the registered routes!
-router.use(function (req, res) {
-    res.status(404).end();
-});

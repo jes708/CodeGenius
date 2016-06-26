@@ -7,13 +7,14 @@ const bluebird = require( 'bluebird' );
 const utils = require('../../../utils');
 const {ensureAuthenticated, ensureIsAdmin, Credentials, respondWith404, _err, db} = utils;
 const User = db().models.user;
+const Resource = User;
 
 /** see documentation at https://www.npmjs.com/package/sequelize-handlers */
-router.get(   '/',  sequelizeHandlers.query(User));
-router.get(   '/:id', ensureAuthenticated, sequelizeHandlers.get(User));
-router.post(  '/',  ensureAuthenticated,     sequelizeHandlers.create(User));
-router.put(   '/:id', ensureAuthenticated, sequelizeHandlers.update(User));
-router.delete('/:id',  ensureAuthenticated,     sequelizeHandlers.remove(User));
+router.get(   '/',  sequelizeHandlers.query(Resource));
+router.get(   '/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
+router.post(  '/',  ensureAuthenticated,     sequelizeHandlers.create(Resource));
+router.put(   '/:id', ensureAuthenticated, sequelizeHandlers.update(Resource));
+router.delete('/:id',  ensureAuthenticated,     sequelizeHandlers.remove(Resource));
 
 
 respondWith404(router);

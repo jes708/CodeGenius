@@ -1,5 +1,17 @@
 'use strict';
 
+// dependencies
+const path = require( 'path' );
+const bluebird = bluebirdForTests();
+
+//declarations
+const appPath = joinRootPath( "./server/app" );
+const dbPath = path.join( __dirname, '../../db/index.js' );
+global.paths = {
+  routerUtils: path.join( __dirname, 'utils.js' )
+}
+
+
 //exports
 module.exports = {
   appPath,
@@ -34,16 +46,7 @@ module.exports = {
 
 
 
-// dependencies
-const path = require( 'path' );
-const bluebird = bluebirdForTests();
 
-//declarations
-const appPath = joinRootPath( "./server/app" );
-const dbPath = path.join( __dirname, '../../db/index.js' );
-global.paths = {
-  routerUtils: path.join( __dirname, 'utils.js' )
-}
 
 function addUser( credentials ) {
   return getModel( 'user' )

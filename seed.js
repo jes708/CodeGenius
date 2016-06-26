@@ -1,27 +1,12 @@
-/*
+'use strict';
 
-This seed file is only a placeholder. It should be expanded and altered
-to fit the development of your application.
+/**
+ * run with node seed.js
+ */
 
-It uses the same file the server uses to establish
-the database connection:
---- server/db/index.js
-
-The name of the database used is set in your environment files:
---- server/env/*
-
-This seed file has a safety check to see if you already have users
-in the database. If you are developing multiple applications with the
-fsg scaffolding, keep in mind that fsg always uses the same database
-name in the environment files.
-
-*/
-
+// dependencies
 var chalk = require( 'chalk' );
 var db = require( './server/db' );
-const User = db.models[ 'user' ];
-const Organization = db.models[ 'organization' ]
-const UserOrganization = db.models[ 'userOrganization' ]
 var Promise = require( 'sequelize' )
   .Promise;
 const faker = require( 'faker' );
@@ -31,8 +16,19 @@ const {
 } = utils;
 const Sequelize = require( 'sequelize' );
 
-const seedUsers = function ( n = Math.ceil( Math.random() * 100 ) ) {
+// binding to the models
+const models = db.models;
+const {user: User, organization: Organization, userOrganization: UserOrganization, userTeam: UserTeam, team: Team, annotation: Annotation, location: Location, template: Template, assessment: Assessment, criterionResponse: CriterionResponse, question: Question, questionResponse: QuestionResponse, rubric: Rubric, studentTest: StudentTest} = models
 
+
+// console.log(models);
+// const User = db.models[ 'user' ];
+// const Organization = db.models[ 'organization' ];
+// const UserOrganization = db.models[ 'userOrganization' ];
+
+//seed methods
+/** seeds a random number of users 1-100 */
+const seedUsers = function ( n = Math.ceil( Math.random() * 100 ) ) {
   let users = Array
     .from( {
         length: n
@@ -54,17 +50,13 @@ const seedUsers = function ( n = Math.ceil( Math.random() * 100 ) ) {
   );
   Omri.isAdmin = true;
   users.push( Omri );
-
-  var creatingUsers = users.map( function ( userObj ) {
+  let creatingUsers = users.map( function ( userObj ) {
     return User.create( userObj );
   } );
-
   return Promise.all( creatingUsers );
-
 };
 
-
-
+/** seeds up to n organizations */
 const seedOrganizations = function ( n = Math.ceil( Math.random() * 100 ) ) {
   let organizations = User.findAll( {
       limit: n
@@ -82,7 +74,6 @@ const seedOrganizations = function ( n = Math.ceil( Math.random() * 100 ) ) {
 
 const seedTeams = function ( n = Math.ceil( Math.random() * 100 ) ) {
   return Organization.findAll( {
-      // limit: n,
       include: [ {
         model: User
       } ]
@@ -103,20 +94,28 @@ const seedTeams = function ( n = Math.ceil( Math.random() * 100 ) ) {
     } )
 }
 
+let seedAssessments = function(){
+  return User.findAll( {
+    include: [Team]
+  }).map(instructor => {
+    let name = faker.lorem.words(Math.ceil(Math.random()*20));
+    let description = faker.lorem.paragraph();
+    let tags = faker.random.words(Math.ceil(Math.random()*10)).toLowerCase().split(' ');
+    let repoUrl = faker.internet.url();
+    let instructorId = instructor.id;
+    let teamId = faker.random.arrayElement(instructor.teams).id;
+    return Assessment.create({name, description, tags, repoUrl, instructorId, teamId})
+  }  )
+}
 
-
+//execution
 db.sync( {
     force: true
   } )
-  .then( function () {
-    return seedUsers();
-  } )
-  .then( function () {
-    return seedOrganizations();
-  } )
-  .then( function () {
-    return seedTeams();
-  } )
+  .then( ()=>seedUsers())
+  .then( ()=> seedOrganizations())
+  .then( ()=> seedTeams() )
+  .then( ()=> seedAssessments() )
   .then( function () {
     console.log( chalk.green( 'Seed successful!' ) );
     process.exit( 0 );

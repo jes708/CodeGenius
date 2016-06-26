@@ -6,9 +6,24 @@ var Sequelize = require( 'sequelize' );
 /** Assessment methods */
 module.exports = {
   class: function(db){
-    return {};
+    return {
+      addAssociations
+    };
   },
   instance: function(db){
     return {};
   }
+}
+
+
+function addAssociations( db ) {
+  const Team = db.models[ 'team' ];
+  const Organization = db.models[ 'organization' ];
+  const User = db.models[ 'user' ];
+  const UserTeam = db.models[ 'userTeam' ];
+  const UserOrganization = db.models[ 'userOrganization' ];
+  const Assessment = db.models[ 'assessment' ]
+
+  Assessment.belongsTo( User, {as: 'instructor'} );
+  Assessment.belongsTo( Team );
 }

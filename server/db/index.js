@@ -19,8 +19,8 @@ var QuestionResponse = require( './models/Assessments/QuestionResponse' );
 var Rubric = require( './models/Assessments/Rubric' );
 var StudentTest = require( './models/Assessments/StudentTest' );
 
-bluebird.all( [ User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest ] )
-  .spread( ( User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest ) => {
+bluebird.all( [ User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest, Assessment ] )
+  .spread( ( User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest, Assessment ) => {
     User.addAssociations( db );
     Team.addAssociations( db );
     Organization.addAssociations( db );
@@ -30,4 +30,5 @@ bluebird.all( [ User, Team, Organization, Annotation, CriterionResponse, Questio
     QuestionResponse.addAssociations( db );
     Rubric.addAssociations( db );
     StudentTest.addAssociations( db );
+    Assessment.addAssociations( db );
   } )

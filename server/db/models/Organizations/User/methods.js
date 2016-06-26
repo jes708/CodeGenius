@@ -47,7 +47,7 @@ function addAssociations( db ) {
   const User = db.models[ 'user' ];
   const UserTeam = db.models[ 'userTeam' ];
   const UserOrganization = db.models[ 'userOrganization' ];
-
+  
   User.belongsToMany( Team, {
     through: UserTeam
   } );

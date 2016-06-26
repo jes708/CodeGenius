@@ -22,8 +22,10 @@ function addAssociations( db ) {
   const User = db.models[ 'user' ];
   const UserTeam = db.models[ 'userTeam' ];
   const UserOrganization = db.models[ 'userOrganization' ];
-  const Assessment = db.models[ 'assessment' ]
+  const Assessment = db.models[ 'assessment' ];
+  const Question = db.models[ 'question' ];
 
   Assessment.belongsTo( User, {as: 'instructor'} );
   Assessment.belongsTo( Team );
+  Assessment.hasMany( Question );
 }

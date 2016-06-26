@@ -12,3 +12,9 @@ module.exports = {
     return {};
   }
 }
+
+
+function addAssociations(){
+  const Annotation = db.models['annotation'];
+  Location.belongsTo(Annotation);
+}

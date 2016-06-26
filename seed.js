@@ -103,7 +103,8 @@ let seedAssessments = function(){
     let tags = faker.random.words(Math.ceil(Math.random()*10)).toLowerCase().split(' ');
     let repoUrl = faker.internet.url();
     let instructorId = instructor.id;
-    let teamId = faker.random.arrayElement(instructor.teams).id;
+    let team = instructor.teams[0].userTeam;
+    let teamId = team.id;
     return Assessment.create({name, description, tags, repoUrl, instructorId, teamId})
   }  )
 }

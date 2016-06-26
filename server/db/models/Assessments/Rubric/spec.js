@@ -4,7 +4,7 @@ chai.use(require('chai-as-promised'));
 var should = chai.should();
 
 var Sequelize = require('sequelize');
-var db = require(global._dbPath);
+var db = require('../../../_db');
 
 require('./index.js')(db);
 var sharedTests = require('../../sharedTests.js');

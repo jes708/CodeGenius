@@ -6,7 +6,9 @@ var Sequelize = require( 'sequelize' );
 /** Response methods */
 module.exports = {
   class: function(db){
-    return {};
+    return {
+      addAssociations
+    };
   },
   instance: function(db){
     return {};
@@ -14,12 +16,12 @@ module.exports = {
 }
 
 function addAssociations(db){
-  const CriterionResponse = db.models['criterionResponse'];
   const QuestionResponse = db.models['questionResponse'];
-  const Rubric = db.models['rubric'];
+  const Question = db.models['question'];
+  const StudentTest = db.models['studentTest'];
   const Location = db.models['location'];
 
-  CriterionResponse.belongsTo(QuestionResponse);
-  CriterionResponse.belongsTo(Rubric);
-  CriterionResponse.belongsTo(Location);
+  QuestionResponse.belongsTo(Question)
+  QuestionResponse.belongsTo(StudentTest)
+  QuestionResponse.belongsTo(Location)
 }

@@ -64,31 +64,6 @@ const styles = {
   }
 }
 
-class Iframe extends Component {
-  attrs () {
-    var doc = document.createElement('div');
-    doc.innerHTML = this.props.iframe;
-
-    var iframe = doc.getElementsByTagName('iframe')[0],
-        attributes = {};
-
-    [].slice.call(iframe.attributes).forEach(function (element) {
-        attributes[element.name] = element.value
-    })
-
-    return attributes
-  }
-
-  render () {
-    return (
-      <div>
-        <iframe {...this.attrs()} />
-      </div>
-    )
-  }
-
-}
-
 export default class GradeView extends Component {
   constructor(props) {
     super(props)

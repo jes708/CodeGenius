@@ -21,63 +21,71 @@ import {
   RadioButton,
   RadioButtonGroup
 } from 'material-ui/RadioButton'
-let faker = require( 'faker' );
-// import GraderPanel from './GraderPanel'
+import GradeView from '../GradeView'
 
-const uiState = {
-  display: false
-}
-
+/** fires "selection" event on mouseup */
 export class AnnotationHandler extends Component{
   constructor(){
     super();
-    // let {onMouseUp, onMouseDown, children} = this.props;
-    // this.children = children;
-    this.annotationStyles = {visibility: 'hidden'};
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.state = {
       annotationStyles: {
-        visibility: 'hidden'
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        opacity: 0
       }
     }
   }
   handleMouseUp (e){
-    console.log( window.getSelection() );
-    console.log( e );
-    console.log( e.clientX, e.clientY );
-    this.setState({annotationStyles: {visibility: 'visible'}});
+    let selection = window.getSelection()
+    this.setState({
+      annotationStyles: {
+        left: e.clientX - 25,
+        top: e.clientY - 45,
+        position: 'absolute',
+        transition: 'opacity 500ms ease-in',
+        opacity: 1
+      },
+      selection: selection,
+      selectionString: selection.toString()
+    });
+    window.dispatchEvent(new CustomEvent( 'selection', {detail: selection.toString()} ))
   }
   handleMouseDown (e){
-    console.log('mousedown');
-    this.setState({annotationStyles: {visibility: 'hidden'}});
+    let annotationState = this.state.annotationStyles;
+    annotationState.opacity = 0;
+    this.setState({
+      annotationStyles: annotationState
+    });
   }
   render (){
     return (
       <div>
         <div onMouseUp={this.handleMouseUp} onMouseDown={this.handleMouseDown}>
-        {this.props.children}
+          {this.props.children}
         </div>
-        <div style={this.state.annotationStyles} >
-          <AnnotateContextMenu >
-          </AnnotateContextMenu>
-        </div>
+          <div style={this.state.annotationStyles} >
+            <AnnotateContextMenu selection={this.state.selection}>
+            </AnnotateContextMenu>
+          </div>
+        <pre>
+          { this.state.selectionString || 'no selection to speak of...'}
+        </pre>
       </div>
     )
   }
 }
 
+/** fires 'annotation' event on click with selection detail information */
 export default class AnnotateContextMenu extends Component {
   constructor() {
     super();
     this.annotate = this.annotate.bind( this );
-    // this.buttonStyle = {visibility: 'collapse'}
   }
   annotate( e ) {
-    console.log( e );
-    console.log( 'view:', e.view );
-    console.log( 'bubbles:', e.bubbles );
-    console.log( 'selection:', window.getSelection() );
+    window.dispatchEvent(new CustomEvent( 'annotation', {detail: this.props.selection} ))
   }
   render() {
     return (
@@ -108,17 +116,13 @@ export class TestAnnotate extends Component {
 export class AnnotationWrapperTest extends Component {
   constructor() {
     super();
+    window.addEventListener('annotation', e=>console.log('annotation happened\n', e.detail))
+    window.addEventListener('selection', e=>console.log('selection happened\n', e.detail))
   }
   render() {
     return (
-      <div>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <p> hey hey hey hey hey  </p>
-      </div>
+      <GradeView>
+      </GradeView>
     )
   }
 }

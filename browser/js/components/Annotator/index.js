@@ -4,12 +4,8 @@ import React, {
   Component,
   PropTypes
 } from 'react'
-import {
-  PrismCode
-} from 'react-prism'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
-import Paper from 'material-ui/Paper'
 import FontIcon from 'material-ui/FontIcon'
 import {
   Card,
@@ -32,8 +28,8 @@ export class AnnotationHandler extends Component{
     this.state = {
       annotationStyles: {
         position: 'absolute',
-        left: 0,
-        top: 0,
+        left: -50,
+        top: -50,
         opacity: 0
       }
     }
@@ -43,7 +39,7 @@ export class AnnotationHandler extends Component{
     this.setState({
       annotationStyles: {
         left: e.clientX - 25,
-        top: e.clientY - 45,
+        top: e.clientY - 55,
         position: 'absolute',
         transition: 'opacity 500ms ease-in',
         opacity: 1
@@ -89,9 +85,10 @@ export default class AnnotateContextMenu extends Component {
   }
   render() {
     return (
-        <button onClick={this.annotate} >
-          Annotate
-        </button>
+        <RaisedButton onClick={this.annotate}
+          label='Annotate'
+          icon={<FontIcon className='fa fa-plus' />}
+        />
     )
   }
 }

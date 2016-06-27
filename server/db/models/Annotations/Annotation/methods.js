@@ -5,28 +5,21 @@ var Sequelize = require( 'sequelize' );
 
 /** annotation methods */
 module.exports = {
-  class(db){
+  class: function(db){
     return {
-      test,
-      addAssociations: addAssociations.bind(this, db)
+      addAssociations
     };
   },
-  instance(db){
-    return {
-      test
-    };
+  instance: function(db){
+    return {};
   }
-}
-
-function test(){
-  return true
 }
 
 function addAssociations(db){
   const Annotation = db.models['annotation'];
-  const Location = db.models['location'];
   const User = db.models['user'];
+  const Location = db.models['location'];
 
-  Annotation.belongsToMany(Location);
   Annotation.belongsTo(User, {as: 'creator'})
+  Annotation.belongsTo(Location)
 }

@@ -1,11 +1,13 @@
 'use strict'
 
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import Formsy from 'formsy-react'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 import { FormsyText } from 'formsy-material-ui/lib'
+import { login } from '../../actions'
 
 const styles = {
   form: {
@@ -27,7 +29,7 @@ const styles = {
   }
 }
 
-export default class AuthForm extends Component {
+class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -48,7 +50,8 @@ export default class AuthForm extends Component {
   }
 
   submitForm (data) {
-    alert(JSON.stringify(data, null, 4))
+    alert(JSON.stringify(data))
+    this.props.dispatch(login(data))
   }
 
   renderGitHubButton () {
@@ -159,6 +162,8 @@ export default class AuthForm extends Component {
     )
   }
 }
+
+export default connect()(AuthForm)
 
 // <form id="login-form" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
 

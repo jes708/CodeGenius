@@ -2,10 +2,10 @@
 
 import React from 'react'
 import { Router, Route, IndexRoute, browserHistory } from 'react-router'
-import App from './containers/App'
-import Home from './containers/Home'
-import Grade from './containers/Grade'
-import AuthForm from './shared/AuthForm'
+import App from '../containers/App'
+import Home from '../containers/Home'
+import Grade from '../containers/Grade'
+import AuthForm from '../shared/AuthForm'
 
 const routes = (
   <Router history={browserHistory}>

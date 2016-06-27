@@ -28,26 +28,50 @@ const uiState = {
   display: false
 }
 
-export function AnnotationHandler(props){
-  const {onMouseUp, children} = props;
-  onMouseUp = function(e){
+export class AnnotationHandler extends Component{
+  constructor(){
+    super();
+    // let {onMouseUp, onMouseDown, children} = this.props;
+    // this.children = children;
+    this.annotationStyles = {visibility: 'hidden'};
+    this.handleMouseUp = this.handleMouseUp.bind(this);
+    this.handleMouseDown = this.handleMouseDown.bind(this);
+    this.state = {
+      annotationStyles: {
+        visibility: 'hidden'
+      }
+    }
+  }
+  handleMouseUp (e){
     console.log( window.getSelection() );
     console.log( e );
     console.log( e.clientX, e.clientY );
+    this.setState({annotationStyles: {visibility: 'visible'}});
   }
-  return (
-    <div onMouseUp={onMouseUp}>
-      {children}
-      <AnnotateContextMenu>
-      </AnnotateContextMenu>
-    </div>
-  )
+  handleMouseDown (e){
+    console.log('mousedown');
+    this.setState({annotationStyles: {visibility: 'hidden'}});
+  }
+  render (){
+    return (
+      <div>
+        <div onMouseUp={this.handleMouseUp} onMouseDown={this.handleMouseDown}>
+        {this.props.children}
+        </div>
+        <div style={this.state.annotationStyles} >
+          <AnnotateContextMenu >
+          </AnnotateContextMenu>
+        </div>
+      </div>
+    )
+  }
 }
 
 export default class AnnotateContextMenu extends Component {
   constructor() {
     super();
     this.annotate = this.annotate.bind( this );
+    // this.buttonStyle = {visibility: 'collapse'}
   }
   annotate( e ) {
     console.log( e );
@@ -57,11 +81,9 @@ export default class AnnotateContextMenu extends Component {
   }
   render() {
     return (
-      <div>
-        <button onClick = {this.annotate} >
+        <button onClick={this.annotate} >
           Annotate
-          </button>
-      </div>
+        </button>
     )
   }
 }

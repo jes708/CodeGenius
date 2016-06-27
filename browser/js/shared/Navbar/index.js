@@ -21,20 +21,16 @@ const styles = {
   }
 }
 
-export default class Navbar extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      items: [
-        { label: 'Home', path: '/' },
-        { label: 'Grade', path: 'grade' },
-        { label: 'Members Only', path: 'membersOnly', auth: true }
-      ]
-    }
-  }
+const NAV_ITEMS = [
+  { label: 'Home', path: '/' },
+  { label: 'Grade', path: 'grade' },
+  { label: 'Members Only', path: 'membersOnly', auth: true }
+]
 
+
+export default class Navbar extends Component {
   renderNavItems () {
-    return this.state.items.map((item, i) => {
+    return NAV_ITEMS.map((item, i) => {
       if (!item.auth) {
         return (
           <FlatButton
@@ -74,20 +70,3 @@ export default class Navbar extends Component {
     )
   }
 }
-
-      // <nav className="navbar navbar-static-top">
-      //   <div className="container">
-      //     <div className="navbar-header">
-      //       <img className='fullstack-logo' src="img/icon.png" />
-      //     </div>
-      //     <ul className="nav navbar-nav">
-      //       {this.renderNavItems()}
-      //     </ul>
-      //     <Link to='signup' className="btn login-button">Sign Up</Link>
-      //     <Link to='login' className="btn login-button">Login</Link>
-      //   </div>
-      // </nav>
-// <img className='fullstack-logo' src="https://jlau-bucket-1.s3.amazonaws.com/uploads/topic/image/42/fullstack.png" />
-Navbar.propTypes = {
-}
-

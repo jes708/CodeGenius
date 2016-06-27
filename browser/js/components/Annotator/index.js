@@ -17,7 +17,7 @@ import {
   RadioButton,
   RadioButtonGroup
 } from 'material-ui/RadioButton'
-import GradeView from '../GradeView'
+import GradeView from '../../containers/Grade'
 
 /** fires "selection" event on mouseup */
 export class AnnotationHandler extends Component{

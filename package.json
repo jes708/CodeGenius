@@ -72,6 +72,8 @@
     "webpack": "^1.13.1"
   },
   "devDependencies": {
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-stage-0": "^6.5.0",
     "chai": "^2.1.0",
     "chai-as-promised": "^5.3.0",
     "css-loader": "^0.23.1",
@@ -87,6 +89,6 @@
     "sinon": "^1.13.0",
     "style-loader": "^0.13.1",
     "supertest": "^0.15.0",
-    "supertest-as-promised": "^3.1.0"   
+    "supertest-as-promised": "^3.1.0"
   }
 }

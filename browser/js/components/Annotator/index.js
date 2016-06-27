@@ -17,7 +17,8 @@ import {
   RadioButton,
   RadioButtonGroup
 } from 'material-ui/RadioButton'
-import GradeView from '../../containers/Grade'
+import {GradeRepl as GradeRepl} from '../../containers/Grade'
+const _ = require('lodash');
 
 /** fires "selection" event on mouseup */
 export class AnnotationHandler extends Component{
@@ -36,21 +37,23 @@ export class AnnotationHandler extends Component{
   }
   handleMouseUp (e){
     let selection = window.getSelection()
-    this.setState({
-      annotationStyles: {
-        left: e.clientX - 25,
-        top: e.clientY - 55,
-        position: 'absolute',
-        transition: 'opacity 500ms ease-in',
-        opacity: 1
-      },
-      selection: selection,
-      selectionString: selection.toString()
-    });
-    window.dispatchEvent(new CustomEvent( 'selection', {detail: selection.toString()} ))
+    if(selection.type == 'Range'){
+      this.setState({
+        annotationStyles: {
+          left: e.clientX - 25,
+          top: e.clientY - 55,
+          position: 'absolute',
+          transition: 'opacity 500ms ease-in',
+          opacity: 1
+        },
+        selection: selection,
+        selectionString: selection.toString()
+      });
+      window.dispatchEvent(new CustomEvent( 'selection', {detail: selection.toString()} ))
+    }
   }
   handleMouseDown (e){
-    let annotationState = this.state.annotationStyles;
+    let annotationState = _.cloneDeep(this.state.annotationStyles);
     annotationState.opacity = 0;
     this.setState({
       annotationStyles: annotationState
@@ -118,8 +121,8 @@ export class AnnotationWrapperTest extends Component {
   }
   render() {
     return (
-      <GradeView>
-      </GradeView>
+      <GradeRepl>
+      </GradeRepl>
     )
   }
 }

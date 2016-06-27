@@ -31,7 +31,7 @@ const styles = {
   }
 }
 
-export default class GradeView extends Component {
+export class GradeRepl extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -39,7 +39,6 @@ export default class GradeView extends Component {
       content: ''
     }
   }
-
   getData () {
     fetch('https://raw.githubusercontent.com/jes708/assessment-express-sequelize/master/models/article.js?token=AFJQ-XVgFA056_WGPpBVtQs2M3cBe_Tyks5XeLBfwA%3D%3D')
     .then(res => res.text())
@@ -51,9 +50,33 @@ export default class GradeView extends Component {
     })
     .catch(() => new Error('Error while fetching data'))
   }
-
   componentDidMount() {
     this.getData()
+  }
+  render(){
+    return this.state.isLoading ? (<h1>Loading!</h1>) : (
+      <div className='col-lg-8'>
+        <Paper zDepth={2} style={styles.paperStyle}>
+          <div style={styles.content}>
+            <h2 style={styles.skinny}>/models/article.js</h2>
+            <pre className='line-numbers language-javascript'>
+              <PrismCode className='language-javascript'>
+                {this.state.content}
+              </PrismCode>
+            </pre>
+          </div>
+        </Paper>
+      </div>
+    )
+  }
+}
+
+export default class GradeView extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLoading: false
+    }
   }
 
   render () {
@@ -62,18 +85,7 @@ export default class GradeView extends Component {
     } else {
       return (
         <div className='row' style={styles.row}>
-          <div className='col-lg-8'>
-            <Paper zDepth={2} style={styles.paperStyle}>
-              <div style={styles.content}>
-                <h2 style={styles.skinny}>/models/article.js</h2>
-                <pre className='line-numbers language-javascript'>
-                  <PrismCode className='language-javascript'>
-                    {this.state.content}
-                  </PrismCode>
-                </pre>
-              </div>
-            </Paper>
-          </div>
+          <GradeRepl />
           <div className='col-lg-4'>
             <Paper zDepth={2} style={styles.paperStyle}>
               <GraderPanel />

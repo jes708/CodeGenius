@@ -17,6 +17,10 @@ var logMiddleware = function (req, res, next) {
     next();
 };
 
+global.paths = {
+  routerUtils: path.join( __dirname, '../routes/utils.js' )
+}
+
 module.exports = function (app) {
     app.setValue('env', env);
     app.setValue('projectRoot', rootPath);

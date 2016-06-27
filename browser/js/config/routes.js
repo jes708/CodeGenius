@@ -6,6 +6,7 @@ import Main from '../components/Main'
 import Home from '../components/Home'
 import GradeView from '../components/GradeView'
 import AuthForm from '../components/shared/AuthForm'
+import GradeMain from '../components/shared/GradeMain'
 
 
 const routes = (
@@ -13,7 +14,7 @@ const routes = (
     <Route path='/' component={Main}>
       <IndexRoute component={Home} />
       <Route path='/home' component={Home} />
-      <Route path='grade' component={GradeView} />
+      <Route path='grade' component={GradeMain} />
       <Route path='login' component={AuthForm} />
       <Route path='signup' component={AuthForm} />
     </Route>

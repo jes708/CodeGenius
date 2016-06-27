@@ -11,7 +11,11 @@ module.exports = function (db) {
 
     // Routes that will be accessed via AJAX should be prepended with
     // /api so they are isolated from our GET /* wildcard.
-    app.use('/', require('./routes/'));
+    app.use('/api', require('./routes/'));
+
+    app.get('/*', function (req, res) {
+        res.sendFile(app.get('indexHTMLPath'));
+    });
 
     /*
      This middleware will catch any URLs resembling a file extension
@@ -29,9 +33,7 @@ module.exports = function (db) {
 
     });
 
-    app.get('/*', function (req, res) {
-        res.sendFile(app.get('indexHTMLPath'));
-    });
+
 
     // Error catching endware.
     app.use(function (err, req, res, next) {

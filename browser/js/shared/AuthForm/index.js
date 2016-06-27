@@ -8,6 +8,7 @@ import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 import { FormsyText } from 'formsy-material-ui/lib'
 import { login } from '../../actions'
+import GitHubButton from '../GitHubButton'
 
 const styles = {
   form: {
@@ -50,29 +51,14 @@ class AuthForm extends Component {
   }
 
   submitForm (data) {
-    alert(JSON.stringify(data))
     this.props.dispatch(login(data))
-  }
-
-  renderGitHubButton () {
-    return (
-      <div style={styles.fullWidth}>
-        <RaisedButton
-          label="Sign Up with Github"
-          linkButton={true}
-          href='/auth/github'
-          primary={true}
-          style={styles.fullWidth}
-          icon={<FontIcon className="fa fa-github" />}
-        />
-      </div>
-    )
+    this.context.router.push('/grade')
   }
 
   renderLoginForm () {
     return (
       <Paper style={styles.paperStyle}>
-        {this.renderGitHubButton()}
+        <GitHubButton href='/auth/github' />
         <Formsy.Form
           onValid={this.enableButton.bind(this)}
           onInValid={this.disableButton.bind(this)}
@@ -107,7 +93,7 @@ class AuthForm extends Component {
   renderSignupForm () {
     return (
       <Paper style={styles.paperStyle}>
-        {this.renderGitHubButton()}
+        <GitHubButton href='/auth/github' />
         <Formsy.Form
           onValid={this.enableButton.bind(this)}
           onInValid={this.disableButton.bind(this)}
@@ -161,6 +147,10 @@ class AuthForm extends Component {
       </div>
     )
   }
+}
+
+AuthForm.contextTypes = {
+  router: PropTypes.object.isRequired
 }
 
 export default connect()(AuthForm)

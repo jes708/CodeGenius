@@ -2,6 +2,7 @@
 
 import fetch from 'isomorphic-fetch'
 import { combineReducers } from 'redux'
+import { routerReducer } from 'react-router-redux'
 import {
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGOUT_SUCCESS,
@@ -15,7 +16,7 @@ const session_initialState = {
   user: null
 }
 
-function sessionReducer (state = session_initialState, action) {
+function session (state = session_initialState, action) {
   switch (action.type) {
     case AUTH_LOGIN_SUCCESS:
       return Object.assign({}, state, {
@@ -36,7 +37,8 @@ function sessionReducer (state = session_initialState, action) {
 }
 
 const rootReducer = combineReducers({
-  sessionReducer
+  session,
+  routing: routerReducer
 })
 
 export default rootReducer

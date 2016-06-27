@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { Component, PropTypes } from 'react'
+import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -44,6 +45,26 @@ export default class Navbar extends Component {
     })
   }
 
+  renderAuthButtons () {
+    return (
+      <ToolbarGroup style={styles.rightSide}>
+        <RaisedButton
+          label="Login"
+          primary={true}
+          linkButton={true}
+          containerElement={<Link to='login' />}
+        />
+        <RaisedButton
+          label="Sign Up"
+          secondary={true}
+          linkButton={true}
+          containerElement={<Link to='signup' />}
+          style={styles.shrinkMarginLeft}
+        />
+      </ToolbarGroup>
+    )
+  }
+
   render () {
     return (
       <Toolbar>
@@ -51,21 +72,7 @@ export default class Navbar extends Component {
           <ToolbarTitle text='CodeGenius' style={styles.growMarginRight} />
           {this.renderNavItems()}
         </ToolbarGroup>
-        <ToolbarGroup style={styles.rightSide}>
-          <RaisedButton
-            label="Login"
-            primary={true}
-            linkButton={true}
-            containerElement={<Link to='login' />}
-          />
-          <RaisedButton
-            label="Sign Up"
-            secondary={true}
-            linkButton={true}
-            containerElement={<Link to='signup' />}
-            style={styles.shrinkMarginLeft}
-          />
-        </ToolbarGroup>
+        {this.renderAuthButtons()}
       </Toolbar>
     )
   }

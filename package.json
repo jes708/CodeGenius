@@ -87,6 +87,6 @@
     "sinon": "^1.13.0",
     "style-loader": "^0.13.1",
     "supertest": "^0.15.0",
-    "supertest-as-promised": "^3.1.0"   
+    "supertest-as-promised": "^3.1.0"
   }
 }

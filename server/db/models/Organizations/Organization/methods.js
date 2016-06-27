@@ -22,4 +22,5 @@ function addAssociations(db){
   const UserOrganization = db.models['userOrganization'];
 
   Organization.belongsToMany(User, {through: UserOrganization});
+  Organization.hasMany(Team);
 }

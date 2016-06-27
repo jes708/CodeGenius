@@ -106,14 +106,12 @@ describe( 'utils.', function () {
 
   describe( 'respondWith404', function () {
     it( "responds with 404", function () {
-      console.log( '**0' )
       var testApp = fakeApp();
       var testRouter = require( 'express' )
         .Router();
       respondWith404( testRouter );
       testApp.use( '/', testRouter );
       var testAgent = createAgent( testApp );
-      console.log( '**1' )
       return serverPromise( testApp, 3000 )
         .then( () => testAgent.get( '/' ) )
         .then( response => response.status.should.equal( 404 ) )

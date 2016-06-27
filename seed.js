@@ -1,57 +1,237 @@
-/*
+'use strict';
 
-This seed file is only a placeholder. It should be expanded and altered
-to fit the development of your application.
+/**
+ * run with node seed.js
+ */
 
-It uses the same file the server uses to establish
-the database connection:
---- server/db/index.js
+// dependencies
+var chalk = require( 'chalk' );
+var db = require( './server/db' );
+var Promise = require( 'sequelize' )
+  .Promise;
+const faker = require( 'faker' );
+const utils = require( './server/app/routes/utils' );
+const {
+  Credentials
+} = utils;
+const Sequelize = require( 'sequelize' );
 
-The name of the database used is set in your environment files:
---- server/env/*
+// binding to the models
+const models = db.models;
+const {
+  user: User,
+  organization: Organization,
+  userOrganization: UserOrganization,
+  userTeam: UserTeam,
+  team: Team,
+  annotation: Annotation,
+  location: Location,
+  template: Template,
+  assessment: Assessment,
+  criterionResponse: CriterionResponse,
+  question: Question,
+  questionResponse: QuestionResponse,
+  rubric: Rubric,
+  studentTest: StudentTest
+} = models
 
-This seed file has a safety check to see if you already have users
-in the database. If you are developing multiple applications with the
-fsg scaffolding, keep in mind that fsg always uses the same database
-name in the environment files.
 
-*/
+// console.log(models);
+// const User = db.models[ 'user' ];
+// const Organization = db.models[ 'organization' ];
+// const UserOrganization = db.models[ 'userOrganization' ];
 
-var chalk = require('chalk');
-var db = require('./server/db');
-var User = db.model('user');
-var Promise = require('sequelize').Promise;
+function createRandomCredentials( username, password, email ) {
+  let credentials = new Credentials(
+    username || faker.random.word(),
+    password || 'password',
+    faker.internet.exampleEmail()
+  )
+  credentials.username = credentials.username.replace( /\W/g, '' )
+    .toLowerCase()
+  credentials.photo = faker.internet.avatar();
+  credentials.name = faker.name.findName();
+  return credentials;
+}
 
-var seedUsers = function () {
+function randomN( n ) {
+  return Math.ceil( Math.random() * n )
+}
 
-    var users = [
-        {
-            email: 'testing@fsa.com',
-            password: 'password'
-        },
-        {
-            email: 'obama@gmail.com',
-            password: 'potus'
-        }
-    ];
-
-    var creatingUsers = users.map(function (userObj) {
-        return User.create(userObj);
-    });
-
-    return Promise.all(creatingUsers);
-
+//seed methods
+/** seeds a random number of users 1-100 */
+const seedUsers = function ( n = 100 )  {
+  n = randomN(n);
+  let instructors = Array
+    .from( {
+      length: n
+    }, credentials => createRandomCredentials() );
+  let Omri = new Credentials(
+    'omriBear',
+    'password',
+    'testing@fsa.com'
+  );
+  Omri.isAdmin = true;
+  instructors.push( Omri );
+  let creatingInstructors = instructors.map( function ( instructorObj ) {
+    return User.create( instructorObj );
+  } );
+  return Promise.all( creatingInstructors );
 };
 
-db.sync({ force: true })
-    .then(function () {
-        return seedUsers();
-    })
-    .then(function () {
-        console.log(chalk.green('Seed successful!'));
-        process.exit(0);
-    })
-    .catch(function (err) {
-        console.error(err);
-        process.exit(1);
-    });
+/** seeds up to n organizations */
+const seedOrganizations = function ( n = 100 )  {
+  n = randomN(n);
+  let organizations = User.findAll( {
+      limit: n
+    } )
+    .map( user => {
+      let name = faker.company.companyName();
+      return user.createOrganization( {
+        name
+      }, {
+        role: 'creator'
+      } )
+    } )
+  return Promise.all( organizations );
+}
+
+const seedTeams = function ( n = 100 )  {
+  n = randomN(n)
+  let teams = Organization.findAll( {
+      include: [ {
+        model: User
+      } ]
+    } )
+    .map( organization => [
+      organization,
+      organization.users[ 0 ],
+      faker.helpers.shuffle( faker.commerce.productName()
+        .split( ' ' ) )
+      .join( '' )
+    ] )
+    .map( result => {
+      let [ organization, user, name ] = result;
+      return user.createTeam( {
+          name,
+          creatorId: user.id
+        }, {
+          role: 'instructor',
+        } )
+        .then( team => team.setOrganization( organization ) )
+    } )
+  return Promise.all( teams );
+}
+
+let seedAssessments = function () {
+  let assessments = User.findAll( {
+      include: [ Team ]
+    } )
+    .map( instructor => {
+      if ( !instructor.teams[ 0 ] ) return
+      let name = faker.lorem.words( randomN(20)  );
+      let description = faker.lorem.paragraph();
+      let tags = faker.random.words( randomN(10)  )
+        .toLowerCase()
+        .split( ' ' );
+      let repoUrl = faker.internet.url();
+      let instructorId = instructor.id;
+      let team = instructor.teams[ 0 ].userTeam;
+      let teamId = team.id;
+      return Assessment.create( {
+        name,
+        description,
+        tags,
+        repoUrl,
+        instructorId,
+        teamId
+      } )
+    } )
+  return Promise.all( assessments );
+}
+
+let seedQuestions = function ( n = 20 ) {
+  let questions = Assessment.findAll()
+    .map( assessment => {
+      let questions = Array.from( {
+        length: randomN(n)
+      }, question => {
+        let prompt = faker.lorem.words( randomN(20)  );
+        let answer = faker.lorem.words( randomN(20)  );
+        let assessmentId = assessment.id;
+        return {
+          prompt,
+          answer,
+          assessmentId
+        };
+      } )
+      return Question.bulkCreate( questions );
+    } )
+  return Promise.all( questions );
+}
+
+let seedRubrics = function ( n = 20 ) {
+  console.log( 'seeding rubrics' );
+  let rubrics = Question.findAll()
+    .map( question => {
+      let N = randomN( n );
+      let rubrics = Array.from( {
+        length: N
+      }, rubric => {
+        let criterion = faker.lorem.words( randomN(20) );
+        let points = randomN( 10 );
+        let questionId = question.id;
+        return {
+          criterion,
+          points,
+          questionId
+        };
+      } )
+      return Rubric.bulkCreate( rubrics );
+    } )
+  console.log( 'here come the rubrics' );
+  return Promise.all( rubrics );
+}
+
+let seedStudents = function ( n = 20 ) {
+  console.log( 'seeding students' );
+  let students = Promise.all(Array.from( {
+            length: randomN( n )
+          },
+          student => User.create(createRandomCredentials()))
+     ).then( students => Team.findAll().each( team => {
+    for(let i = 0; i< randomN(6); i++){
+      let studentToAdd = faker.random.arrayElement(students);
+      team.addStudent( studentToAdd, {role: 'student'});
+    }
+  }))
+  return Promise.all( students );
+}
+
+// let seedTests = function( n=2) {
+//   return Assessment.findAll().map(
+//     assessment => assessment.
+//   )
+// }
+
+//execution
+db.sync( {
+    force: true
+  } )
+  .then( () => seedUsers() )
+  .then( () => seedOrganizations() )
+  .then( () => seedTeams() )
+  .then( () => seedAssessments() )
+  .then( () => seedQuestions() )
+  .then( () => seedStudents() )
+  .then( () => seedRubrics() )
+  // .then( () => seedTests() )
+  // .then( () => seedAnnotations())
+  .then( function () {
+    console.log( chalk.green( 'Seed successful!' ) );
+    process.exit( 0 );
+  } )
+  .catch( function ( err ) {
+    console.error( err );
+    process.exit( 1 );
+  } );

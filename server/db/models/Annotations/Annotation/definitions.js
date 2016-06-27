@@ -8,6 +8,9 @@ module.exports = function(db){
     return {
       description: {
         type: Sequelize.STRING
+      },
+      color: {
+        type: Sequelize.STRING
       }
     }
 }

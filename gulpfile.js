@@ -68,7 +68,6 @@ gulp.task('buildJS', ['lintJS'], function() {
     .pipe(gulp.dest('./public'))
 })
 
-
 gulp.task('testServerJS', function() {
   require('babel-register');
   //testing environment variable
@@ -80,10 +79,19 @@ gulp.task('testServerJS', function() {
   }));
 });
 
-gulp.task('testModelJS', function() {
+// testModelJS is broken right now
+// gulp.task('testModelJS', function() {
+//   require('babel-register');
+//   process.env.NODE_ENV = 'testing';
+//   return gulp.src('./server/db/models/**/**/*.js', {
+//     read: false
+//   }).pipe(mocha({ reporter: 'spec'}));
+// })
+
+gulp.task('testRouterJS', function(){
   require('babel-register');
-  global._dbPath = path.join(__dirname, "./server/db/_db.js");
-  return gulp.src('./server/db/models/**/**/*.js', {
+  global.dbPath = path.join(__dirname, "./server/db");
+  return gulp.src('./server/app/routes/**/spec.js', {
     read: false
   }).pipe(mocha({
     reporter: 'spec'

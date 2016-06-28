@@ -6,13 +6,12 @@ import Paper from 'material-ui/Paper';
 import FontIcon from 'material-ui/FontIcon';
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import GraderPanel from '../GraderPanel';
-import GradeView from '../GradeView';
+import GraderPanel from '../../components/GraderPanel';
 import { Toolbar } from 'material-ui/Toolbar';
 import { Tab, Tabs } from 'material-ui/Tabs';
-import GraderAssessments from '../GraderAssessments'
-import GraderStudents from '../GraderStudents'
-import GraderHome from '../GraderHome'
+import GraderAssessments from '../../components/GraderAssessments'
+import GraderStudents from '../../components/GraderStudents'
+import GraderHome from '../../components/GraderHome'
 import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file'
 import ActionHome from 'material-ui/svg-icons/action/home'
 import SocialGroup from 'material-ui/svg-icons/social/group'
@@ -56,7 +55,7 @@ const styles = {
   }
 }
 
-export default class GradeMain extends Component {
+export default class Grade extends Component {
   constructor(props) {
     super(props)
     this.state = {

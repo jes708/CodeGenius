@@ -7,7 +7,8 @@ const routerUse = bindRouterToUse(router);
 
 module.exports = router;
 
-routerUse('/api', './api')
+
+routerUse('/', './api')
 
 // Make sure this is after all of
 // the registered routes!

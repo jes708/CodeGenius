@@ -47,6 +47,9 @@ function addAssociations( db ) {
   const User = db.models[ 'user' ];
   const UserTeam = db.models[ 'userTeam' ];
   const UserOrganization = db.models[ 'userOrganization' ];
+  const Annotation = db.models[ 'annotation' ];
+  const StudentTest = db.models[ 'studentTest' ];
+  const Assessment = db.models[ 'assessment' ];
 
   User.belongsToMany( Team, {
     through: UserTeam
@@ -54,5 +57,8 @@ function addAssociations( db ) {
   User.belongsToMany( Organization, {
     through: UserOrganization
   } );
+  User.hasMany( Annotation, {foreignKey: 'creatorId'} );
+  User.hasMany( StudentTest, {foreignKey: 'creatorId'} );
+  User.hasMany( Assessment, {foreignKey: 'studentId'} );
 
 }

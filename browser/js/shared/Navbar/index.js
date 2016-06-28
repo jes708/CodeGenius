@@ -7,7 +7,7 @@ import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
-import { logout, getLoggedInUser } from '../../actions'
+import { logout, getLoggedInUser } from '../../actions/authActions'
 
 const styles = {
   shrinkMarginLeft: {

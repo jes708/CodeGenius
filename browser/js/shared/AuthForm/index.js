@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 import { FormsyText } from 'formsy-material-ui/lib'
-import { login } from '../../actions'
+import { login } from '../../actions/authActions'
 import GitHubButton from '../GitHubButton'
 
 const styles = {
@@ -174,20 +174,3 @@ const mapStateToProps = state => {
 }
 
 export default connect(mapStateToProps)(AuthForm)
-
-// <form id="login-form" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
-
-//     <alert type="danger" ng-show="error">
-//         {{ error }}
-//     </alert>
-
-//     <div class="form-group">
-//         <label for="email">Email address</label>
-//         <input type="text" ng-model="login.email" class="form-control" id="email" placeholder="Enter email">
-//     </div>
-//     <div class="form-group">
-//         <label for="login-password">Password</label>
-//         <input type="password" ng-model="login.password" class="form-control" id="login-password" placeholder="Password">
-//     </div>
-//     <button type="submit" class="btn btn-default">Submit</button>
-// </form>

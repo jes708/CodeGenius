@@ -11,6 +11,11 @@ import GradeView from '../GradeView';
 import { Toolbar } from 'material-ui/Toolbar';
 import { Tab, Tabs } from 'material-ui/Tabs';
 import Assessments from '../Assessments'
+import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file'
+import ActionHome from 'material-ui/svg-icons/action/home'
+import SocialGroup from 'material-ui/svg-icons/social/group'
+import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in'
+
 
 const styles = {
   paperStyle: {
@@ -88,10 +93,14 @@ export default class GradeMain extends Component {
   render () {
     let switcher = () => {
       switch (this.state.current) {
-        case 'GraderPanel':
-          return <GraderPanel />;
+        case 'Home':
+          return <Assessments />;
         case 'Assessments':
           return <Assessments />;
+        case 'Students':
+          return <Assessments />;
+        case 'GraderPanel':
+          return <GraderPanel />;
       }
     }
     if (this.state.isLoading) {
@@ -115,11 +124,19 @@ export default class GradeMain extends Component {
             <Paper style={styles.panelStyle}>
               <Tabs zDepth={3} style={styles.menu}>
                 <Tab
-                  label='Assessments'
+                  icon={<ActionHome />}
+                  onClick={this.handleClick.bind(this, "Home")}
+                />
+                <Tab
+                  icon={<EditorInsertDriveFile />}
                   onClick={this.handleClick.bind(this, "Assessments")}
                 />
                 <Tab
-                  label='GraderPanel'
+                  icon={<SocialGroup />}
+                  onClick={this.handleClick.bind(this, "Students")}
+                />
+                <Tab
+                  icon={<ActionAssignmentTurnedIn />}
                   onClick={this.handleClick.bind(this, "GraderPanel")}
                 />
               </Tabs>

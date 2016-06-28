@@ -2,7 +2,7 @@
 
 import sessionReducer from './sessionReducer'
 import annotationReducer from '../components/Annotator/reducer'
-import {TestReducer} from '../components/TestComponent'
+import {TestReducer} from '../components/test/TestComponent'
 
 import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'

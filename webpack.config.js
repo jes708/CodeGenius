@@ -14,7 +14,7 @@ module.exports = {
   },
   module: {
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: { presents: ['es2015', 'react']} },
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ['react', 'es2015']} },
       {
         test: /\.s?css$/,
         loader: ExtractTextPlugin.extract('style?sourceMap', 'css!sass?sourceMap')

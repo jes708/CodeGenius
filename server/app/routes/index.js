@@ -7,7 +7,6 @@ const routerUse = bindRouterToUse(router);
 
 module.exports = router;
 
-
 routerUse('/api', './api')
 
 // Make sure this is after all of

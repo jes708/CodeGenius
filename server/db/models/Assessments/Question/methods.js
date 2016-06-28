@@ -18,6 +18,8 @@ module.exports = {
 function addAssociations(db){
   const Assessment = db.models['assessment'];
   const Question = db.models['question'];
+  const Rubric = db.models['rubric'];
 
-  Question.belongsTo(Assessment)
+  Question.belongsTo(Assessment);
+  Question.hasMany(Rubric);
 }

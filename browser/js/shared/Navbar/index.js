@@ -1,10 +1,13 @@
 'use strict'
 
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
+import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
+import { logout, getLoggedInUser } from '../../actions/authActions'
 
 const styles = {
   shrinkMarginLeft: {
@@ -27,8 +30,36 @@ const NAV_ITEMS = [
   { label: 'Members Only', path: 'membersOnly', auth: true }
 ]
 
+class Navbar extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      user: this.props.user
+    }
+  }
 
-export default class Navbar extends Component {
+  componentWillMount () {
+    this.props.dispatch(getLoggedInUser())
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.user) {
+      this.setState({
+        user: nextProps.user
+      })
+      this.context.router.push('/grade')
+    } else {
+      this.setState({
+        user: null
+      })
+    }
+  }
+
+  handleLogout () {
+    this.props.dispatch(logout())
+    this.context.router.push('/login')
+  }
+
   renderNavItems () {
     return NAV_ITEMS.map((item, i) => {
       if (!item.auth) {
@@ -44,13 +75,21 @@ export default class Navbar extends Component {
     })
   }
 
-  render () {
-    return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarTitle text='CodeGenius' style={styles.growMarginRight} />
-          {this.renderNavItems()}
+  renderAuthButtons () {
+    if (this.state.user) {
+      return (
+        <ToolbarGroup style={styles.rightSide}>
+          <ToolbarTitle text={`Hello, ${this.state.user.username}!`} />
+          <RaisedButton
+            label="Logout"
+            primary={true}
+            linkButton={true}
+            onClick={this.handleLogout.bind(this)}
+          />
         </ToolbarGroup>
+      )
+    } else {
+      return (
         <ToolbarGroup style={styles.rightSide}>
           <RaisedButton
             label="Login"
@@ -66,7 +105,32 @@ export default class Navbar extends Component {
             style={styles.shrinkMarginLeft}
           />
         </ToolbarGroup>
+      )
+    }
+  }
+
+  render () {
+    return (
+      <Toolbar>
+        <ToolbarGroup>
+          <ToolbarTitle text='CodeGenius' style={styles.growMarginRight} />
+          {this.renderNavItems()}
+        </ToolbarGroup>
+        {this.renderAuthButtons()}
       </Toolbar>
     )
   }
 }
+
+Navbar.contextTypes = {
+  router: PropTypes.object.isRequired
+}
+
+const mapStateToProps = state => {
+  const { session } = state
+  return {
+    user: session.user
+  }
+}
+
+export default connect(mapStateToProps)(Navbar)

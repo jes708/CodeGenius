@@ -10,8 +10,6 @@ module.exports = router;
 
 routerUse('/', './api')
 
-
-
 // Make sure this is after all of
 // the registered routes!
 respondWith404(router);

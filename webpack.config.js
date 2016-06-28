@@ -3,7 +3,7 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
-  devtool: 'eval-source-map',
+  devtool: 'cheap-source-map',
   entry: ['./browser/js/app.js', './browser/scss/main.scss'],
   output: {
     path: __dirname + '/public',
@@ -15,6 +15,7 @@ module.exports = {
   module: {
     loaders: [
       { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
+      { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.s?css$/,
         loader: ExtractTextPlugin.extract('style?sourceMap', 'css!sass?sourceMap')

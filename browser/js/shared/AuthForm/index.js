@@ -55,11 +55,22 @@ class AuthForm extends Component {
     this.props.dispatch(login(data))
   }
 
+  resetForm () {
+    this.refs.form.reset()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (!nextProps.user) {
+      this.resetForm()
+    }
+  }
+
   renderLoginForm () {
     return (
       <Paper style={styles.paperStyle}>
-        <GitHubButton href='/auth/github' />
+        <GitHubButton href='/auth/github' label='Sign In with GitHub' />
         <Formsy.Form
+          ref='form'
           onValid={this.enableButton.bind(this)}
           onInValid={this.disableButton.bind(this)}
           onValidSubmit={this.submitForm.bind(this)}>
@@ -95,6 +106,7 @@ class AuthForm extends Component {
       <Paper style={styles.paperStyle}>
         <GitHubButton href='/auth/github' />
         <Formsy.Form
+          ref='form'
           onValid={this.enableButton.bind(this)}
           onInValid={this.disableButton.bind(this)}
           onValidSubmit={this.submitForm.bind(this)}>

@@ -7,6 +7,7 @@ import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
+import { logout, getLoggedInUser } from '../../actions'
 
 const styles = {
   shrinkMarginLeft: {
@@ -33,15 +34,30 @@ class Navbar extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      user: null
+      user: this.props.user
     }
+  }
+
+  componentWillMount () {
+    this.props.dispatch(getLoggedInUser())
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.user) {
-      console.log('from Navbar')
-      console.log(nextProps.user)
+      this.setState({
+        user: nextProps.user
+      })
+      this.context.router.push('/grade')
+    } else {
+      this.setState({
+        user: null
+      })
     }
+  }
+
+  handleLogout () {
+    this.props.dispatch(logout())
+    this.context.router.push('/login')
   }
 
   renderNavItems () {
@@ -60,23 +76,37 @@ class Navbar extends Component {
   }
 
   renderAuthButtons () {
-    return (
-      <ToolbarGroup style={styles.rightSide}>
-        <RaisedButton
-          label="Login"
-          primary={true}
-          linkButton={true}
-          containerElement={<Link to='login' />}
-        />
-        <RaisedButton
-          label="Sign Up"
-          secondary={true}
-          linkButton={true}
-          containerElement={<Link to='signup' />}
-          style={styles.shrinkMarginLeft}
-        />
-      </ToolbarGroup>
-    )
+    if (this.state.user) {
+      return (
+        <ToolbarGroup style={styles.rightSide}>
+          <ToolbarTitle text={`Hello, ${this.state.user.username}!`} />
+          <RaisedButton
+            label="Logout"
+            primary={true}
+            linkButton={true}
+            onClick={this.handleLogout.bind(this)}
+          />
+        </ToolbarGroup>
+      )
+    } else {
+      return (
+        <ToolbarGroup style={styles.rightSide}>
+          <RaisedButton
+            label="Login"
+            primary={true}
+            linkButton={true}
+            containerElement={<Link to='login' />}
+          />
+          <RaisedButton
+            label="Sign Up"
+            secondary={true}
+            linkButton={true}
+            containerElement={<Link to='signup' />}
+            style={styles.shrinkMarginLeft}
+          />
+        </ToolbarGroup>
+      )
+    }
   }
 
   render () {
@@ -90,6 +120,10 @@ class Navbar extends Component {
       </Toolbar>
     )
   }
+}
+
+Navbar.contextTypes = {
+  router: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => {

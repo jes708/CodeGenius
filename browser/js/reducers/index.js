@@ -8,7 +8,8 @@ import {
   AUTH_LOGOUT_SUCCESS,
   AUTH_LOGIN_FAILURE,
   AUTH_NOT_AUTHENTICATED,
-  AUTH_SESSION_TIMEOUT
+  AUTH_SESSION_TIMEOUT,
+  RECEIVED_LOGGED_IN_USER
 } from '../actions'
 
 const session_initialState = {
@@ -18,6 +19,7 @@ const session_initialState = {
 
 function session (state = session_initialState, action) {
   switch (action.type) {
+    case RECEIVED_LOGGED_IN_USER:
     case AUTH_LOGIN_SUCCESS:
       return Object.assign({}, state, {
         id: action.id,

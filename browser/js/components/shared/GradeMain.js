@@ -10,7 +10,9 @@ import GraderPanel from '../GraderPanel';
 import GradeView from '../GradeView';
 import { Toolbar } from 'material-ui/Toolbar';
 import { Tab, Tabs } from 'material-ui/Tabs';
-import Assessments from '../Assessments'
+import GraderAssessments from '../GraderAssessments'
+import GraderStudents from '../GraderStudents'
+import GraderHome from '../GraderHome'
 import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file'
 import ActionHome from 'material-ui/svg-icons/action/home'
 import SocialGroup from 'material-ui/svg-icons/social/group'
@@ -60,7 +62,7 @@ export default class GradeMain extends Component {
     this.state = {
       isLoading: true,
       content: '',
-      current: 'GraderPanel'
+      current: 'Home'
     }
   }
 
@@ -94,12 +96,12 @@ export default class GradeMain extends Component {
     let switcher = () => {
       switch (this.state.current) {
         case 'Home':
-          return <Assessments />;
+          return <GraderHome />;
         case 'Assessments':
-          return <Assessments />;
+          return <GraderAssessments />;
         case 'Students':
-          return <Assessments />;
-        case 'GraderPanel':
+          return <GraderStudents />;
+        case 'Panel':
           return <GraderPanel />;
       }
     }
@@ -137,7 +139,7 @@ export default class GradeMain extends Component {
                 />
                 <Tab
                   icon={<ActionAssignmentTurnedIn />}
-                  onClick={this.handleClick.bind(this, "GraderPanel")}
+                  onClick={this.handleClick.bind(this, "Panel")}
                 />
               </Tabs>
               <div style={styles.panel}>

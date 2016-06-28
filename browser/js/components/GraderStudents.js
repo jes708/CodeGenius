@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { Component, PropTypes } from 'react'
+import axios from 'axios';
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
@@ -59,7 +60,7 @@ const SAMPLE_SPEC = {
   ]
 }
 
-export default class Assessments extends Component {
+export default class GraderStudents extends Component {
 
   render () {
     return (

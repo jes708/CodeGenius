@@ -8,7 +8,7 @@ import Paper from 'material-ui/Paper'
 import FontIcon from 'material-ui/FontIcon'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-import GraderPanel from './GraderPanel'
+import GraderPanel from '../../components/GraderPanel'
 
 const styles = {
   paperStyle: {

@@ -1,6 +1,7 @@
 'use strict'
 
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
@@ -28,8 +29,21 @@ const NAV_ITEMS = [
   { label: 'Members Only', path: 'membersOnly', auth: true }
 ]
 
+class Navbar extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      user: null
+    }
+  }
 
-export default class Navbar extends Component {
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.user) {
+      console.log('from Navbar')
+      console.log(nextProps.user)
+    }
+  }
+
   renderNavItems () {
     return NAV_ITEMS.map((item, i) => {
       if (!item.auth) {
@@ -77,3 +91,12 @@ export default class Navbar extends Component {
     )
   }
 }
+
+const mapStateToProps = state => {
+  const { session } = state
+  return {
+    user: session.user
+  }
+}
+
+export default connect(mapStateToProps)(Navbar)

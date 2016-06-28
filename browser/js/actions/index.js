@@ -45,6 +45,3 @@ export function loginError (err) {
 export function logout () {
   return { type: AUTH_LOGOUT_SUCCESS }
 }
-
-
-

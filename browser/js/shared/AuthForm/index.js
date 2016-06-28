@@ -35,6 +35,7 @@ class AuthForm extends Component {
     super(props)
     this.state = {
       canSubmit: true,
+      user: null
     }
   }
 
@@ -52,7 +53,6 @@ class AuthForm extends Component {
 
   submitForm (data) {
     this.props.dispatch(login(data))
-    this.context.router.push('/grade')
   }
 
   renderLoginForm () {
@@ -143,7 +143,9 @@ class AuthForm extends Component {
 
     return (
       <div style={styles.form}>
-        {form}
+        { this.props.location.pathname === 'login'
+          ? this.renderLoginForm()
+          : this.renderSignupForm() }
       </div>
     )
   }
@@ -153,7 +155,14 @@ AuthForm.contextTypes = {
   router: PropTypes.object.isRequired
 }
 
-export default connect()(AuthForm)
+const mapStateToProps = state => {
+  const { session } = state
+  return {
+    user: session.user
+  }
+}
+
+export default connect(mapStateToProps)(AuthForm)
 
 // <form id="login-form" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
 

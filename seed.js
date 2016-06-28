@@ -60,7 +60,8 @@ function randomN( n ) {
 
 //seed methods
 /** seeds a random number of users 1-100 */
-const seedUsers = function ( n = Math.ceil( Math.random() * 100 ) ) {
+const seedUsers = function ( n = 100 )  {
+  n = randomN(n);
   let instructors = Array
     .from( {
       length: n
@@ -79,7 +80,8 @@ const seedUsers = function ( n = Math.ceil( Math.random() * 100 ) ) {
 };
 
 /** seeds up to n organizations */
-const seedOrganizations = function ( n = Math.ceil( Math.random() * 100 ) ) {
+const seedOrganizations = function ( n = 100 )  {
+  n = randomN(n);
   let organizations = User.findAll( {
       limit: n
     } )
@@ -94,7 +96,8 @@ const seedOrganizations = function ( n = Math.ceil( Math.random() * 100 ) ) {
   return Promise.all( organizations );
 }
 
-const seedTeams = function ( n = Math.ceil( Math.random() * 100 ) ) {
+const seedTeams = function ( n = 100 )  {
+  n = randomN(n)
   let teams = Organization.findAll( {
       include: [ {
         model: User
@@ -126,9 +129,9 @@ let seedAssessments = function () {
     } )
     .map( instructor => {
       if ( !instructor.teams[ 0 ] ) return
-      let name = faker.lorem.words( Math.ceil( Math.random() * 20 ) );
+      let name = faker.lorem.words( randomN(20)  );
       let description = faker.lorem.paragraph();
-      let tags = faker.random.words( Math.ceil( Math.random() * 10 ) )
+      let tags = faker.random.words( randomN(10)  )
         .toLowerCase()
         .split( ' ' );
       let repoUrl = faker.internet.url();
@@ -150,12 +153,11 @@ let seedAssessments = function () {
 let seedQuestions = function ( n = 20 ) {
   let questions = Assessment.findAll()
     .map( assessment => {
-      let N = Math.ceil( Math.random() * n );
       let questions = Array.from( {
-        length: N
+        length: randomN(n)
       }, question => {
-        let prompt = faker.lorem.words( Math.ceil( Math.random() * 20 ) );
-        let answer = faker.lorem.words( Math.ceil( Math.random() * 20 ) );
+        let prompt = faker.lorem.words( randomN(20)  );
+        let answer = faker.lorem.words( randomN(20)  );
         let assessmentId = assessment.id;
         return {
           prompt,
@@ -176,7 +178,7 @@ let seedRubrics = function ( n = 20 ) {
       let rubrics = Array.from( {
         length: N
       }, rubric => {
-        let criterion = faker.lorem.words( Math.ceil( Math.random() * 20 ) );
+        let criterion = faker.lorem.words( randomN(20) );
         let points = randomN( 10 );
         let questionId = question.id;
         return {

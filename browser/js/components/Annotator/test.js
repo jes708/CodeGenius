@@ -1,11 +1,28 @@
-'use strict';
+'use strict'
 
-import { Component } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
-import FontIcon from 'material-ui/FontIcon';
+import React, {
+  Component,
+  PropTypes
+} from 'react'
+import RaisedButton from 'material-ui/RaisedButton'
+import FlatButton from 'material-ui/FlatButton'
+import FontIcon from 'material-ui/FontIcon'
 import { connect } from 'react-redux';
+import {
+  Card,
+  CardActions,
+  CardHeader,
+  CardText
+} from 'material-ui/Card'
+import {
+  RadioButton,
+  RadioButtonGroup
+} from 'material-ui/RadioButton'
+import {GradeRepl as GradeRepl} from '../../containers/Grade'
 const _ = require('lodash');
-import {annotation, selection} from './actions';
+import {annotation, selection, stopSelection, startSelection} from './actions';
+// import store here //
+
 
 /** fires "selection" event on mouseup */
 export class AnnotationHandler extends Component{
@@ -21,11 +38,12 @@ export class AnnotationHandler extends Component{
         top: -50,
         opacity: 0
       }
-    };
+    }
   }
   handleMouseUp (e){
-    let _selection = window.getSelection();
+    let _selection = window.getSelection()
     let selectionString = _selection.toString();
+    console.log('this is the selected string:', selectionString);
     if(_selection.type == 'Range'){
       this.setState({
         annotationStyles: {
@@ -36,12 +54,12 @@ export class AnnotationHandler extends Component{
           opacity: 1
         },
         selection: _selection,
-        selectionString
+        selectionString: _selection.toString()
       });
       this.props.dispatch(selection(_selection));
     }
   }
-  handleMouseDown ( ){
+  handleMouseDown (e){
     let annotationState = _.cloneDeep(this.state.annotationStyles);
     annotationState.opacity = 0;
     this.setState({
@@ -51,7 +69,7 @@ export class AnnotationHandler extends Component{
   componentWillReceiveProps(nextProps){
     this.setState({
       selectionString: nextProps.selectionString
-    });
+    })
   }
   render (){
     return (
@@ -63,8 +81,11 @@ export class AnnotationHandler extends Component{
             <AnnotateContextMenu {...this.props} selection={this.state.selection}>
             </AnnotateContextMenu>
           </div>
+        <pre>
+          { this.state.selectionString || 'no selection to speak of...'}
+        </pre>
       </div>
-    );
+    )
   }
 }
 
@@ -74,8 +95,8 @@ export class AnnotateContextMenu extends Component {
     super(props);
     this.annotate = this.annotate.bind( this );
   }
-  annotate( ) {
-    this.props.dispatch(annotation(this.props.selection));
+  annotate( e ) {
+    this.props.dispatch(annotation(this.props.selection))
   }
   render() {
     return (
@@ -83,8 +104,48 @@ export class AnnotateContextMenu extends Component {
           label='Annotate'
           icon={<FontIcon className='fa fa-plus' />}
         />
-    );
+    )
   }
 }
 
-export default connect()(AnnotationHandler);
+export class TestAnnotate extends Component {
+  constructor(props) {
+    super(props);
+    console.log(this.props)
+  }
+  render() {
+    return (
+      <div class="container">
+        <div class="row">
+          <AnnotationHandler {...this.props} >
+            <AnnotationWrapperTest/>
+          </AnnotationHandler>
+         </div>
+       </div>
+    )
+  }
+}
+
+export class AnnotationWrapperTest extends Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <GradeRepl>
+      </GradeRepl>
+    )
+  }
+}
+
+function getStyle(state) {
+  console.log('called from getStyle', state);
+  return state;
+}
+
+function getSelectionString(state) {
+  console.log('called get selection string');
+  return state
+}
+
+export default connect()(TestAnnotate)

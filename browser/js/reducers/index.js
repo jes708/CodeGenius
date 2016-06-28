@@ -9,6 +9,8 @@ import {
   AUTH_NOT_AUTHENTICATED,
   AUTH_SESSION_TIMEOUT
 } from '../actions'
+import annotationReducer from '../components/Annotator/reducer'
+import {TestReducer} from '../components/TestComponent'
 
 const session_initialState = {
   id: null,
@@ -36,7 +38,9 @@ function sessionReducer (state = session_initialState, action) {
 }
 
 const rootReducer = combineReducers({
-  sessionReducer
+  sessionReducer,
+  annotationReducer,
+  TestReducer
 })
 
 export default rootReducer

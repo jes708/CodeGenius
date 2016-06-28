@@ -6,8 +6,8 @@ import App from '../containers/App'
 import Home from '../containers/Home'
 import Grade from '../containers/Grade'
 import AuthForm from '../shared/AuthForm'
-import {TestAnnotate as TestAnnotate} from '../components/Annotator'
-
+import TestAnnotate from '../components/Annotator/index.js'
+import TestComponent from '../components/TestComponent'
 
 const routes = (
   <Router history={browserHistory}>
@@ -20,6 +20,7 @@ const routes = (
     </Route>
     <Route path='/test' component={App}>
       <Route path='annotate' component={TestAnnotate} />
+      <Route path='component' component={TestComponent} />
     </Route>
   </Router>
 )

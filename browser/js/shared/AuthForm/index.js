@@ -1,11 +1,15 @@
 'use strict'
 
 import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import Formsy from 'formsy-react'
+import { red100 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 import { FormsyText } from 'formsy-material-ui/lib'
+import { login } from '../../actions/authActions'
+import GitHubButton from '../GitHubButton'
 
 const styles = {
   form: {
@@ -15,6 +19,14 @@ const styles = {
     width: 300,
     margin: 'auto',
     padding: 20
+  },
+  errorMsg: {
+    backgroundColor: red100,
+    padding: 10,
+    textAlign: 'center',
+    fontWeight: '400',
+    fontSize: 16,
+    marginBottom: 10
   },
   button: {
     marginTop: 15
@@ -27,53 +39,47 @@ const styles = {
   }
 }
 
-export default class AuthForm extends Component {
+class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
       canSubmit: true,
+      error: null
     }
   }
 
-  enableButton () {
-    this.setState({
-      canSubmit: true
-    })
+  _submitForm (data) {
+    this.props.dispatch(login(data))
   }
 
-  disableButton () {
-    this.setState({
-      canSubmit: false
-    })
+  _resetForm () {
+    this.refs.form.reset()
   }
 
-  submitForm (data) {
-    alert(JSON.stringify(data, null, 4))
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.error) {
+      this._resetForm()
+      this.setState({
+        error: nextProps.error
+      })
+    }
   }
 
-  renderGitHubButton () {
+  renderErrorMsg () {
     return (
-      <div style={styles.fullWidth}>
-        <RaisedButton
-          label="Sign Up with Github"
-          linkButton={true}
-          href='/auth/github'
-          primary={true}
-          style={styles.fullWidth}
-          icon={<FontIcon className="fa fa-github" />}
-        />
-      </div>
+      <Paper style={Object.assign({}, styles.paperStyle, styles.errorMsg)}>
+        <div>{this.state.error.data}</div>
+      </Paper>
     )
   }
 
   renderLoginForm () {
     return (
       <Paper style={styles.paperStyle}>
-        {this.renderGitHubButton()}
+        <GitHubButton href='/auth/github' label='Sign In with GitHub' />
         <Formsy.Form
-          onValid={this.enableButton.bind(this)}
-          onInValid={this.disableButton.bind(this)}
-          onValidSubmit={this.submitForm.bind(this)}>
+          ref='form'
+          onValidSubmit={this._submitForm.bind(this)}>
           <FormsyText
             name="email"
             type="email"
@@ -87,7 +93,7 @@ export default class AuthForm extends Component {
             required
             floatingLabelText="Password"
           />
-          <div style={Object.assign(styles.button, styles.fullWidth)}>
+          <div style={Object.assign({}, styles.button, styles.fullWidth)}>
             <RaisedButton
               type="submit"
               label='Login'
@@ -104,11 +110,10 @@ export default class AuthForm extends Component {
   renderSignupForm () {
     return (
       <Paper style={styles.paperStyle}>
-        {this.renderGitHubButton()}
+        <GitHubButton href='/auth/github' />
         <Formsy.Form
-          onValid={this.enableButton.bind(this)}
-          onInValid={this.disableButton.bind(this)}
-          onValidSubmit={this.submitForm.bind(this)}>
+          ref='form'
+          onValidSubmit={this._submitForm.bind(this)}>
           <FormsyText
             name="name"
             type="name"
@@ -130,7 +135,7 @@ export default class AuthForm extends Component {
             floatingLabelText="Password"
             validates='minlength:6'
           />
-          <div style={Object.assign(styles.button, styles.fullWidth)}>
+          <div style={Object.assign({}, styles.button, styles.fullWidth)}>
             <RaisedButton
               type="submit"
               label='Sign Up'
@@ -145,34 +150,27 @@ export default class AuthForm extends Component {
   }
 
   render () {
-    let form
-    if (this.props.location.pathname === 'login') {
-      form = this.renderLoginForm()
-    } else if (this.props.location.pathname === 'signup') {
-      form = this.renderSignupForm()
-    }
-
     return (
       <div style={styles.form}>
-        {form}
+        { this.state.error ? this.renderErrorMsg() : null }
+        { this.props.location.pathname === 'login'
+          ? this.renderLoginForm()
+          : this.renderSignupForm() }
       </div>
     )
   }
 }
 
-// <form id="login-form" name="loginForm" ng-submit="loginForm.$valid && sendLogin(login)">
+AuthForm.contextTypes = {
+  router: PropTypes.object.isRequired
+}
 
-//     <alert type="danger" ng-show="error">
-//         {{ error }}
-//     </alert>
+const mapStateToProps = state => {
+  const { session } = state
+  return {
+    error: session.error,
+    user: session.user
+  }
+}
 
-//     <div class="form-group">
-//         <label for="email">Email address</label>
-//         <input type="text" ng-model="login.email" class="form-control" id="email" placeholder="Enter email">
-//     </div>
-//     <div class="form-group">
-//         <label for="login-password">Password</label>
-//         <input type="password" ng-model="login.password" class="form-control" id="login-password" placeholder="Password">
-//     </div>
-//     <button type="submit" class="btn btn-default">Submit</button>
-// </form>
+export default connect(mapStateToProps)(AuthForm)

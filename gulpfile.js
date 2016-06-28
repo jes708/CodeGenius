@@ -56,7 +56,7 @@ gulp.task('lintJS', function() {
 //         .pipe(gulp.dest('./public'));
 // });
 
-gulp.task('buildJSAndCSS', ['lintJS'], () => {
+gulp.task('buildJSAndCSS', () => {
   return gulp.src(['./browser/js/app.js', './browser/scss/main.scss'])
     .pipe(webpack(webpackConfigFile))
     .pipe(gulp.dest('./public'))

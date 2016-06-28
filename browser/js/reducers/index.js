@@ -6,15 +6,16 @@ import { routerReducer } from 'react-router-redux'
 import {
   AUTH_LOGIN_SUCCESS,
   AUTH_LOGOUT_SUCCESS,
-  AUTH_LOGIN_FAILURE,
-  AUTH_NOT_AUTHENTICATED,
+  AUTH_ERROR,
   AUTH_SESSION_TIMEOUT,
-  RECEIVED_LOGGED_IN_USER
+  RECEIVED_LOGGED_IN_USER,
+  NO_USER
 } from '../actions'
 
 const session_initialState = {
   id: null,
-  user: null
+  user: null,
+  error: null
 }
 
 function session (state = session_initialState, action) {
@@ -25,13 +26,16 @@ function session (state = session_initialState, action) {
         id: action.id,
         user: action.user
       })
-    case AUTH_LOGIN_FAILURE:
+    case NO_USER:
     case AUTH_LOGOUT_SUCCESS:
-    case AUTH_NOT_AUTHENTICATED:
     case AUTH_SESSION_TIMEOUT:
       return Object.assign({}, state, {
         id: null,
         user: null
+      })
+    case AUTH_ERROR:
+      return Object.assign({}, state, {
+        error: action.error
       })
     default:
       return state

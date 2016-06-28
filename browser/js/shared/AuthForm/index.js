@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Formsy from 'formsy-react'
+import { red100 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
@@ -18,6 +19,14 @@ const styles = {
     width: 300,
     margin: 'auto',
     padding: 20
+  },
+  errorMsg: {
+    backgroundColor: red100,
+    padding: 10,
+    textAlign: 'center',
+    fontWeight: '400',
+    fontSize: 16,
+    marginBottom: 10
   },
   button: {
     marginTop: 15
@@ -35,34 +44,33 @@ class AuthForm extends Component {
     super(props)
     this.state = {
       canSubmit: true,
-      user: null
+      error: null
     }
   }
 
-  enableButton () {
-    this.setState({
-      canSubmit: true
-    })
-  }
-
-  disableButton () {
-    this.setState({
-      canSubmit: false
-    })
-  }
-
-  submitForm (data) {
+  _submitForm (data) {
     this.props.dispatch(login(data))
   }
 
-  resetForm () {
+  _resetForm () {
     this.refs.form.reset()
   }
 
   componentWillReceiveProps (nextProps) {
-    if (!nextProps.user) {
-      this.resetForm()
+    if (nextProps.error) {
+      this._resetForm()
+      this.setState({
+        error: nextProps.error
+      })
     }
+  }
+
+  renderErrorMsg () {
+    return (
+      <Paper style={Object.assign({}, styles.paperStyle, styles.errorMsg)}>
+        <div>{this.state.error.data}</div>
+      </Paper>
+    )
   }
 
   renderLoginForm () {
@@ -71,9 +79,7 @@ class AuthForm extends Component {
         <GitHubButton href='/auth/github' label='Sign In with GitHub' />
         <Formsy.Form
           ref='form'
-          onValid={this.enableButton.bind(this)}
-          onInValid={this.disableButton.bind(this)}
-          onValidSubmit={this.submitForm.bind(this)}>
+          onValidSubmit={this._submitForm.bind(this)}>
           <FormsyText
             name="email"
             type="email"
@@ -87,7 +93,7 @@ class AuthForm extends Component {
             required
             floatingLabelText="Password"
           />
-          <div style={Object.assign(styles.button, styles.fullWidth)}>
+          <div style={Object.assign({}, styles.button, styles.fullWidth)}>
             <RaisedButton
               type="submit"
               label='Login'
@@ -107,9 +113,7 @@ class AuthForm extends Component {
         <GitHubButton href='/auth/github' />
         <Formsy.Form
           ref='form'
-          onValid={this.enableButton.bind(this)}
-          onInValid={this.disableButton.bind(this)}
-          onValidSubmit={this.submitForm.bind(this)}>
+          onValidSubmit={this._submitForm.bind(this)}>
           <FormsyText
             name="name"
             type="name"
@@ -131,7 +135,7 @@ class AuthForm extends Component {
             floatingLabelText="Password"
             validates='minlength:6'
           />
-          <div style={Object.assign(styles.button, styles.fullWidth)}>
+          <div style={Object.assign({}, styles.button, styles.fullWidth)}>
             <RaisedButton
               type="submit"
               label='Sign Up'
@@ -146,15 +150,9 @@ class AuthForm extends Component {
   }
 
   render () {
-    let form
-    if (this.props.location.pathname === 'login') {
-      form = this.renderLoginForm()
-    } else if (this.props.location.pathname === 'signup') {
-      form = this.renderSignupForm()
-    }
-
     return (
       <div style={styles.form}>
+        { this.state.error ? this.renderErrorMsg() : null }
         { this.props.location.pathname === 'login'
           ? this.renderLoginForm()
           : this.renderSignupForm() }
@@ -170,6 +168,7 @@ AuthForm.contextTypes = {
 const mapStateToProps = state => {
   const { session } = state
   return {
+    error: session.error,
     user: session.user
   }
 }

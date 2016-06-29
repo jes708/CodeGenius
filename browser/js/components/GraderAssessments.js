@@ -9,7 +9,7 @@ import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import { getUserAssessments } from '../actions/assessmentActions'
+import { getUserAssessments } from '../actions/userAssessmentActions'
 
 const styles = {
   paperStyle: {
@@ -77,24 +77,26 @@ class GraderAssessments extends Component {
 
   renderTags (tags) {
     return tags.map((tag, i) => {
-      return <Chip style={styles.tag}>{tag}</Chip>
+      return <Chip key={i} style={styles.tag}>{tag}</Chip>
     })
   }
 
   renderAssessments () {
-    return this.props.assessments.map((assessment, i) => {
-      return (
-        <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
-          <div style={styles.gradingInfo}>
-            <div style={styles.gradingTitle}>{assessment.name}</div>
-            <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>
-            <div style={styles.tags}>
-              {this.renderTags(assessment.tags)}
+    if (!this.props.isFetching) {
+      return this.props.assessments.map((assessment, i) => {
+        return (
+          <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
+            <div style={styles.gradingInfo}>
+              <div style={styles.gradingTitle}>{assessment.name}</div>
+              <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>
+              <div style={styles.tags}>
+                {this.renderTags(assessment.tags)}
+              </div>
             </div>
-          </div>
-        </Card>
-      )
-    })
+          </Card>
+        )
+      })
+    }
   }
 
   render () {

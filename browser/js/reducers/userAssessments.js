@@ -1,10 +1,10 @@
 'use strict'
 
 import {
-  REQUEST_ASSESSMENTS,
-  RECEIVED_ASSESSMENTS,
-  FETCH_ERROR
-} from '../actions/assessmentActions'
+  LOAD_ASSESSMENTS_REQUEST,
+  LOAD_ASSESSMENTS_SUCCESS,
+  LOAD_ASSESSMENTS_FAILURE
+} from '../actions/userAssessmentActions'
 
 const initialState = {
   isFetching: false,
@@ -14,17 +14,18 @@ const initialState = {
 
 export default function userAssessments (state = initialState, action) {
   switch (action.type) {
-    case REQUEST_ASSESSMENTS:
+    case LOAD_ASSESSMENTS_REQUEST:
       return Object.assign({}, state, {
         isFetching: true
       })
-    case RECEIVED_ASSESSMENTS:
+    case LOAD_ASSESSMENTS_SUCCESS:
       return Object.assign({}, state, {
         isFetching: false,
         items: action.assessments
       })
-    case FETCH_ERROR:
+    case LOAD_ASSESSMENTS_FAILURE:
       return Object.assign({}, state, {
+        isFetching: false,
         error: action.error
       })
     default:

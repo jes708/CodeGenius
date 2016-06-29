@@ -16,6 +16,7 @@ import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-fil
 import ActionHome from 'material-ui/svg-icons/action/home'
 import SocialGroup from 'material-ui/svg-icons/social/group'
 import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in'
+import AnnotationHandler from '../../components/Annotator'
 
 
 const styles = {
@@ -64,7 +65,6 @@ export default class Grade extends Component {
       current: 'Home'
     }
   }
-
   getData () {
     fetch('https://raw.githubusercontent.com/jes708/assessment-express-sequelize/master/models/article.js?token=AFJQ-XVgFA056_WGPpBVtQs2M3cBe_Tyks5XeLBfwA%3D%3D')
     .then(res => res.text())
@@ -77,9 +77,54 @@ export default class Grade extends Component {
     })
     .catch(() => new Error('Error while fetching data'))
   }
-
   componentDidMount() {
+    console.log('mounted!');
     this.getData()
+  }
+  render(){
+    return this.state.isLoading ? (<h1>Loading!</h1>) : (
+      <div className='col-lg-8'>
+        <Paper zDepth={2} style={styles.paperStyle}>
+          <div style={styles.content}>
+            <h2 style={styles.skinny}>/models/article.js</h2>
+            <pre className='line-numbers language-javascript'>
+              <PrismCode className='language-javascript'>
+                  {this.state.content}
+              </PrismCode>
+            </pre>
+          </div>
+        </Paper>
+      </div>
+    )
+  }
+}
+
+export class AnnotatedGrade extends Component {
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return (
+      <div class="row" >
+        <AnnotationHandler {...this.props} className='col-lg-8' >
+          <Grade>
+          </Grade>
+        </AnnotationHandler>
+        <GradeView className='col-lg-4' >
+        </GradeView>
+      </div>
+    )
+  }
+}
+
+
+export class GradeView extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isLoading: false,
+      current: 'Home'
+    }
   }
 
   handleClick(tab) {
@@ -102,26 +147,12 @@ export default class Grade extends Component {
           return <GraderStudents />;
         case 'Panel':
           return <GraderPanel />;
+        default:
+          return <GraderHome />;
       }
     }
-    if (this.state.isLoading) {
-      return <h1>Loading!</h1>
-    } else {
       return (
-        <div style={styles.row}>
-          <div className='col-lg-8'>
-            <Paper zDepth={2} style={styles.paperStyle}>
-              <div style={styles.content}>
-                <h2 style={styles.skinny}>/models/article.js</h2>
-                <pre className='line-numbers language-javascript'>
-                  <PrismCode className='language-javascript'>
-                    {this.state.content}
-                  </PrismCode>
-                </pre>
-              </div>
-            </Paper>
-          </div>
-          <div className='col-lg-4'>
+          <div className='col-lg-4' style={styles.row}>
             <Paper style={styles.panelStyle}>
               <Tabs zDepth={3} style={styles.menu}>
                 <Tab
@@ -146,8 +177,7 @@ export default class Grade extends Component {
               </div>
             </Paper>
           </div>
-        </div>
       )
-    }
+
   }
 }

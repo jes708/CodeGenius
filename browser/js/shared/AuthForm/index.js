@@ -2,12 +2,8 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-<<<<<<< HEAD
-import Formsy, { Form } from 'formsy-react'
-=======
-import { reduxForm, reset, change } from 'redux-form'
 import Formsy from 'formsy-react'
->>>>>>> master
+import { reduxForm, reset, change } from 'redux-form'
 import { red100 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'

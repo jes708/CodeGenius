@@ -1,3 +1,4 @@
+import axios from "axios"
 import React, { Component, PropTypes } from 'react';
 import { PrismCode } from 'react-prism';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -66,8 +67,8 @@ export default class Grade extends Component {
     }
   }
   getData () {
-    fetch('https://raw.githubusercontent.com/jes708/assessment-express-sequelize/master/models/article.js?token=AFJQ-XVgFA056_WGPpBVtQs2M3cBe_Tyks5XeLBfwA%3D%3D')
-    .then(res => res.text())
+    axios.get('/api/v1/github/jes708/my-private-repo/contents/test.js')
+    .then(res => res.data)
     .then(content => {
       this.setState({
         isLoading: false,
@@ -77,10 +78,12 @@ export default class Grade extends Component {
     })
     .catch(() => new Error('Error while fetching data'))
   }
+
   componentDidMount() {
     console.log('mounted!');
     this.getData()
   }
+
   render(){
     return this.state.isLoading ? (<h1>Loading!</h1>) : (
       <div className='col-lg-8'>

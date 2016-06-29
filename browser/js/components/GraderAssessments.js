@@ -48,6 +48,12 @@ class GraderAssessments extends Component {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
+          <RaisedButton
+            primary={true}
+            label='Create Assessment'
+            icon={<FontIcon className='fa fa-plus' />}
+            style={styles.skinny}
+          />
           {this.renderAssessments()}
         </div>
       </div>

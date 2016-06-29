@@ -2,15 +2,15 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { reduxForm } from 'redux-form'
+import { reduxForm, reset, change } from 'redux-form'
 import Formsy from 'formsy-react'
 import { red100 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 import { FormsyText } from 'formsy-material-ui/lib'
-import { login } from '../../actions/authActions'
-import GitHubButton from '../GitHubButton'
+import { login, signup } from '../../actions/authActions'
+import Form from './Form'
 
 const styles = {
   form: {
@@ -45,28 +45,40 @@ class AuthForm extends Component {
     super(props)
     this.state = {
       canSubmit: true,
-      error: null
+      error: null,
+      email: ''
     }
   }
 
   _submitForm (data) {
-    this.props.dispatch(login(data))
+    if (data.name) {
+        this.props.dispatch(signup({
+          name: data.name,
+          email: data.email,
+          password: data.password
+        }))
+    } else {
+      this.props.dispatch(login({
+        email: data.email,
+        password: data.password
+      }))
+    }
   }
 
-  _resetForm () {
-    this.refs.form.reset()
+  _resetForm() {
+    this.props.dispatch(reset());
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.error) {
-      this._resetForm()
       this.setState({
         error: nextProps.error
       })
     }
+    this.props.dispatch(change('form', 'password', ''))
   }
 
-  renderErrorMsg () {
+renderErrorMsg () {
     return (
       <Paper style={Object.assign({}, styles.paperStyle, styles.errorMsg)}>
         <div>{this.state.error.data}</div>
@@ -155,8 +167,9 @@ class AuthForm extends Component {
       <div style={styles.form}>
         { this.state.error ? this.renderErrorMsg() : null }
         { this.props.location.pathname === 'login'
-          ? this.renderLoginForm()
-          : this.renderSignupForm() }
+          ? <Form email={this.state.email} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
+        : <Form name={this.state.name} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
+        }
       </div>
     )
   }

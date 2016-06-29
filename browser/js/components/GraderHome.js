@@ -60,7 +60,9 @@ const SAMPLE_SPEC = {
 }
 
 export default class GraderHome extends Component {
-
+  constructor(){
+    super()
+  }
   render () {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>

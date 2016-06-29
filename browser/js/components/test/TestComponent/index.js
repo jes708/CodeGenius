@@ -7,7 +7,6 @@ import { connect } from 'react-redux';
 class TestComponent extends Component {
   constructor(props){
     super(props);
-    console.log(this.props);
     this.onClick = () => this.props.dispatch(testAction())
   }
   render(){
@@ -22,7 +21,6 @@ class TestComponent extends Component {
 }
 
 function testAction(){
-  console.log('test action is fired');
   return {
     type: 'TEST_ACTION',
     payload: {
@@ -42,15 +40,12 @@ const ActionTypes = {
 export function TestReducer( state=initialState, action){
   if(action.type === ActionTypes.TEST_ACTION){
     let newText = state.text.concat([{text: action.payload.text}])
-    console.log('running the things');
     return {text: newText}
   }
-  console.log('testing', state);
   return state;
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     text: state.text
   }

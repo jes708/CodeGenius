@@ -60,7 +60,9 @@ const SAMPLE_SPEC = {
 }
 
 export default class GraderAssessments extends Component {
-
+  constructor(){
+    super()
+  }
   render () {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>

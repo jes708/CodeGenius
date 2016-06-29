@@ -4,6 +4,8 @@ import React, {Component, PropTypes} from 'react';
 import {reduxForm} from 'redux-form';
 import GitHubButton from '../GitHubButton';
 import Paper from 'material-ui/Paper'
+import TextField from 'material-ui/TextField'
+import RaisedButton from 'material-ui/RaisedButton'
 import { red100 } from 'material-ui/styles/colors';
 export const fields = ['name', 'email', 'password', 'passwordConfirm']
 
@@ -76,37 +78,51 @@ class Form extends Component {
 
         <form onSubmit={handleSubmit}>
           {signUp ?
-            <div>
-              <label>Name</label>
-              <input type="text" required="required" placeholder="Name" {...name}/>
-            </div>
+            <TextField
+              floatingLabelText="Name"
+              {...name}
+              errorText={name.touched && name.error}
+            />
           : null
           }
-          {name.touched && name.error && <div>{name.error}</div>}
-          <div>
-            <label>Email</label>
-            <input type="text" required="required" placeholder="Email" {...email}/>
-          </div>
-          {email.touched && email.error && <div>{email.error}</div>}
-          <div>
-            <label>Password</label>
-            <input type="password" required="required" placeholder="Password" {...password}/>
-          </div>
-          {password.touched && password.error && <div>{password.error}</div>}
+          <TextField
+            floatingLabelText="Email"
+            {...email}
+            errorText={email.touched && email.error}
+          />
+          <TextField
+            floatingLabelText="Password"
+            type="password"
+            {...password}
+            errorText={password.touched && password.error}
+          />
           {signUp ?
-          <div>
-            <label>Confirm Password</label>
-            <input type="password" required="required" placeholder="Confirm Password" {...passwordConfirm}/>
-          </div>
+          <TextField
+            type="password"
+            floatingLabelText="Confirm Password"
+            {...passwordConfirm}
+            errorText={passwordConfirm.touched && passwordConfirm.error}
+          />
             : null
           }
-          {passwordConfirm.touched && passwordConfirm.error && <div>{passwordConfirm.error}</div>}
           <div style={Object.assign({}, styles.button, styles.fullWidth)}>
-            <button onClick={handleSubmit} style={styles.fullWidth} type="submit">{signUp ? 'Signup' : 'Login'}</button>
+            <RaisedButton
+              secondary={true}
+              onClick={handleSubmit}
+              style={styles.fullWidth}
+              label={signUp ? 'Signup' : 'Login'}
+              type="submit"
+            />
           </div>
           {signUp ?
             <div style={Object.assign({}, styles.button, styles.fullWidth)}>
-              <button onClick={resetForm} style={styles.fullWidth} type="submit">Reset</button>
+              <RaisedButton
+                primary={true}
+                onClick={resetForm}
+                style={styles.fullWidth}
+                type="submit"
+                label="Reset"
+              />
             </div>
             : null
           }

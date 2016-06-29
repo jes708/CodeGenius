@@ -47,7 +47,10 @@ module.exports = function (app, db) {
 
     passport.use(new GitHubStrategy(githubCredentials, verifyCallback));
 
-    app.get('/auth/github', passport.authenticate('github'));
+    app.get('/auth/github', passport.authenticate('github', {
+        scope: 'repo'
+      }
+    ));
 
     app.get('/auth/github/callback',
         passport.authenticate('github', {failureRedirect: '/login'}),

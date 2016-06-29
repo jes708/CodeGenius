@@ -6,11 +6,13 @@ import {TestReducer} from '../components/test/TestComponent'
 
 import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
+import { reducer as formReducer } from 'redux-form'
 
 const rootReducer = combineReducers({
-  session: sessionReducer,
-  routing: routerReducer,
   annotationReducer,
+  form: formReducer,
+  routing: routerReducer,
+  session: sessionReducer,
   TestReducer
 })
 

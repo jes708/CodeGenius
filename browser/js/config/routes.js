@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 import React from 'react'
 import { Route, IndexRoute } from 'react-router'
@@ -20,6 +20,6 @@ const routes = (
     <Route path='/test/annotate' component={TestAnnotate} />
     <Route path='/test/component' component={TestComponent} />
   </Route>
-)
+);
 
-export default routes
+export default routes;

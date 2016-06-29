@@ -11,9 +11,7 @@ var Promise = require( 'sequelize' )
   .Promise;
 const faker = require( 'faker' );
 const utils = require( './server/app/routes/utils' );
-const {
-  Credentials
-} = utils;
+const  Credentials = utils.Credentials;;
 const Sequelize = require( 'sequelize' );
 
 // binding to the models

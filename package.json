@@ -70,6 +70,8 @@
     "react-tap-event-plugin": "^1.0.0",
     "redux": "^3.5.2",
     "redux-auth": "0.0.2",
+    "redux-form": "^5.2.5",
+    "redux-form-validation": "0.0.7",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",
     "run-sequence": "^1.0.2",

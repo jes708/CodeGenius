@@ -2,7 +2,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import Formsy from 'formsy-react'
+import Formsy, { Form } from 'formsy-react'
 import { red100 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
@@ -39,12 +39,64 @@ const styles = {
   }
 }
 
+const MyInput = React.createClass({
+
+  // Add the Formsy Mixin
+  mixins: [Formsy.Mixin],
+
+  // setValue() will set the value of the component, which in
+  // turn will validate it and the rest of the form
+  changeValue(event) {
+    this.setValue(event.currentTarget[this.props.type === 'checkbox' ? 'checked' : 'value']);
+  },
+  render() {
+
+    // Set a specific className based on the validation
+    // state of this component. showRequired() is true
+    // when the value is empty and the required prop is
+    // passed to the input. showError() is true when the
+    // value typed is invalid
+    const className = 'form-group' + (this.props.className || ' ') +
+      (this.showRequired() ? 'required' : this.showError() ? 'error' : '');
+
+    // An error message is returned ONLY if the component is invalid
+    // or the server has returned an error message
+    const errorMessage = this.getErrorMessage();
+
+    return (
+      <div className={className}>
+        <label htmlFor={this.props.name}>{this.props.title}</label>
+        <input
+          type={this.props.type || 'text'}
+          name={this.props.name}
+          onChange={this.changeValue}
+          value={this.getValue()}
+          checked={this.props.type === 'checkbox' && this.getValue() ? 'checked' : null}
+        />
+        <span className='validation-error'>{errorMessage}</span>
+      </div>
+    );
+  }
+});
+
 class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      canSubmit: true
+      canSubmit: false
     }
+  }
+
+  enableButton () {
+    this.setState({
+      canSubmit: true
+    })
+  }
+
+  disableButton () {
+    this.setState({
+      canSubmit: false,
+    })
   }
 
   _submitForm (data) {
@@ -70,35 +122,45 @@ class AuthForm extends Component {
     return (
       <Paper style={styles.paperStyle}>
         <GitHubButton href='/auth/github' label='Sign In with GitHub' />
-        <Formsy.Form
-          ref='form'
-          onValidSubmit={this._submitForm.bind(this)}>
-          <FormsyText
-            name="email"
-            type="email"
-            required
-            floatingLabelText="Email"
-            validations='isEmail'
-          />
-          <FormsyText
-            name="password"
-            type="password"
-            required
-            floatingLabelText="Password"
-          />
-          <div style={Object.assign({}, styles.button, styles.fullWidth)}>
-            <RaisedButton
-              type="submit"
-              label='Login'
-              secondary={true}
-              style={styles.fullWidth}
-              disabled={!this.state.canSubmit}
-            />
-          </div>
-        </Formsy.Form>
+        <Form
+          onSubmit={this._submitForm.bind(this)}
+          onValid={this.enableButton.bind(this)}
+          onInvalid={this.disableButton.bind(this)}>
+          <MyInput name="email" title="Email" validations="isEmail" validationError="This is not a valid email" required />
+          <MyInput name="password" title="Password" type="password" required />
+          <button type="submit" disabled={!this.state.canSubmit}>Submit</button>
+        </Form>
       </Paper>
     )
   }
+        // <Formsy.Form
+        //   ref='form'
+        //   onValid={this.enableButton.bind(this)}
+        //   onInvalid={this.disableButton.bind(this)}
+        //   onValidSubmit={this._submitForm.bind(this)}>
+        //   <FormsyText
+        //     name="email"
+        //     type="email"
+        //     required
+        //     floatingLabelText="Email"
+        //     validations='isEmail'
+        //   />
+        //   <FormsyText
+        //     name="password"
+        //     type="password"
+        //     required
+        //     floatingLabelText="Password"
+        //   />
+        //   <div style={Object.assign({}, styles.button, styles.fullWidth)}>
+        //     <RaisedButton
+        //       type="submit"
+        //       label='Login'
+        //       secondary={true}
+        //       style={styles.fullWidth}
+        //       disabled={!this.state.canSubmit}
+        //     />
+        //   </div>
+        // </Formsy.Form>
 
   renderSignupForm () {
     return (

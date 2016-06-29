@@ -6,8 +6,9 @@ import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import Avatar from 'material-ui/Avatar'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
-import { logout, getLoggedInUser } from '../../actions/authActions'
+import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/authActions'
 
 const styles = {
   shrinkMarginLeft: {
@@ -63,7 +64,8 @@ class Navbar extends Component {
     if (this.props.user) {
       return (
         <ToolbarGroup style={styles.rightSide}>
-          <ToolbarTitle text={`Hello, ${this.props.user.username}!`} />
+          <Avatar src={this.props.user.photo } size={30} style={{alignSelf: 'center', marginRight: 10}} />
+          <ToolbarTitle text={this.props.user.username} style={{paddingRight: 0}} />
           <RaisedButton
             label="Logout"
             primary={true}

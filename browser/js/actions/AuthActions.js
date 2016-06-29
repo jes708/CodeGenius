@@ -12,9 +12,9 @@ export const AUTH_USER_REQUEST = 'AUTH_USER_REQUEST'
 export const AUTH_USER_RECEIVED = 'AUTH_USER_RECEIVED'
 export const AUTH_NO_USER = 'AUTH_NO_USER'
 
-export function login (credentials) {
-  dispatch({ type: AUTH_LOGIN_REQUEST })
+export function login (credentials, dispatch) {
   return dispatch => {
+    dispatch({ type: AUTH_LOGIN_REQUEST })
     return axios.post('/login', credentials)
     .then(res => res.data)
     .then(resData => {
@@ -29,13 +29,13 @@ export function login (credentials) {
   }
 }
 
-export function getLoggedInUser () {
+export function getLoggedInUser (dispatch) {
   return (dispatch, getState)  => {
+    dispatch({ type: AUTH_USER_REQUEST })
     let user = getState().session.user
     if (user) {
       dispatch(userReceived(user))
     } else {
-      dispatch({ type: AUTH_USER_REQUEST })
       return axios.get('/session')
       .then(res => res.data)
       .then(resData => dispatch(userReceived(resData.user)))

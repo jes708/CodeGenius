@@ -1,6 +1,8 @@
 'use strict'
 
 import GitHubApi from 'github'
+import Promise from 'bluebird'
+import _ from 'lodash'
 
 const github = new GitHubApi({
   debug: true,
@@ -15,4 +17,14 @@ const github = new GitHubApi({
   timeout: 5000
 })
 
-module.exports = github
+let GitHub = {}
+
+Object.keys(github).map(key => {
+  if (typeof github[key] === 'object') {
+    GitHub[key] = Promise.promisifyAll(github[key])
+  }
+})
+
+GitHub = Object.assign(github, GitHub)
+
+module.exports = GitHub

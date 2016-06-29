@@ -1,6 +1,6 @@
 'use strict';
 
-import { Component } from 'react';
+import React, { Component } from 'react';
 import RaisedButton from 'material-ui/RaisedButton';
 import FontIcon from 'material-ui/FontIcon';
 import { connect } from 'react-redux';
@@ -8,7 +8,7 @@ const _ = require('lodash');
 import {annotation, selection} from './actions';
 
 /** fires "selection" event on mouseup */
-export class AnnotationHandler extends Component{
+class AnnotationHandler extends Component{
   constructor(props){
     super(props);
     console.log(this.props);

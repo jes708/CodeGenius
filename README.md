@@ -5,6 +5,11 @@
 # CodeGenius
 
 
+### User Flows
+
+[see some visuals of user flows here](https://www.evernote.com/pub/jwbackes/codegenius)
+
+
 ### File Tree Structure
 ```
 .

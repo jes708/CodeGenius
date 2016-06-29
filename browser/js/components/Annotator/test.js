@@ -18,7 +18,7 @@ import {
   RadioButton,
   RadioButtonGroup
 } from 'material-ui/RadioButton'
-import {GradeRepl as GradeRepl} from '../../containers/Grade'
+import Grade from '../../containers/Grade'
 const _ = require('lodash');
 import {annotation, selection, stopSelection, startSelection} from './actions';
 // import store here //
@@ -132,8 +132,8 @@ export class AnnotationWrapperTest extends Component {
   }
   render() {
     return (
-      <GradeRepl>
-      </GradeRepl>
+      <Grade>
+      </Grade>
     )
   }
 }

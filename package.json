@@ -32,6 +32,7 @@
     "faker": "^3.1.0",
     "formsy-material-ui": "^0.4.3",
     "formsy-react": "^0.18.0",
+    "github": "^2.0.1",
     "gulp": "^3.8.11",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.5.2",

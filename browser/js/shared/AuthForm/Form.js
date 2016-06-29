@@ -68,7 +68,6 @@ class Form extends Component {
   render() {
     const {fields: {name, email, password, passwordConfirm}, handleSubmit, resetForm, onSubmit, signUp} = this.props;
     signingUp = signUp ? true : false;
-    signingUp = signUp ? true : false;
     return (
       <Paper style={styles.paperStyle}>
         {signUp ? <GitHubButton href='/auth/github' /> : <GitHubButton href='/auth/github' label='Sign In with Github'/>}

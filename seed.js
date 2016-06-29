@@ -42,7 +42,7 @@ const {
 // const UserOrganization = db.models[ 'userOrganization' ];
 
 function createRandomCredentials( username, password, email ) {
-  let credentials = new Credentials(
+  let credentials = Credentials(
     username || faker.random.word(),
     password || 'password',
     faker.internet.exampleEmail()

@@ -31,28 +31,12 @@ const NAV_ITEMS = [
 ]
 
 class Navbar extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      user: this.props.user
-    }
-  }
-
   componentWillMount () {
     this.props.dispatch(getLoggedInUser())
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.user) {
-      this.setState({
-        user: nextProps.user
-      })
-      this.context.router.push('/grade')
-    } else {
-      this.setState({
-        user: null
-      })
-    }
+    if (nextProps.user) this.context.router.push('/grade')
   }
 
   handleLogout () {
@@ -76,10 +60,10 @@ class Navbar extends Component {
   }
 
   renderAuthButtons () {
-    if (this.state.user) {
+    if (this.props.user) {
       return (
         <ToolbarGroup style={styles.rightSide}>
-          <ToolbarTitle text={`Hello, ${this.state.user.username}!`} />
+          <ToolbarTitle text={`Hello, ${this.props.user.username}!`} />
           <RaisedButton
             label="Logout"
             primary={true}

@@ -43,8 +43,7 @@ class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      canSubmit: true,
-      error: null
+      canSubmit: true
     }
   }
 
@@ -57,12 +56,6 @@ class AuthForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.error) {
-      this._resetForm()
-      this.setState({
-        error: nextProps.error
-      })
-    }
   }
 
   renderErrorMsg () {
@@ -152,7 +145,7 @@ class AuthForm extends Component {
   render () {
     return (
       <div style={styles.form}>
-        { this.state.error ? this.renderErrorMsg() : null }
+        { this.props.error ? this.renderErrorMsg() : null }
         { this.props.location.pathname === 'login'
           ? this.renderLoginForm()
           : this.renderSignupForm() }

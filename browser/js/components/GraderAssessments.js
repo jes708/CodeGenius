@@ -91,11 +91,7 @@ class GraderAssessments extends Component {
 }
 
 const mapStateToProps = state => {
-  const { userAssessments } = state
-  const { isFetching, items } = userAssessments || {
-    isFetching: true,
-    items: []
-  }
+  const { isFetching, items } = state.userAssessments
   return {
     isFetching,
     assessments: items

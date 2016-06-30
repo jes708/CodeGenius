@@ -84,8 +84,7 @@ class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      canSubmit: true,
-      error: null
+      canSubmit: true
     }
   }
 

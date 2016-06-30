@@ -20,7 +20,6 @@ export default class StudentCard extends Component {
   }
 
   handleToggle () {
-    console.log("handleToggle", this);
     if (this.state.toggled) this.setState({toggled: false, style: styles.inactiveCard});
     else if (!this.state.toggled) this.setState({toggled: true, style: styles.infoCard});
     this.handleToggle = this.handleToggle.bind(this);

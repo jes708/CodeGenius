@@ -13,6 +13,7 @@ const initialState = {
 }
 
 export default function userAssessments (state = initialState, action) {
+  console.log('userAssessments.js', action)
   switch (action.type) {
     case LOAD_ASSESSMENTS_REQUEST:
       return Object.assign({}, state, {

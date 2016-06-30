@@ -40,6 +40,7 @@ const styles = {
 let signingUp = false;
 
 const validate = values => {
+  if (!values) return {};
   const errors = {}
   if (!values.email) {
     errors.email = 'Required'
@@ -144,5 +145,5 @@ Form.propTypes = {
 export default reduxForm({
   form: 'form',
   fields,
-  validate
+  // validate
 })(Form)

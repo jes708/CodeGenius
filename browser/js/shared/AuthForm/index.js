@@ -125,9 +125,11 @@ class AuthForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    //head
     this.setState({
       submitting: false
     })
+    //
     if (nextProps.error) {
       this.setState({
         error: nextProps.error
@@ -235,8 +237,8 @@ renderErrorMsg () {
       <div style={styles.form}>
         { this.props.error ? this.renderErrorMsg() : null }
         { this.props.location.pathname === 'login'
-          ? <Form submitting={this.state.submitting} email={this.state.email} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
-        : <Form submitting={this.state.submitting} name={this.state.name} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
+          ? <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
+        : <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
         }
       </div>
     )

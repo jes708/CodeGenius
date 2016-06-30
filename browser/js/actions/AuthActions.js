@@ -44,7 +44,9 @@ export function signup (credentials) {
   }
 }
 
-export function getLoggedInUser (dispatch) {
+
+// export function getLoggedInUser (dispatch) {
+export function getLoggedInUser () {
   return (dispatch, getState)  => {
     dispatch({ type: AUTH_USER_REQUEST })
     let user = getState().session.user

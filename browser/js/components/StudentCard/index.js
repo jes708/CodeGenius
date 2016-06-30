@@ -13,7 +13,6 @@ export default class StudentCard extends Component {
   constructor(props) {
     super(props);
     this.state = {toggled: true, style: styles.infoCard};
-    // this.style = styles.toggled
   }
 
   componentWillMount () {

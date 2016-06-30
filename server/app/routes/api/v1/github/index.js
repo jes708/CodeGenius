@@ -7,6 +7,26 @@ import Promise from 'bluebird'
 
 const router = express.Router()
 
+router.get('/all_repos', ensureAuthenticated, (req, res, next) => {
+  GitHub.users.getOrgsAsync({ per_page: 100 })
+  .then(userOrgs => {
+    let gettingOrgRepos = userOrgs.map(org => {
+      GitHub.repos.getForOrgAsync({ org: org.login })
+    })
+    let gettingAllRepos = gettingOrgRepos.concat(
+      GitHub.repos.getForUserAsync({user: req.user.username }))
+    return Promise.all(gettingAllRepos)
+  })
+  .then(allRepos => res.json(allRepos))
+  .catch(next)
+})
+
+router.get('/rate_limit', ensureAuthenticated, (req, res, next) => {
+  GitHub.misc.getRateLimitAsync()
+  .then(limit => res.json(limit))
+  .catch(next)
+})
+
 router.get('/:org', ensureAuthenticated, (req, res, next) => {
   GitHub.orgs.getAsync({ org: req.params.org })
   .then(org => res.json(org))

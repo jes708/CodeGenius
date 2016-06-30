@@ -31,6 +31,22 @@ const styles = {
   }
 }
 
+const validate = (values) => {
+  if (!values) return {}
+  const errors = {}
+  if (!values.name) {
+    errors.name = 'Required'
+  }
+  if (!values.description) {
+    errors.description = 'Required'
+  }
+  if (!values.repoUrl) {
+    errors.repoUrl = 'Required'
+  } else if (/^(https?:\/\/)?(www.)?(github.com\/)/i.test(values.repoUrl)) {
+    errors.repoUrl = 'Please enter valid GitHub URL'
+  }
+}
+
 class AssessmentForm extends Component {
   render () {
     const {
@@ -52,6 +68,7 @@ class AssessmentForm extends Component {
             floatingLabelText="Name"
             {...name}
             style={styles.fullWidth}
+            errorText={name.touched && name.error}
           />
           <TextField
             multiLine={true}
@@ -60,11 +77,13 @@ class AssessmentForm extends Component {
             floatingLabelText="Description"
             {...description}
             style={styles.fullWidth}
+            errorText={description.touched && description.error}
           />
           <TextField
             floatingLabelText="Repo URL"
             {...repoUrl}
             style={styles.fullWidth}
+            errorText={repoUrl.touched && repoUrl.error}
           />
           <div style={Object.assign({}, styles.button, styles.fullWidth)}>
             <RaisedButton
@@ -88,5 +107,6 @@ AssessmentForm.propTypes = {
 
 export default reduxForm({
   form: 'assessmentForm',
-  fields
+  fields,
+  validate
 })(AssessmentForm)

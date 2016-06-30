@@ -21,7 +21,7 @@ const allIds = (state = [], action) => {
   }
 }
 
-const byId = (state = {}, action) {
+const byId = (state = {}, action) => {
   switch (action.type) {
     case LOAD_ASSESSMENTS_SUCCESS:
       let newState = {...state}

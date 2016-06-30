@@ -7,6 +7,7 @@ import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import CommentCard from '../Comment';
 
 const styles = {
   paperStyle: {
@@ -89,31 +90,12 @@ export default class GraderPanel extends Component {
 
   renderCards () {
     let cards = []
-    Object.keys(SAMPLE_SPEC).forEach((title, i) => {
-      SAMPLE_SPEC[title].forEach((spec, j) => {
-        cards.push(
-          <Card style={styles.skinny}>
-            <CardHeader
-              title={title}
-              subtitle={spec}
-              actAsExpander={true}
-              showExpandableButton={true}
-            />
-            <CardText expandable={true} style={styles.noTopPadding}>
-              <hr style={styles.skinny} />
-              {this.renderCriterion()}
-            </CardText>
-            <CardActions expandable={true}>
-              <FlatButton
-                label='Add Criterion'
-                icon={<FontIcon className='fa fa-plus' />}
-              />
-              <FlatButton
-                label='Add Comment'
-                icon={<FontIcon className='fa fa-pencil' />}
-              />
-            </CardActions>
-          </Card>
+
+    cards = Object.keys(SAMPLE_SPEC).map((title, i) => {
+      return SAMPLE_SPEC[title].map((spec, j) => {
+        return (
+          <CommentCard {...this.props} key={(i + ' ' + j)} title={title} spec = {spec} renderCriterion = {this.renderCriterion} >
+          </ CommentCard>
         )
       })
     })

@@ -12,7 +12,6 @@ const initialState = {
 }
 
 export default function assessmentTeam (state = initialState, action) {
-  console.log('assessmentTeam.js', action)
   switch (action.type) {
     case LOAD_TEAM_REQUEST:
       return Object.assign({}, state, {

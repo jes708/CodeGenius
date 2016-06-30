@@ -34,6 +34,9 @@ module.exports = function(db){
         },
         github_id: {
             type: Sequelize.STRING
+        },
+        github_token: {
+          type: Sequelize.STRING
         }
     }
 }

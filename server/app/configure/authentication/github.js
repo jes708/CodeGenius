@@ -15,7 +15,7 @@ module.exports = function (app, db) {
         callbackURL: githubConfig.callbackURL
     };
 
-    var verifyCallback = function (token, refreshToken, profile, done) {
+    var verifyCallback = function (accessToken, refreshToken, profile, done) {
 
         User.findOne({
                 where: {
@@ -31,7 +31,8 @@ module.exports = function (app, db) {
                         name: profile.displayName,
                         username: profile.username,
                         email: profile.emails ? profile.emails[0].value : [profile.username , 'no-email.com'].join('@'),
-                        photo: profile.photos[0].value
+                        photo: profile.photos[0].value,
+                        github_token: accessToken
                     });
                 }
             })
@@ -48,9 +49,8 @@ module.exports = function (app, db) {
     passport.use(new GitHubStrategy(githubCredentials, verifyCallback));
 
     app.get('/auth/github', passport.authenticate('github', {
-        scope: 'repo'
-      }
-    ));
+      scope: 'repo gist'
+    }));
 
     app.get('/auth/github/callback',
         passport.authenticate('github', {failureRedirect: '/login'}),

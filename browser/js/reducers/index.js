@@ -1,19 +1,18 @@
 'use strict'
 
-import sessionReducer from './sessionReducer'
-import annotationReducer from '../components/Annotator/reducer'
-import {TestReducer} from '../components/test/TestComponent'
-
+import session from './session'
+import userAssessments from './userAssessments'
+import annotation from '../components/Annotator/reducer'
 import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
 import { reducer as formReducer } from 'redux-form'
 
 const rootReducer = combineReducers({
-  annotationReducer,
+  annotation,
+  session,
+  userAssessments,
   form: formReducer,
-  routing: routerReducer,
-  session: sessionReducer,
-  TestReducer
+  routing: routerReducer
 })
 
 export default rootReducer

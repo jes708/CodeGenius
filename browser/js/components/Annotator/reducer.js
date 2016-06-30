@@ -16,7 +16,6 @@ export default function annotationReducer(state = annotator_initialState, action
         selectionString: action.selectionString
       })
     case 'ANNOTATION':
-      console.log('annotation reduced!')
       return Object.assign({}, state, {
         annotation: action.annotation,
         selection: action.selection,

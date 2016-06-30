@@ -67,7 +67,6 @@ const SAMPLE_SPEC = {
   ]
 }
 
-<<<<<<< HEAD
 class GraderStudents extends Component {
 
   componentWillMount () {

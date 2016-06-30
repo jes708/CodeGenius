@@ -3,6 +3,7 @@ var router = require( 'express' )
   .Router();
 var _ = require( 'lodash' );
 
+const github = require('../../../../configure/github')
 const sequelizeHandlers = require( 'sequelize-handlers' );
 const bluebird = require( 'bluebird' );
 const utils = require( '../../../utils' );
@@ -39,6 +40,17 @@ router.use( ( req, res, next ) => {
 } )
 
 /** see documentation at https://www.npmjs.com/package/sequelize-handlers */
+router.get('/getRepos', (req, res, next) => {
+  github.authenticate({
+    type: 'oauth',
+    token: req.user.github_token
+  })
+  github.repos.getAll({}, function(err, response) {
+    if (err) return
+    res.json(response)
+  })
+})
+
 router.get( '/', sequelizeHandlers.query( Resource ) );
 router.get( '/:id', ( req, res, next ) => {
   if ( req.user && req.user.id === req.params.id ) {

@@ -6,8 +6,9 @@ import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
+import Avatar from 'material-ui/Avatar'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
-import { logout, getLoggedInUser } from '../../actions/authActions'
+import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/authActions'
 
 const styles = {
   shrinkMarginLeft: {
@@ -31,28 +32,12 @@ const NAV_ITEMS = [
 ]
 
 class Navbar extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      user: this.props.user
-    }
-  }
-
   componentWillMount () {
     this.props.dispatch(getLoggedInUser())
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.user) {
-      this.setState({
-        user: nextProps.user
-      })
-      this.context.router.push('/grade')
-    } else {
-      this.setState({
-        user: null
-      })
-    }
+    if (nextProps.user) this.context.router.push('/grade')
   }
 
   handleLogout () {
@@ -76,10 +61,11 @@ class Navbar extends Component {
   }
 
   renderAuthButtons () {
-    if (this.state.user) {
+    if (this.props.user) {
       return (
         <ToolbarGroup style={styles.rightSide}>
-          <ToolbarTitle text={`Hello, ${this.state.user.username}!`} />
+          <Avatar src={this.props.user.photo } size={30} style={{alignSelf: 'center', marginRight: 10}} />
+          <ToolbarTitle text={this.props.user.username} style={{paddingRight: 0}} />
           <RaisedButton
             label="Logout"
             primary={true}

@@ -2,21 +2,30 @@
 
 import axios from 'axios'
 
+export const AUTH_LOGIN_REQUEST = 'AUTH_LOGIN_REQUEST'
 export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS'
-export const AUTH_ERROR = 'AUTH_ERROR'
+export const AUTH_LOGIN_FAILURE = 'AUTH_LOGIN_FAILURE'
 export const AUTH_LOGOUT_SUCCESS = 'AUTH_LOGOUT_SUCCESS'
+export const AUTH_LOGOUT_FAILURE = 'AUTH_LOGOUT_FAILURE'
 export const AUTH_SESSION_TIMEOUT = 'AUTH_SESSION_TIMEOUT'
-export const RECEIVED_LOGGED_IN_USER = 'RECEIVED_LOGGED_IN_USER'
-export const NO_USER = 'NO_USER'
+export const AUTH_USER_REQUEST = 'AUTH_USER_REQUEST'
+export const AUTH_USER_RECEIVED = 'AUTH_USER_RECEIVED'
+export const AUTH_NO_USER = 'AUTH_NO_USER'
 
-export function login (credentials) {
+export function login (credentials, dispatch) {
   return dispatch => {
+    dispatch({ type: AUTH_LOGIN_REQUEST })
     return axios.post('/login', credentials)
     .then(res => res.data)
     .then(resData => {
-      dispatch(loginSuccess(resData.user))
+      const user = resData.user
+      dispatch({
+        type: AUTH_LOGIN_SUCCESS,
+        id: user.id,
+        user
+      })
     })
-    .catch(err => dispatch(authError(err)))
+    .catch(err => dispatch({ type: AUTH_LOGIN_FAILURE, err }))
   }
 }
 
@@ -35,50 +44,29 @@ export function signup (credentials) {
   }
 }
 
-export function loginSuccess (user) {
-  return {
-    type: AUTH_LOGIN_SUCCESS,
-    id: user.id,
-    user
-  }
-}
-
-export function getLoggedInUser () {
+export function getLoggedInUser (dispatch) {
   return (dispatch, getState)  => {
+    dispatch({ type: AUTH_USER_REQUEST })
     let user = getState().session.user
     if (user) {
-      dispatch(receivedLoggedInUser(user))
+      dispatch(userReceived(user))
     } else {
       return axios.get('/session')
       .then(res => res.data)
-      .then(resData => {
-        dispatch(receivedLoggedInUser(resData.user))
-      })
-      .catch(() => dispatch(noUser()))
+      .then(resData => dispatch(userReceived(resData.user)))
+      .catch(() => dispatch({ type: AUTH_NO_USER }))
     }
   }
-}
-
-export function receivedLoggedInUser (user) {
-  return { type: RECEIVED_LOGGED_IN_USER, user }
-}
-
-export function noUser () {
-  return { type: NO_USER }
-}
-
-export function authError (error) {
-  return { type: AUTH_ERROR, error }
 }
 
 export function logout () {
   return dispatch => {
     return axios.get('/logout')
-    .then(() => dispatch(logoutSuccess()))
-    .catch(err => dispatch(authError(err)))
+    .then(() => dispatch({ type: AUTH_LOGOUT_SUCCESS }))
+    .catch(err => dispatch({ type: AUTH_LOGOUT_FAILURE }))
   }
 }
 
-export function logoutSuccess () {
-  return { type: AUTH_LOGOUT_SUCCESS }
+export function userReceived (user) {
+  return { type: AUTH_USER_RECEIVED, user }
 }

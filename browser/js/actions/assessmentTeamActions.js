@@ -12,11 +12,11 @@ export function getAssessmentTeam (id) {
   return dispatch => {
     dispatch({ type: LOAD_TEAM_REQUEST })
     return axios.get(API_URL + id)
-    .then(res => {
-      console.log(res.data)
-      res.data;
+    .then(res => res.data)
+    .then(resData => {
+      console.log('resData', resData);
+      dispatch({ type: LOAD_TEAM_SUCCESS, team: resData });
     })
-    .then(resData => dispatch({ type: LOAD_TEAM_SUCCESS, team: resData }))
     .catch(err => dispatch({ type: LOAD_TEAM_FAILURE, err }))
   }
 }

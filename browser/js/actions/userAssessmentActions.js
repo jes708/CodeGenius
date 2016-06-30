@@ -13,7 +13,10 @@ export function getUserAssessments (id) {
     dispatch({ type: LOAD_ASSESSMENTS_REQUEST })
     return axios.get(API_URL)
     .then(res => res.data)
-    .then(resData => dispatch({ type: LOAD_ASSESSMENTS_SUCCESS, assessments: resData }))
+    .then(resData => {
+      console.log('resData', resData);
+      dispatch({ type: LOAD_ASSESSMENTS_SUCCESS, assessments: resData });
+    })
     .catch(err => dispatch({ type: LOAD_ASSESSMENTS_FAILURE, err }))
   }
 }

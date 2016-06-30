@@ -62,32 +62,41 @@ const SAMPLE_SPEC = {
   ]
 }
 
-class GraderAssessments extends Component {
+class GraderStudents extends Component {
+
+  // componentWillReceiveProps () {
+  //   this.props.dispatch(getAssessmentTeam(1))
+  // }
 
   componentWillMount () {
-
     this.props.dispatch(getAssessmentTeam(1))
   }
 
   renderStudents () {
-  //   if (!this.props.isFetching) {
-  //     return this.props.team.students.map((student, i) => {
-  //       return (
-  //         <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
-  //           <div style={styles.gradingInfo}>
-  //             <div style={styles.gradingTitle}>{student.name}</div>
-  //             <a href="#" style={styles.gradingSubtitle}>{student.username}</a>
-  //           </div>
-  //         </Card>
-  //       )
-  //     })
-  //   }
+    
+    if (!this.props.teamFetching) {
+      console.log("props", this.props)
+      return this.props.team.students.map((student, i) => {
+        return (
+          <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
+            <div style={styles.gradingInfo}>
+              <a href="#" style={styles.gradingSubtitle}>
+                <img src={student.photo} alt=""/>
+                {student.name}
+              </a>
+            </div>
+          </Card>
+        )
+      })
+    }
   }
 
   render () {
-    if (this.props.isFetching) {
+    if (this.props.teamFetching) {
+      console.log('loading????')
       return <h1>Loading...</h1>
     } else {
+      console.log('not loading')
       return (
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
@@ -101,14 +110,14 @@ class GraderAssessments extends Component {
 
 const mapStateToProps = state => {
   const { assessmentTeam } = state
-  const { isFetching, item } = assessmentTeam || {
-    isFetching: true,
-    item: []
+  const { teamFetching, team } = assessmentTeam || {
+    teamFetching: true,
+    team: {}
   }
   return {
-    isFetching,
-    team: item
+    teamFetching,
+    team
   }
 }
 
-export default connect(mapStateToProps)(GraderAssessments)
+export default connect(mapStateToProps)(GraderStudents)

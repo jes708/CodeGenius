@@ -8,7 +8,7 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import Toggle from 'material-ui/Toggle'
 import styles from '../graderStyles'
 
-export default class IsStudent extends Component {
+export default class StudentCard extends Component {
 
   constructor(props) {
     super(props);

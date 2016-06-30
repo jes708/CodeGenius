@@ -37,7 +37,7 @@ class GraderStudents extends Component {
       console.log("props", this.props)
       return this.props.team.students.map((student, i) => {
         return (
-          <IsStudent key={i} student={student}/>
+          <StudentCard key={i} student={student}/>
         )
       })
     }

@@ -21,6 +21,9 @@ const styles = {
   infoCard: {
     backgroundColor: '#1E88E5'
   },
+  inactiveCard: {
+    backgroundColor: '#aaa'
+  },
   gradingPane: {
     backgroundColor: '#64B5F6'
   },
@@ -43,6 +46,17 @@ const styles = {
   },
   tag: {
     margin: 4
+  },
+  student: {
+    borderRadius: '50%',
+    height: 40,
+    marginRight: 10
+  },
+  toggle: {
+    display: 'inline-table',
+    width: 'auto',
+    float: 'right',
+    top: 8
   }
 }
 

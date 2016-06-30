@@ -7,45 +7,7 @@ import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-
-const styles = {
-  paperStyle: {
-    height: '100%',
-    overflow: 'scroll'
-  },
-  content: {
-    padding: 16
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  gradingInfo: {
-    color: '#FFF',
-    padding: 16
-  },
-  gradingTitle: {
-    fontSize: 24,
-    fontWeight: '400'
-  },
-  gradingSubtitle: {
-    fontSize: 16,
-    color: '#F5F5F5',
-    fontWeight: '300'
-  }
-}
+import styles from './graderStyles'
 
 const SAMPLE_SPEC = {
   "Fake Library App": [

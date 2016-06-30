@@ -8,12 +8,15 @@ export const LOAD_ASSESSMENTS_FAILURE = 'LOAD_ASSESSMENTS_FAILURE'
 
 const API_URL = '/api/v1/assessments'
 
-export function getUserAssessments (id) {
-  return dispatch => {
-    dispatch({ type: LOAD_ASSESSMENTS_REQUEST })
-    return axios.get(API_URL)
-    .then(res => res.data)
-    .then(resData => dispatch({ type: LOAD_ASSESSMENTS_SUCCESS, assessments: resData }))
-    .catch(err => dispatch({ type: LOAD_ASSESSMENTS_FAILURE, err }))
-  }
+export const getUserAssessments = (id) => (dispatch) => {
+
+  dispatch({ type: LOAD_ASSESSMENTS_REQUEST })
+
+  return axios.get(API_URL)
+  .then(res => res.data)
+  .then(resData => dispatch({
+    type: LOAD_ASSESSMENTS_SUCCESS,
+    assessments: resData
+  }))
+  .catch(err => dispatch({ type: LOAD_ASSESSMENTS_FAILURE, err }))
 }

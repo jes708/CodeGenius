@@ -22,7 +22,7 @@ function addAssociations(db){
   const UserTeam = db.models['userTeam'];
 
   Team.belongsTo(Organization);
-  Team.belongsToMany(User, {as: 'students', through: UserTeam, scope: {role: 'student'}, otherKey: 'userId'})
-  Team.belongsToMany(User, {as: 'instructors', through: UserTeam, scope: {role: 'instructor'}, otherKey: 'userId'});
-  Team.belongsTo(User, {foreignKey: 'creatorId', targetKey: 'id'});
+  Team.belongsToMany(User, {as: 'students', through: UserTeam, otherKey: 'userId'})
+  Team.belongsToMany(User, {as: 'instructors', through: UserTeam, otherKey: 'userId'});
+  Team.belongsTo(User, {as: 'creator', foreignKey: 'creatorId', targetKey: 'id'});
 }

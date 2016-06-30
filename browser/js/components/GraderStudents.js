@@ -6,47 +6,13 @@ import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
+import { connect } from 'react-redux'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-
-const styles = {
-  paperStyle: {
-    height: '100%',
-    overflow: 'scroll'
-  },
-  content: {
-    padding: 16
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  gradingInfo: {
-    color: '#FFF',
-    padding: 16
-  },
-  gradingTitle: {
-    fontSize: 24,
-    fontWeight: '400'
-  },
-  gradingSubtitle: {
-    fontSize: 16,
-    color: '#F5F5F5',
-    fontWeight: '300'
-  }
-}
+import { getAssessmentTeam } from '../actions/assessmentTeamActions'
+import Toggle from 'material-ui/Toggle'
+import StudentCard from './StudentCard'
+import styles from './graderStyles'
 
 const SAMPLE_SPEC = {
   "Fake Library App": [
@@ -60,24 +26,50 @@ const SAMPLE_SPEC = {
   ]
 }
 
-export default class GraderStudents extends Component {
-  constructor(){
-    super()
+class GraderStudents extends Component {
+
+  componentWillMount () {
+    this.props.dispatch(getAssessmentTeam(1))
   }
+
+  renderStudents () {
+    if (!this.props.teamFetching && this.props.team) {
+      let students = this.props.team.students;
+      students = students.sort(function(a,b) {
+        if (a.name < b.name) return -1;
+        else if (a.name > b.name) return 1;
+        else return 0;
+      })
+      return students.map((student, i) => {
+        return (
+          <StudentCard key={i} student={student}/>
+        )
+      })
+    }
+  }
+
   render () {
-    return (
-      <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
-        <div style={styles.content}>
-          <Card style={Object.assign(styles.infoCard, styles.skinny)}>
-            <div style={styles.gradingInfo}>
-              <div style={styles.gradingTitle}>Assessment 3 - Express/Sequelize</div>
-              <a style={styles.gradingSubtitle} href='https://github.com/FullstackAcademy/checkpoint-express-sequelize'>
-                GitHub Repo
-              </a>
-            </div>
-          </Card>
+    if (this.props.teamFetching && !this.props.team) {
+      return <h1>Loading...</h1>
+    } else {
+      return (
+        <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
+          <div style={styles.content}>
+            {this.renderStudents()}
+          </div>
         </div>
-      </div>
-    )
+      )
+    }
   }
 }
+
+const mapStateToProps = state => {
+  const { assessmentTeam } = state
+  const { teamFetching, team } = assessmentTeam
+  return {
+    teamFetching,
+    team
+  }
+}
+
+export default connect(mapStateToProps)(GraderStudents)

@@ -12,6 +12,32 @@ const initialState = {
   error: null
 }
 
+const allIds = (state = [], action) => {
+  switch (action.type) {
+    case LOAD_ASSESSMENTS_SUCCESS:
+      return action.assessments.map(assessment => assessment.id)
+    default:
+      return state
+  }
+}
+
+const byId = (state = {}, action) => {
+  let newState = Object.assign({}, state)
+  switch (action.type) {
+    case LOAD_ASSESSMENTS_SUCCESS:
+      action.assessments.forEach(assessment => {
+        newState[assessment.id] = assessment(assessment, action)
+      })
+      return newState
+    default:
+      return state
+  }
+}
+
+export const getAllAssessments = (state) => state.allIds.map(id => state.byId[id])
+
+export const getById = (state, id) => state.byId[id]
+
 export default function userAssessments (state = initialState, action) {
   switch (action.type) {
     case LOAD_ASSESSMENTS_REQUEST:

@@ -84,29 +84,16 @@ class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-// <<<<<<< HEAD
-      canSubmit: false
-// =======
-      // canSubmit: true,
-      // error: null,
-      // email: ''
-// >>>>>>> master
+      canSubmit: true,
+      error: null,
+      submitting: false
     }
   }
 
-  enableButton () {
-    this.setState({
-      canSubmit: true
-    })
-  }
-
-  disableButton () {
-    this.setState({
-      canSubmit: false,
-    })
-  }
-
   _submitForm (data) {
+    this.setState({
+      submitting: true
+    });
     if (data.name) {
         this.props.dispatch(signup({
           name: data.name,
@@ -126,6 +113,9 @@ class AuthForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    this.setState({
+      submitting: false
+    })
     if (nextProps.error) {
       this.setState({
         error: nextProps.error
@@ -134,96 +124,10 @@ class AuthForm extends Component {
     this.props.dispatch(change('form', 'password', ''))
   }
 
-renderErrorMsg () {
+  renderErrorMsg () {
     return (
       <Paper style={Object.assign({}, styles.paperStyle, styles.errorMsg)}>
         <div>{this.state.error.data}</div>
-      </Paper>
-    )
-  }
-
-  renderLoginForm () {
-    return (
-      <Paper style={styles.paperStyle}>
-        <GitHubButton href='/auth/github' label='Sign In with GitHub' />
-        <Form
-          onSubmit={this._submitForm.bind(this)}
-          onValid={this.enableButton.bind(this)}
-          onInvalid={this.disableButton.bind(this)}>
-          <MyInput name="email" title="Email" validations="isEmail" validationError="This is not a valid email" required />
-          <MyInput name="password" title="Password" type="password" required />
-          <button type="submit" disabled={!this.state.canSubmit}>Submit</button>
-        </Form>
-      </Paper>
-    )
-  }
-        // <Formsy.Form
-        //   ref='form'
-        //   onValid={this.enableButton.bind(this)}
-        //   onInvalid={this.disableButton.bind(this)}
-        //   onValidSubmit={this._submitForm.bind(this)}>
-        //   <FormsyText
-        //     name="email"
-        //     type="email"
-        //     required
-        //     floatingLabelText="Email"
-        //     validations='isEmail'
-        //   />
-        //   <FormsyText
-        //     name="password"
-        //     type="password"
-        //     required
-        //     floatingLabelText="Password"
-        //   />
-        //   <div style={Object.assign({}, styles.button, styles.fullWidth)}>
-        //     <RaisedButton
-        //       type="submit"
-        //       label='Login'
-        //       secondary={true}
-        //       style={styles.fullWidth}
-        //       disabled={!this.state.canSubmit}
-        //     />
-        //   </div>
-        // </Formsy.Form>
-
-  renderSignupForm () {
-    return (
-      <Paper style={styles.paperStyle}>
-        <GitHubButton href='/auth/github' />
-        <Formsy.Form
-          ref='form'
-          onValidSubmit={this._submitForm.bind(this)}>
-          <FormsyText
-            name="name"
-            type="name"
-            required
-            floatingLabelText="Name"
-            validations='isWords'
-          />
-          <FormsyText
-            name="email"
-            type="email"
-            required
-            floatingLabelText="Email"
-            validations='isEmail'
-          />
-          <FormsyText
-            name="password"
-            type="password"
-            required
-            floatingLabelText="Password"
-            validates='minlength:6'
-          />
-          <div style={Object.assign({}, styles.button, styles.fullWidth)}>
-            <RaisedButton
-              type="submit"
-              label='Sign Up'
-              secondary={true}
-              style={styles.fullWidth}
-              disabled={!this.state.canSubmit}
-            />
-          </div>
-        </Formsy.Form>
       </Paper>
     )
   }
@@ -233,8 +137,8 @@ renderErrorMsg () {
       <div style={styles.form}>
         { this.props.error ? this.renderErrorMsg() : null }
         { this.props.location.pathname === 'login'
-          ? <Form email={this.state.email} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
-        : <Form name={this.state.name} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
+          ? <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
+        : <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
         }
       </div>
     )

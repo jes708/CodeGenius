@@ -11,11 +11,28 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import { getUserAssessments } from '../actions/userAssessmentActions'
 import styles from './graderStyles'
+import AssessmentForm from './AssessmentForm'
 
 class GraderAssessments extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isCreating: false
+    }
+  }
 
   componentWillMount () {
     this.props.dispatch(getUserAssessments())
+  }
+
+  toggleForm () {
+    this.setState({
+      isCreating: !this.state.isCreating
+    })
+  }
+
+  submitForm (data) {
+    alert(JSON.stringify(data))
   }
 
   renderTags (tags) {
@@ -44,11 +61,29 @@ class GraderAssessments extends Component {
     }
   }
 
+  renderToggleFormButton () {
+    return (
+      <RaisedButton
+        primary={true}
+        label={this.state.isCreating ? 'Cancel' : 'Create Assessment'}
+        icon={
+          this.state.isCreating
+            ? <FontIcon className='fa fa-times' />
+            : <FontIcon className='fa fa-plus' /> }
+        style={styles.skinny}
+        onClick={this.toggleForm.bind(this)}
+      />
+    )
+  }
+
   render () {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
-          {this.renderAssessments()}
+          {this.renderToggleFormButton()}
+          { this.state.isCreating
+            ? <AssessmentForm onSubmit={this.submitForm.bind(this)} />
+            : this.renderAssessments() }
         </div>
       </div>
     )
@@ -56,11 +91,7 @@ class GraderAssessments extends Component {
 }
 
 const mapStateToProps = state => {
-  const { userAssessments } = state
-  const { isFetching, items } = userAssessments || {
-    isFetching: true,
-    items: []
-  }
+  const { isFetching, items } = state.userAssessments
   return {
     isFetching,
     assessments: items

@@ -65,7 +65,7 @@ class Navbar extends Component {
       return (
         <ToolbarGroup style={styles.rightSide}>
           <Avatar src={this.props.user.photo } size={30} style={{alignSelf: 'center', marginRight: 10}} />
-          <ToolbarTitle text={this.props.user.username} style={{paddingRight: 0}} />
+          <ToolbarTitle text={this.props.user.name} style={{paddingRight: 0}} />
           <RaisedButton
             label="Logout"
             primary={true}

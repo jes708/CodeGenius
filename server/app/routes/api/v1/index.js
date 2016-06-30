@@ -12,7 +12,7 @@ router.use('/templates', require('./templates'));
 router.use('/evaluations', require('./assessments/evaluations'));
 router.use('/assessments', require('./assessments/assessments'));
 router.use('/rubrics', require('./assessments/rubrics'));
-
+router.use('/github', require('./github'));
 
 // Make sure this is after all of
 // the registered routes!

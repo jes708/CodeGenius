@@ -3,6 +3,7 @@
 // dependencies
 const path = require( 'path' );
 const bluebird = bluebirdForTests();
+const GitHub = require('../configure/github')
 
 //declarations
 const appPath = joinRootPath( "./server/app" );
@@ -114,6 +115,10 @@ function describeIt( describeStmt, itStmt, callback = function () {}, callWithDo
 
 function ensureAuthenticated( req, res, next ) {
   if ( req.isAuthenticated() ) {
+    GitHub.authenticate({
+      type: 'oauth',
+      token: req.user.github_token
+    })
     next();
   } else {
     res.status( 401 )

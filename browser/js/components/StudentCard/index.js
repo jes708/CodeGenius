@@ -6,23 +6,27 @@ import axios from 'axios';
 import { connect } from 'react-redux'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import Toggle from 'material-ui/Toggle'
+import Checkbox from 'material-ui/Checkbox'
 import styles from '../graderStyles'
 
 export default class StudentCard extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {toggled: true, style: styles.infoCard};
+    this.state = {
+      toggled: true,
+      done: false,
+      style: styles.infoCard};
   }
 
-  componentWillMount () {
-
+  handleCheck () {
+    if (this.state.done) this.setState({done: false});
+    else if (!this.state.done) this.setState({done: true});
   }
 
   handleToggle () {
     if (this.state.toggled) this.setState({toggled: false, style: styles.inactiveCard});
     else if (!this.state.toggled) this.setState({toggled: true, style: styles.infoCard});
-    this.handleToggle = this.handleToggle.bind(this);
   }
 
   render () {
@@ -33,6 +37,7 @@ export default class StudentCard extends Component {
             <img src={this.props.student.photo} alt={this.props.student.name} style={styles.student}/>
             {this.props.student.name}
           </a>
+          <Checkbox checked={this.state.done} onCheck={this.handleCheck.bind(this)} style={styles.toggle}/>
           <Toggle toggled={this.state.toggled} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
         </div>
       </Card>

@@ -125,11 +125,16 @@ class AuthForm extends Component {
       this.setState({
         error: nextProps.error
       })
+      setTimeout(() => {
+        this.setState({
+          error: null
+        })
+      }, 3000)
     }
     this.props.dispatch(change('form', 'password', ''))
   }
 
-renderErrorMsg () {
+  renderErrorMsg () {
     return (
       <Paper style={Object.assign({}, styles.paperStyle, styles.errorMsg)}>
         <div>{this.state.error.data}</div>

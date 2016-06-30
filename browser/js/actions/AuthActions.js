@@ -25,7 +25,7 @@ export function login (credentials, dispatch) {
         user
       })
     })
-    .catch(err => dispatch({ type: AUTH_LOGIN_FAILURE, err }))
+    .catch(error => dispatch({ type: AUTH_LOGIN_FAILURE, error }))
   }
 }
 

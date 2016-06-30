@@ -35,7 +35,11 @@ class GraderStudents extends Component {
   renderStudents () {
     if (!this.props.teamFetching && this.props.team) {
       let students = this.props.team.students;
-      students = students.name.sort()
+      students = students.sort(function(a,b) {
+        if (a.name < b.name) return -1;
+        else if (a.name > b.name) return 1;
+        else return 0;
+      })
       return students.map((student, i) => {
         return (
           <StudentCard key={i} student={student}/>

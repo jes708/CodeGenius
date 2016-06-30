@@ -8,6 +8,9 @@ import FontIcon from 'material-ui/FontIcon'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import CommentCard from '../Comment';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import {List, ListItem} from 'material-ui/List';
+
 
 const styles = {
   paperStyle: {
@@ -48,58 +51,28 @@ const styles = {
   }
 }
 
-const SAMPLE_SPEC = {
-  "Fake Library App": [
-    "static files (from the static folder in the public folder) on /files route",
-    "handles internal server errors",
-    "handles custom errors",
-  ],
-  "Fake Library App /api/books": [
-    "GET all",
-    "POST one"
-  ]
-}
+
 
 export default class GraderPanel extends Component {
-  renderCriterion () {
-    return (
-      <RadioButtonGroup name="criteria">
-        <RadioButton
-          value="1"
-          label="Unbearable"
-        />
-        <RadioButton
-          value="2"
-          label="Horrible"
-        />
-        <RadioButton
-          value="3"
-          label="Acceptable"
-        />
-        <RadioButton
-          value="4"
-          label="Near Perfect"
-        />
-        <RadioButton
-          value="5"
-          label="Flawless"
-        />
-      </RadioButtonGroup>
-    )
+
+  constructor(props){
+    super(props)
+    console.log(this);
+    this.onCardClickHandler = this.selectCard.bind(this);
   }
 
-  renderCards () {
-    let cards = []
-
-    cards = Object.keys(SAMPLE_SPEC).map((title, i) => {
-      return SAMPLE_SPEC[title].map((spec, j) => {
+  renderCards (comments = SAMPLE_SPEC) {
+    var self = this;
+    return comments.map((contents, index) => {
         return (
-          <CommentCard {...this.props} key={(i + ' ' + j)} title={title} spec = {spec} renderCriterion = {this.renderCriterion} >
+          <CommentCard  key={index} currentKey={index} contents={contents} onClick={function(){console.log('howdy')}} {...self.props}  >
           </ CommentCard>
         )
-      })
     })
-    return cards
+  }
+
+  selectCard (){
+    console.log('current card');
   }
 
   render () {
@@ -134,7 +107,14 @@ export default class GraderPanel extends Component {
             icon={<FontIcon className='fa fa-plus' />}
             style={styles.skinny}
           />
-          {this.renderCards()}
+          <List>
+            {this.props.comments.map((contents, index) => {
+                return (
+                  <CommentCard key={index} contents={contents} commentIndex={index}  >
+                  </ CommentCard>
+                )
+            })}
+          </List>
         </div>
       </div>
     )

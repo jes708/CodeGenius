@@ -56,6 +56,21 @@ const styles = {
   }
 }
 
+const SAMPLE_COMMENTS = [
+  {
+    title: "First really great thing",
+    markdown: `static files (from the static folder in the public folder) on /files route,
+    handles internal server errors,
+    handles custom errors`
+  },
+  {
+    title: "Second really great thing",
+    markdown: `static files (from the static folder in the public folder) on /files route,
+    handles internal server errors,
+    handles custom errors`
+  }
+]
+
 export default class Grade extends Component {
   constructor(props) {
     super(props)
@@ -146,7 +161,7 @@ export class GradeView extends Component {
         case 'Students':
           return <GraderStudents />;
         case 'Panel':
-          return <GraderPanel />;
+          return <GraderPanel comments={ SAMPLE_COMMENTS } />;
         default:
           return <GraderHome />;
       }

@@ -1,25 +1,14 @@
 'use strict';
 
-const annotator_initialState = {
-  selection: {},
-  annotation: {},
-  selectionString: '',
-  mouseDownEvent: {},
-  mouseUpEvent: {}
+const comment_initialState = {
+  commentKey: null
 }
 
-export default function annotationReducer(state = annotator_initialState, action){
+export default function commentReducer(state = comment_initialState, action){
   switch(action.type){
-    case 'SELECTION':
+    case 'SELECT_COMMENT':
       return Object.assign({}, state, {
-        selection: action.selection,
-        selectionString: action.selectionString
-      })
-    case 'ANNOTATION':
-      return Object.assign({}, state, {
-        annotation: action.annotation,
-        selection: action.selection,
-        selectionString: action.selectionString
+        commentKey: action.payload,
       })
     default:
       return state

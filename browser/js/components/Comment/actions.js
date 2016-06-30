@@ -1,22 +1,11 @@
 'use strict'
 
-export const SELECTION = 'SELECTION'
-export const ANNOTATION = 'ANNOTATION'
+export const SELECT_COMMENT = Symbol('SELECT_COMMENT')
 
 
-export function selection(_selection){
+export function selectComment(key){
   return {
-    type: SELECTION,
-    selection: _selection,
-    selectionString: _selection.toString()
-  }
-}
-
-export function annotation(_selection, _annotation){
-  return {
-    type: ANNOTATION,
-    annotation: _annotation,
-    selection: _selection,
-    selectionString: _selection.toString()
+    type: SELECT_COMMENT,
+    payload: {key}
   }
 }

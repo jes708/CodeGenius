@@ -84,13 +84,9 @@ class AuthForm extends Component {
   constructor(props) {
     super(props)
     this.state = {
-// <<<<<<< HEAD
-      canSubmit: false
-// =======
-      // canSubmit: true,
-      // error: null,
-      // email: ''
-// >>>>>>> master
+      canSubmit: true,
+      error: null,
+      submitting: false
     }
   }
 
@@ -107,6 +103,9 @@ class AuthForm extends Component {
   }
 
   _submitForm (data) {
+    this.setState({
+      submitting: true
+    });
     if (data.name) {
         this.props.dispatch(signup({
           name: data.name,
@@ -126,6 +125,11 @@ class AuthForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    //head
+    this.setState({
+      submitting: false
+    })
+    //
     if (nextProps.error) {
       this.setState({
         error: nextProps.error
@@ -233,8 +237,8 @@ renderErrorMsg () {
       <div style={styles.form}>
         { this.props.error ? this.renderErrorMsg() : null }
         { this.props.location.pathname === 'login'
-          ? <Form email={this.state.email} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
-        : <Form name={this.state.name} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
+          ? <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
+        : <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
         }
       </div>
     )

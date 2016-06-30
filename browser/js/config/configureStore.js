@@ -8,12 +8,13 @@ import rootReducer from '../reducers';
 const loggerMiddleware = createLogger();
 
 export default function configureStore (initialState) {
+  const middlewares = [thunkMiddleware]
+  if (process.env.NODE_ENV !== 'production') {
+    middlewares.push(createLogger())
+  }
+
   return createStore(rootReducer, initialState, compose(
-    applyMiddleware(
-      loggerMiddleware,
-      thunkMiddleware
-    ),
-    window.devToolsExtension ? window.devToolsExtension() : f => f
-    )
-  );
+    applyMiddleware(...middlewares),
+    window.devToolsExtension ? window.devToolsExtension() : f => f)
+  )
 }

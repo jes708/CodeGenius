@@ -57,18 +57,6 @@ const styles = {
   }
 }
 
-const SAMPLE_SPEC = {
-  "Fake Library App": [
-    "static files (from the static folder in the public folder) on /files route",
-    "handles internal server errors",
-    "handles custom errors",
-  ],
-  "Fake Library App /api/books": [
-    "GET all",
-    "POST one"
-  ]
-}
-
 class GraderAssessments extends Component {
 
   componentWillMount () {

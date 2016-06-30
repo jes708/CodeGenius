@@ -29,6 +29,21 @@ export function login (credentials) {
   }
 }
 
+//need to check if it works
+export function signup (credentials) {
+  return dispatch => {
+    return axios.post('/signup', credentials)
+    .then(res => {
+      dispatch(loginSuccess({
+        email: credentials.email,
+        password: credentials.password
+      }))
+    })
+    .catch(err => dispatch(signupError(err)))
+    //signuperror not exist
+  }
+}
+
 export function getLoggedInUser () {
   return (dispatch, getState)  => {
     let user = getState().session.user

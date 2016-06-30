@@ -67,18 +67,14 @@ const SAMPLE_SPEC = {
   ]
 }
 
+<<<<<<< HEAD
 class GraderStudents extends Component {
-
-  // componentWillReceiveProps () {
-  //   this.props.dispatch(getAssessmentTeam(1))
-  // }
 
   componentWillMount () {
     this.props.dispatch(getAssessmentTeam(1))
   }
 
   renderStudents () {
-    
     if (!this.props.teamFetching && this.props.team) {
       console.log("props", this.props)
       return this.props.team.students.map((student, i) => {

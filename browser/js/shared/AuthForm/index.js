@@ -125,11 +125,9 @@ class AuthForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    //head
     this.setState({
       submitting: false
     })
-    //
     if (nextProps.error) {
       this.setState({
         error: nextProps.error

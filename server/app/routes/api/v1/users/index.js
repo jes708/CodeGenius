@@ -19,7 +19,8 @@ const models = db()
 const {
   user: User,
   team: Team,
-  organization: Organization
+  organization: Organization,
+  assessment: Assessment
 } = models;
 const Resource = User;
 
@@ -48,6 +49,16 @@ router.get( '/:id', ( req, res, next ) => {
 router.post( '/', ensureAuthenticated, sequelizeHandlers.create( Resource ) );
 router.put( '/:id', ensureAuthenticated, sequelizeHandlers.update( Resource ) );
 router.delete( '/:id', ensureAuthenticated, sequelizeHandlers.remove( Resource ) );
+
+router.get('/:id/assessments', ensureAuthenticated, (req, res, next) => {
+  Assessment.findAll({
+    where: {
+      instructorId: req.params.id
+    }
+  })
+  .then(assessments => res.json(assessments))
+  .catch(next)
+})
 
 
 respondWith404( router );

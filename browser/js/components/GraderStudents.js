@@ -75,7 +75,6 @@ class GraderStudents extends Component {
 
   renderStudents () {
     if (!this.props.teamFetching && this.props.team) {
-      console.log("props", this.props)
       return this.props.team.students.map((student, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>

@@ -9,13 +9,13 @@ import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import { getUserAssessments } from '../actions/userAssessmentActions'
+import { getUserAssessments } from '../actions/assessmentActions'
 import styles from './graderStyles'
 
 class GraderAssessments extends Component {
 
   componentWillMount () {
-    this.props.dispatch(getUserAssessments())
+    this.props.dispatch(getUserAssessments(1))
   }
 
   renderTags (tags) {
@@ -25,7 +25,7 @@ class GraderAssessments extends Component {
   }
 
   renderAssessments () {
-    if (!this.props.isFetching) {
+    if (!this.props.isFetching && this.props.assessments.length) {
       return this.props.assessments.map((assessment, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
@@ -56,9 +56,8 @@ class GraderAssessments extends Component {
 }
 
 const mapStateToProps = state => {
-  const { userAssessments } = state
-  const { isFetching, items } = userAssessments || {
-    isFetching: true,
+  const { isFetching, items } = state.assessments || {
+    isFetching: false,
     items: []
   }
   return {

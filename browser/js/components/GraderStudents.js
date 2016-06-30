@@ -11,7 +11,7 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import { getAssessmentTeam } from '../actions/assessmentTeamActions'
 import Toggle from 'material-ui/Toggle'
-import IsStudent from './IsStudent'
+import StudentCard from './StudentCard'
 import styles from './graderStyles'
 
 const SAMPLE_SPEC = {
@@ -34,7 +34,9 @@ class GraderStudents extends Component {
 
   renderStudents () {
     if (!this.props.teamFetching && this.props.team) {
-      return this.props.team.students.map((student, i) => {
+      let students = this.props.team.students;
+      students = students.name.sort()
+      return students.map((student, i) => {
         return (
           <StudentCard key={i} student={student}/>
         )

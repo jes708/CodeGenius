@@ -25,11 +25,11 @@ router.get('/:teamId/members', ensureAuthenticated, (req, res, next) => {
   .catch(next)
 })
 
-router.get('/:user/:repo/contents/:path', ensureAuthenticated, (req, res, next) => {
+router.get('/:user/:repo/contents/', ensureAuthenticated, (req, res, next) => {
   GitHub.repos.getContentAsync({
     user: req.params.user,
     repo: req.params.repo,
-    path: req.params.path
+    path: req.query.path
   })
   .then(resData => {
     res.json(Buffer.from(resData.content, 'base64').toString('utf8'))

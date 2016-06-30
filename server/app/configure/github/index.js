@@ -1,8 +1,8 @@
 'use strict'
 
-import GitHubApi from 'github'
-import Promise from 'bluebird'
-import _ from 'lodash'
+const GitHubApi = require('github')
+const Promise = require('bluebird')
+const _ = require('lodash')
 
 const github = new GitHubApi({
   debug: true,
@@ -12,7 +12,7 @@ const github = new GitHubApi({
   headers: {
       "user-agent": "CodeGenius" // GitHub is happy with a unique user agent
   },
-  Promise: require('sequelize').Promise,
+  Promise: Promise,
   // followRedirects: false, // default: true; there's currently an issue with non-get redirects, so allow ability to disable follow-redirects
   timeout: 5000
 })

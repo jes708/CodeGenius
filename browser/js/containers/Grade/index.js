@@ -67,7 +67,7 @@ export default class Grade extends Component {
     }
   }
   getData () {
-    axios.get('/api/v1/github/jes708/my-private-repo/contents/test.js')
+    axios.get('https://raw.githubusercontent.com/christianalfoni/formsy-react/master/examples/login/app.js')
     .then(res => res.data)
     .then(content => {
       this.setState({

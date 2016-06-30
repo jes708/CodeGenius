@@ -22,9 +22,9 @@ const allIds = (state = [], action) => {
 }
 
 const byId = (state = {}, action) => {
+  let newState = Object.assign({}, state)
   switch (action.type) {
     case LOAD_ASSESSMENTS_SUCCESS:
-      let newState = {...state}
       action.assessments.forEach(assessment => {
         newState[assessment.id] = assessment(assessment, action)
       })

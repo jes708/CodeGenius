@@ -47,6 +47,11 @@ const styles = {
     fontSize: 16,
     color: '#F5F5F5',
     fontWeight: '300'
+  },
+  student: {
+    borderRadius: '50%',
+    height: 40,
+    marginRight: 10
   }
 }
 
@@ -76,12 +81,12 @@ class GraderStudents extends Component {
     
     if (!this.props.teamFetching) {
       console.log("props", this.props)
-      return this.props.team.students.map((student, i) => {
+      return this.props.team.map((student, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
             <div style={styles.gradingInfo}>
               <a href="#" style={styles.gradingSubtitle}>
-                <img src={student.photo} alt=""/>
+                <img src={student.photo} alt={student.name} style={styles.student}/>
                 {student.name}
               </a>
             </div>
@@ -93,10 +98,8 @@ class GraderStudents extends Component {
 
   render () {
     if (this.props.teamFetching) {
-      console.log('loading????')
       return <h1>Loading...</h1>
     } else {
-      console.log('not loading')
       return (
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
@@ -112,7 +115,7 @@ const mapStateToProps = state => {
   const { assessmentTeam } = state
   const { teamFetching, team } = assessmentTeam || {
     teamFetching: true,
-    team: {}
+    team: []
   }
   return {
     teamFetching,

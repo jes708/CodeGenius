@@ -8,7 +8,7 @@ import {
 
 const initialState = {
   teamFetching: false,
-  team: {},
+  team: [],
   error: null
 }
 
@@ -17,16 +17,16 @@ export default function assessmentTeam (state = initialState, action) {
   switch (action.type) {
     case LOAD_TEAM_REQUEST:
       return Object.assign({}, state, {
-        isFetching: true
+        teamFetching: true
       })
     case LOAD_TEAM_SUCCESS:
       return Object.assign({}, state, {
-        isFetching: false,
+        teamFetching: false,
         team: action.team
       })
     case LOAD_TEAM_FAILURE:
       return Object.assign({}, state, {
-        isFetching: false,
+        teamFetching: false,
         error: action.error
       })
     default:

@@ -8,7 +8,6 @@ import {
 
 const initialState = {
   teamFetching: false,
-  team: [],
   error: null
 }
 

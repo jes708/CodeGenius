@@ -15,7 +15,7 @@ export function getAssessmentTeam (id) {
     .then(res => res.data)
     .then(resData => {
       console.log('resData', resData);
-      dispatch({ type: LOAD_TEAM_SUCCESS, team: resData.students });
+      dispatch({ type: LOAD_TEAM_SUCCESS, team: resData });
     })
     .catch(err => dispatch({ type: LOAD_TEAM_FAILURE, err }))
   }

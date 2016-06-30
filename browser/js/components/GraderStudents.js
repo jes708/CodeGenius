@@ -79,9 +79,9 @@ class GraderStudents extends Component {
 
   renderStudents () {
     
-    if (!this.props.teamFetching) {
+    if (!this.props.teamFetching && this.props.team) {
       console.log("props", this.props)
-      return this.props.team.map((student, i) => {
+      return this.props.team.students.map((student, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
             <div style={styles.gradingInfo}>
@@ -97,7 +97,7 @@ class GraderStudents extends Component {
   }
 
   render () {
-    if (this.props.teamFetching) {
+    if (this.props.teamFetching && !this.props.team) {
       return <h1>Loading...</h1>
     } else {
       return (
@@ -113,10 +113,7 @@ class GraderStudents extends Component {
 
 const mapStateToProps = state => {
   const { assessmentTeam } = state
-  const { teamFetching, team } = assessmentTeam || {
-    teamFetching: true,
-    team: []
-  }
+  const { teamFetching, team } = assessmentTeam
   return {
     teamFetching,
     team

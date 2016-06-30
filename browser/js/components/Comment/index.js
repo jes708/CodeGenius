@@ -157,7 +157,8 @@ class Comment extends Component {
 
 const mapStateToProps = (state, props) => {
   const annotation = state.annotation;
-  if(annotation.selection.selectionString !== ""){
+  debugger;
+  if(annotation.selectionString != ""){
     let contents = Object.assign( {}, props.contents, { selection: annotation.selection } )
     return {
       contents

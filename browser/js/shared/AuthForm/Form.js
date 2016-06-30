@@ -40,6 +40,7 @@ const styles = {
 let signingUp = false;
 
 const validate = values => {
+  if (!values) return {};
   const errors = {}
   if (!values.email) {
     errors.email = 'Required'
@@ -70,7 +71,7 @@ const validate = values => {
 
 class Form extends Component {
   render() {
-    const {fields: {name, email, password, passwordConfirm}, handleSubmit, resetForm, onSubmit, signUp} = this.props;
+    const {fields: {name, email, password, passwordConfirm}, handleSubmit, resetForm, submitting, onSubmit, signUp} = this.props;
     signingUp = signUp ? true : false;
     return (
       <Paper style={styles.paperStyle}>
@@ -110,6 +111,7 @@ class Form extends Component {
               secondary={true}
               onClick={handleSubmit}
               style={styles.fullWidth}
+              disabled={submitting}
               label={signUp ? 'Signup' : 'Login'}
               type="submit"
             />
@@ -120,6 +122,7 @@ class Form extends Component {
                 primary={true}
                 onClick={resetForm}
                 style={styles.fullWidth}
+                disabled={submitting}
                 type="submit"
                 label="Reset"
               />
@@ -142,5 +145,5 @@ Form.propTypes = {
 export default reduxForm({
   form: 'form',
   fields,
-  validate
+  // validate
 })(Form)

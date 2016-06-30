@@ -24,10 +24,12 @@ export const getUserAssessments = (id) => (dispatch) => {
   .catch(error => dispatch({ type: LOAD_ASSESSMENTS_FAILURE, error }))
 }
 
-export const createAssessment = (assessment) => (dispatch) => {
+export const createAssessment = (assessment) => (dispatch, getState) => {
   dispatch({ type: CREATE_ASSESSMENT_REQUEST })
 
-  return axios.post(ASSESSMENT_URL).then(res => res.data)
+  assessment.instructorId = getState().session.user.id
+
+  return axios.post(ASSESSMENT_URL, assessment).then(res => res.data)
   .then(resData => dispatch({
     type: CREATE_ASSESSMENT_SUCCESS,
     assessment: resData

@@ -17,48 +17,8 @@ import {grey400, darkBlack, lightBlack} from 'material-ui/styles/colors';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {List, ListItem} from 'material-ui/List';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
+import styles from '../graderStyles';
 
-const styles = {
-  paperStyle: {
-    height: '100%',
-    overflow: 'scroll'
-  },
-  content: {
-    padding: 16
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  gradingInfo: {
-    color: '#FFF',
-    padding: 16
-  },
-  gradingTitle: {
-    fontSize: 24,
-    fontWeight: '400'
-  },
-  gradingSubtitle: {
-    fontSize: 16,
-    color: '#F5F5F5',
-    fontWeight: '300'
-  },
-  assessmentButtons: {
-    margin: 5
-  }
-}
 let criteria = (
 <RadioButtonGroup name="criteria">
   <RadioButton
@@ -90,9 +50,16 @@ let defaultContents = {
   // tags: ['foo', 'bar', 'baz'],
   // attachments: ['foo', 'bar', 'baz'],
   // annotation: null,
+  tags: [
+    {}
+  ]
   criteria: criteria,
   markdown: "blah blah blah"
 }
+
+
+
+
 
 class Comment extends Component {
   constructor(props){
@@ -116,30 +83,35 @@ class Comment extends Component {
       { (!contents.description && isEditing) ? <RaisedButton style={buttonStyle} label="Add Description" /> : "" }
       { (!contents.score && isEditing) ? <RaisedButton style={buttonStyle} label="Add Score" /> : ""}
       { (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : ""}
-      { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : ""}
+      { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : (
+        <div style={styles.tags}>
+          {this.renderTags(assessment.tags)}
+        </div>)
+      }
       { (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""}
       { (!contents.selection) ? (isEditing ? <RaisedButton style={buttonStyle} label="Add Annotation" /> : "") : (
         <div>
-        <div>
-          <TextField
-          hintText="Annotate Code"
-          defaultValue = {contents.selection.toString()}
-          floatingLabelText="Code Annotation"
-          multiLine={true}
-           />
-          <br />
-        </div>
-        < FlatButton href="/grade">Go to Code</ FlatButton>
+          <div>
+            <TextField
+            hintText="Annotate Code"
+            defaultValue = {contents.selection.toString()}
+            floatingLabelText="Code Annotation"
+            multiLine={true}
+             />
+          </div>
+          < FlatButton href="/grade">Go to Code</ FlatButton>
         </div>
       ) }
       { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }
       { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" /> : (
-        <TextField
-          hintText="Add a comment"
-          defaultValue = {contents.markdown}
-          floatingLabelText="Instructor Comments"
-          multiLine={true}
-           />
+        <div>
+          <TextField
+            hintText="Add a comment"
+            defaultValue = {contents.markdown}
+            floatingLabelText="Instructor Comments"
+            multiLine={true}
+             />
+        </div>
       ) }
 
       </div>)
@@ -150,6 +122,13 @@ class Comment extends Component {
   }
   editModeDone(){
     this.props.dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null}})
+  }
+  renderTags (tags) {
+    if (tags) {
+      return tags.map((tag, i) => {
+        return <Chip key={i} style={styles.tag}>{tag}</Chip>
+      })
+    }
   }
   render(){
     const iconButtonElement = (
@@ -171,13 +150,13 @@ class Comment extends Component {
       </IconMenu>
     );
     return (
-      <Card key={1} >
+      <Card key={1}  style={styles.skinny} >
       {/*<CardHeader
       title={this.props.contents.title}
       actAsExpander={true}
       showExpandableButton={true}
       />*/}
-      <ListItem style={styles.skinny} primaryText={this.props.contents.title} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
+      <ListItem primaryText={this.props.contents.title} initiallyOpen={true} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
           <CardText expandable={true} style={styles.noTopPadding}>
           <hr style={styles.skinny} />
           {this.renderComment()}

@@ -40,7 +40,6 @@ const styles = {
 let signingUp = false;
 
 const validate = values => {
-  console.log('faulty form', values)
   if (!values) return {};
   const errors = {}
   if (!values.email) {

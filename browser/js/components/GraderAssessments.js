@@ -13,6 +13,7 @@ import { getUserAssessments, createAssessment } from '../actions/assessmentActio
 import styles from './graderStyles'
 import AssessmentForm from './AssessmentForm'
 import { onActive } from 'material-ui/Tabs'
+import { getAllAssessments } from '../reducers/assessments'
 
 class GraderAssessments extends Component {
   constructor(props) {
@@ -23,7 +24,6 @@ class GraderAssessments extends Component {
   }
 
   componentWillMount () {
-    console.log('from assessments')
     if (this.props.user) {
       this.props.dispatch(getUserAssessments(this.props.user.id))
     }
@@ -39,6 +39,8 @@ class GraderAssessments extends Component {
     this.props.dispatch(createAssessment(data))
     this.props.switchTabs('Panel')
   }
+
+
 
   renderTags (tags) {
     if (tags) {
@@ -109,11 +111,11 @@ GraderAssessments.contextTypes = {
 
 const mapStateToProps = state => {
   const { session, assessments } = state
-  const { isFetching, items } = assessments
+  const { isFetching } = assessments
   const { user } = session
   return {
     isFetching,
-    assessments: items,
+    assessments: getAllAssessments(assessments.byId),
     user
   }
 }

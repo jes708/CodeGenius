@@ -18,6 +18,9 @@ import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui
 import {List, ListItem} from 'material-ui/List';
 import ModeEdit from 'material-ui/svg-icons/editor/mode-edit';
 import styles from '../graderStyles';
+import _ from 'lodash';
+import Chip from 'material-ui/Chip'
+
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -51,8 +54,8 @@ let defaultContents = {
   // attachments: ['foo', 'bar', 'baz'],
   // annotation: null,
   tags: [
-    {}
-  ]
+    {name: 'foo', color: '#3F51B5'}
+  ],
   criteria: criteria,
   markdown: "blah blah blah"
 }
@@ -84,8 +87,8 @@ class Comment extends Component {
       { (!contents.score && isEditing) ? <RaisedButton style={buttonStyle} label="Add Score" /> : ""}
       { (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : ""}
       { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : (
-        <div style={styles.tags}>
-          {this.renderTags(assessment.tags)}
+        <div style={styles.tags} >
+          {this.renderTags(contents.tags, styles.tags)}
         </div>)
       }
       { (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""}
@@ -123,10 +126,15 @@ class Comment extends Component {
   editModeDone(){
     this.props.dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null}})
   }
-  renderTags (tags) {
+  deleteTag(index, tag){
+    console.log(index, tag);
+    return ()=>alert(`deleting tag ${index.i} ${tag.tag.name}`)
+  }
+  renderTags (tags, tagStyle) {
     if (tags) {
       return tags.map((tag, i) => {
-        return <Chip key={i} style={styles.tag}>{tag}</Chip>
+        let thisTagStyle = _.cloneDeep(tagStyle);
+        return <Chip key={i} tag={tag.name} onRequestDelete={this.deleteTag({i}, {tag})} backgroundColor={tag.color} style={thisTagStyle}>{tag.name}</Chip>
       })
     }
   }

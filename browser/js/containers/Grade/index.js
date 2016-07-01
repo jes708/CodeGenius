@@ -61,13 +61,19 @@ const SAMPLE_COMMENTS = [
     title: "First really great thing",
     markdown: `static files (from the static folder in the public folder) on /files route,
     handles internal server errors,
-    handles custom errors`
+    handles custom errors`,
+    tags: [
+      {name: 'foo', color: '#3F51B5'}
+    ]
   },
   {
     title: "Second really great thing",
     markdown: `static files (from the static folder in the public folder) on /files route,
     handles internal server errors,
-    handles custom errors`
+    handles custom errors`,
+    tags: [
+      {name: 'bar', color: '#3F51B5'}
+    ]
   }
 ]
 

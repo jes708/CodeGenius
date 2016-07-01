@@ -87,6 +87,6 @@ AssessmentForm.propTypes = {
 }
 
 export default reduxForm({
-  form: 'assessmentForm',
+  form: 'form',
   fields
 })(AssessmentForm)

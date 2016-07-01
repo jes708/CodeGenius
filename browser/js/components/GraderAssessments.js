@@ -9,10 +9,9 @@ import FontIcon from 'material-ui/FontIcon';
 import Chip from 'material-ui/Chip'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import { getUserAssessments, createAssessment } from '../actions/assessmentActions'
+import { getUserAssessments } from '../actions/userAssessmentActions'
 import styles from './graderStyles'
 import AssessmentForm from './AssessmentForm'
-import { onActive } from 'material-ui/Tabs'
 
 class GraderAssessments extends Component {
   constructor(props) {
@@ -23,10 +22,7 @@ class GraderAssessments extends Component {
   }
 
   componentWillMount () {
-    console.log('from assessments')
-    if (this.props.user) {
-      this.props.dispatch(getUserAssessments(this.props.user.id))
-    }
+    this.props.dispatch(getUserAssessments())
   }
 
   toggleForm () {
@@ -36,20 +32,17 @@ class GraderAssessments extends Component {
   }
 
   submitForm (data) {
-    this.props.dispatch(createAssessment(data))
-    this.props.switchTabs('Panel')
+    alert(JSON.stringify(data))
   }
 
   renderTags (tags) {
-    if (tags) {
-      return tags.map((tag, i) => {
-        return <Chip key={i} style={styles.tag}>{tag}</Chip>
-      })
-    }
+    return tags.map((tag, i) => {
+      return <Chip key={i} style={styles.tag}>{tag}</Chip>
+    })
   }
 
   renderAssessments () {
-    if (!this.props.isFetching && this.props.assessments.length) {
+    if (!this.props.isFetching) {
       return this.props.assessments.map((assessment, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
@@ -63,8 +56,6 @@ class GraderAssessments extends Component {
           </Card>
         )
       })
-    } else if (!this.props.isFetching && !this.props.assessments.length) {
-      return <h1 style={{textAlign: 'center'}}>No Assessments</h1>
     } else {
       return <h1 style={{textAlign: 'center'}}>Loading...</h1>
     }
@@ -99,22 +90,11 @@ class GraderAssessments extends Component {
   }
 }
 
-GraderAssessments.propTypes = {
-  switchTabs: PropTypes.func.isRequired
-}
-
-GraderAssessments.contextTypes = {
-  router: PropTypes.object.isRequired
-}
-
 const mapStateToProps = state => {
-  const { session, assessments } = state
-  const { isFetching, items } = assessments
-  const { user } = session
+  const { isFetching, items } = state.userAssessments
   return {
     isFetching,
-    assessments: items,
-    user
+    assessments: items
   }
 }
 

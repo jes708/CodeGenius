@@ -17,25 +17,23 @@ module.exports = {
 
 
 function addAssociations( db ) {
-  const { comment, assessment, tag, itemTag } = db.models;
-  [ comment, assessment ].forEach( Model => {
-    Model.belongsToMany(Tag, {
-      through: {
-        model: itemTag,
-        unique: false,
-        scope: {
-          taggable: Model.toString()
-        }
-      },
-      foreignKey: 'taggable_id',
-      constraints: false
-    });
-    Tag.belongsToMany(Model, {
-      through: {
-        model: itemTag,
-        unique: false
-      },
-      foreignKey: 'tag_id'
-    });
-  })
+  const Assessment = db.models['assessment'];
+  const Tag = db.models[ 'tag' ];
+  const ItemTag = db.models[ 'itemTag' ];
+  Assessment.belongsToMany(Tag, {
+    through: {
+      model: ItemTag,
+      unique: false
+    },
+    // foreignKey: 'taggable_id',
+    constraints: false
+  });
+  Tag.belongsToMany(Assessment, {
+    through: {
+      model: ItemTag,
+      unique: false
+    },
+    // foreignKey: 'tag_id'
+    constraints: false
+  });
 }

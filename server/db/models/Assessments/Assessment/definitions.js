@@ -12,9 +12,6 @@ module.exports = function(db){
       description: {
         type: Sequelize.TEXT
       },
-      tags: {
-        type: Sequelize.ARRAY(Sequelize.TEXT)
-      },
       repoUrl: {
         type: Sequelize.STRING,
         validate: {

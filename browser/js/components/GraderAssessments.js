@@ -36,8 +36,9 @@ class GraderAssessments extends Component {
   }
 
   submitForm (data) {
-    this.props.dispatch(createAssessment(data))
-    this.props.switchTabs('Panel')
+    console.log(data)
+    // this.props.dispatch(createAssessment(data))
+    // this.props.switchTabs('Panel')
   }
 
 

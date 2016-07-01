@@ -27,6 +27,12 @@ router.get('/rate_limit', ensureAuthenticated, (req, res, next) => {
   .catch(next)
 })
 
+router.get('/orgs', ensureAuthenticated, (req, res, next) => {
+  GitHub.users.getOrgsAsync({ per_page: 100 })
+  .then(userOrgs => res.json(userOrgs))
+  .catch(next)
+})
+
 router.get('/:org', ensureAuthenticated, (req, res, next) => {
   GitHub.orgs.getAsync({ org: req.params.org })
   .then(org => res.json(org))
@@ -45,16 +51,29 @@ router.get('/:teamId/members', ensureAuthenticated, (req, res, next) => {
   .catch(next)
 })
 
-router.get('/:user/:repo/contents/', ensureAuthenticated, (req, res, next) => {
+router.get('/:user/:repo', ensureAuthenticated, (req, res) => {
+  GitHub.repos.getAsync({
+    user: req.params.user,
+    repo: req.params.repo
+  })
+  .then(resData => res.json(resData))
+  .catch(err => res.sendStatus(err.code))
+})
+
+router.get('/:user/:repo/contents/', ensureAuthenticated, (req, res) => {
   GitHub.repos.getContentAsync({
     user: req.params.user,
     repo: req.params.repo,
-    path: req.query.path
+    path: req.query.path || ''
   })
   .then(resData => {
-    res.json(Buffer.from(resData.content, 'base64').toString('utf8'))
+    if (!resData.content) {
+      res.status(404).send('There was an error')
+    } else {
+      res.json(Buffer.from(resData.content, 'base64').toString('utf8'))
+    }
   })
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
 router.get('/:user/:repo/:teamId/forks', ensureAuthenticated, (req, res, next) => {

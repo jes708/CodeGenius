@@ -15,7 +15,7 @@ module.exports = {
   module: {
     preLoaders: [{ test: /\.jsx?$/, loaders: ['eslint'] }],
     loaders: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ['react', 'es2015']} },
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
       { test: /\.json$/, loader: 'json-loader' },
       {
         test: /\.s?css$/,

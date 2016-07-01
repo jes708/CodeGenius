@@ -10,7 +10,12 @@ import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import CommentCard from '../Comment';
 import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {List, ListItem} from 'material-ui/List';
+import { connect } from 'react-redux';
 
+
+function buildGraderPanel(dispatch){
+  return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
+}
 
 const styles = {
   paperStyle: {
@@ -53,12 +58,16 @@ const styles = {
 
 
 
-export default class GraderPanel extends Component {
+class GraderPanel extends Component {
 
   constructor(props){
     super(props)
+
+  }
+
+  componentWillMount(){
     console.log(this);
-    this.onCardClickHandler = this.selectCard.bind(this);
+    buildGraderPanel(this.props.dispatch);
   }
 
   renderCards (comments = SAMPLE_SPEC) {
@@ -69,10 +78,6 @@ export default class GraderPanel extends Component {
           </ CommentCard>
         )
     })
-  }
-
-  selectCard (){
-    console.log('current card');
   }
 
   render () {
@@ -120,3 +125,5 @@ export default class GraderPanel extends Component {
     )
   }
 }
+
+export default connect()(GraderPanel)

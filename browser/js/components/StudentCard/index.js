@@ -17,7 +17,7 @@ export default class StudentCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      toggled: true,
+      toggled: this.props.student.isStudent || true,
       style: styles.infoCard,
       status: 'done'
     }

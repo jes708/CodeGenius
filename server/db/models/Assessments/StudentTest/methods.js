@@ -11,7 +11,37 @@ module.exports = {
     };
   },
   instance: function(db){
-    return {};
+    return {
+      totalScore: function() {
+        db.model('criterionResponse').findAll({
+          where: {
+            studentTestId: this.id
+          }
+        }).then(function(scores) {
+          return scores.reduce(function(sum, score) {
+            return sum + score;
+          }, 0) 
+        }).then(function(score) {
+          this.update({score: score})
+        })
+        return this;
+      }
+    };
+  },
+  getter: function(db){
+    return {
+      totalScore: function() {
+        return db.model('criterionResponse').findAll({
+          where: {
+            studentTestId: this.id
+          }
+        }).then(function(scores) {
+          return scores.reduce(function(sum, score) {
+            return sum + score;
+          }, 0) 
+        })
+      }
+    }
   }
 }
 

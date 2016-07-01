@@ -7,7 +7,7 @@ var Sequelize = require( 'sequelize' );
 module.exports = function(db){
     return {
       score: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       }
     }
 }

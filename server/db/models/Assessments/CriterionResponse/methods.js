@@ -18,10 +18,12 @@ module.exports = {
 function addAssociations(db){
   const CriterionResponse = db.models['criterionResponse'];
   const QuestionResponse = db.models['questionResponse'];
+  const StudentTest = db.models['studentTest'];
   const Rubric = db.models['rubric'];
   const Location = db.models['location'];
 
   CriterionResponse.belongsTo(QuestionResponse);
   CriterionResponse.belongsTo(Rubric);
   CriterionResponse.belongsTo(Location);
+  CriterionResponse.belongsTo(StudentTest);
 }

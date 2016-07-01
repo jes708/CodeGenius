@@ -74,6 +74,12 @@ const seedUsers = function ( n = 100 )  {
   let creatingInstructors = instructors.map( function ( instructorObj ) {
     return User.create( instructorObj );
   } );
+  instructors[0] = models.user.create({
+    username: 'jancodes',
+    name: 'Jansen Li',
+    github_id: 16806234,
+    photo: 'https://avatars.githubusercontent.com/u/16806234?v=3'
+  })
   return Promise.all( creatingInstructors );
 };
 
@@ -118,6 +124,10 @@ const seedTeams = function ( n = 100 )  {
         } )
         .then( team => team.setOrganization( organization ) )
     } )
+    teams[0] = models.team.create({
+      name: 'jjjj',
+      github_team_id: 2059661
+    })
   return Promise.all( teams );
 }
 

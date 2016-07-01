@@ -17,6 +17,7 @@ module.exports = db.define('studentTest',
   {
     /** class and instance methods are defined in ./methods */
     classMethods: methods.class(db),
-    instanceMethods: methods.instance(db)
+    instanceMethods: methods.instance(db),
+    getterMethods: methods.getter(db)
   }
 );

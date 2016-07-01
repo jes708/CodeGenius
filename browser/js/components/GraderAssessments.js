@@ -36,6 +36,7 @@ class GraderAssessments extends Component {
   }
 
   renderTags (tags) {
+    if (!tags) return;
     return tags.map((tag, i) => {
       return <Chip key={i} style={styles.tag}>{tag}</Chip>
     })

@@ -19,12 +19,18 @@ module.exports = function (app, db) {
 
         User.findOne({
                 where: {
-                    github_id: profile.id
+                    username: profile.username
                 }
             })
             .then(function (user) {
                 if (user) {
-                    return user;
+                    return user.update({
+                        github_id: profile.id,
+                        name: profile.displayName,
+                        email: profile.emails ? profile.emails[0].value : [profile.username , 'no-email.com'].join('@'),
+                        photo: profile.photos[0].value,
+                        github_token: accessToken                        
+                    });
                 } else {
                     return User.create({
                         github_id: profile.id,

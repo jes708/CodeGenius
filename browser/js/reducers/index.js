@@ -4,7 +4,7 @@ import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
 import { reducer as formReducer } from 'redux-form'
 import session from './session'
-import userAssessments from './userAssessments'
+import assessments from './assessments'
 import assessmentTeam from './assessmentTeam'
 import annotation from '../components/Annotator/reducer'
 import {TestReducer} from '../components/test/TestComponent'
@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   annotation,
   comment,
   session,
-  userAssessments,
+  assessments,
   assessmentTeam,
   form: formReducer,
   routing: routerReducer,

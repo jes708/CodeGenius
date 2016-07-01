@@ -78,8 +78,6 @@ class GraderPanel extends Component {
           </ CommentCard>
         )
     })
-  }
-
   render () {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
@@ -124,6 +122,3 @@ class GraderPanel extends Component {
       </div>
     )
   }
-}
-
-export default connect()(GraderPanel)

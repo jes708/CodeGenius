@@ -24,6 +24,9 @@ const styles = {
   inactiveCard: {
     backgroundColor: '#aaa'
   },
+  roundedCard: {
+    borderRadius: 50
+  },
   gradingPane: {
     backgroundColor: '#64B5F6'
   },
@@ -56,7 +59,23 @@ const styles = {
     display: 'inline-table',
     width: 'auto',
     float: 'right',
-    top: 8
+    top: 8,
+    position: 'relative'
+  },
+  studentIcon: {
+    top: 7,
+    marginLeft: 5,
+    height: 24,
+    width: 24,
+    lineHeight: '24px',
+    textAlign: 'center',
+    color: 'black',
+    fontWeight: 600,
+    fontSize: '11px'
+  },
+  svgOutline: {
+    background: 'white',
+    borderRadius: '50%'
   }
 }
 

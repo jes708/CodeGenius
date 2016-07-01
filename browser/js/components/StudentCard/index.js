@@ -6,8 +6,11 @@ import axios from 'axios';
 import { connect } from 'react-redux'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import Toggle from 'material-ui/Toggle'
-import Checkbox from 'material-ui/Checkbox'
+import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
+import AlertError from 'material-ui/svg-icons/alert/error'
+import ToggleRadioButtonUnchecked from 'material-ui/svg-icons/toggle/radio-button-unchecked'
 import styles from '../graderStyles'
+import { green500, red500 } from 'material-ui/styles/colors'
 
 export default class StudentCard extends Component {
 
@@ -15,13 +18,9 @@ export default class StudentCard extends Component {
     super(props);
     this.state = {
       toggled: true,
-      done: false,
-      style: styles.infoCard};
-  }
-
-  handleCheck () {
-    if (this.state.done) this.setState({done: false});
-    else if (!this.state.done) this.setState({done: true});
+      style: styles.infoCard,
+      status: 'done'
+    }
   }
 
   handleToggle () {
@@ -30,14 +29,24 @@ export default class StudentCard extends Component {
   }
 
   render () {
+    let iconSwitcher = () => {
+      switch (this.state.status) {
+        case 'done':
+          return <ActionCheckCircle style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={green500}/>;
+        case 'no-repo':
+          return <AlertError style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={red500}/>;
+        default:
+          return <div style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}><span style={styles.gradeNum}>{this.state.status}</span></div>;
+      }
+    }
     return (
-      <Card style={Object.assign({}, this.state.style, styles.skinny)}>
+      <Card style={Object.assign({}, this.state.style, styles.skinny, styles.roundedCard)}>
         <div style={styles.gradingInfo}>
           <a href="#" style={styles.gradingSubtitle}>
             <img src={this.props.student.photo} alt={this.props.student.name} style={styles.student}/>
             {this.props.student.name}
           </a>
-          <Checkbox checked={this.state.done} onCheck={this.handleCheck.bind(this)} style={styles.toggle}/>
+          {iconSwitcher()}
           <Toggle toggled={this.state.toggled} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
         </div>
       </Card>

@@ -29,6 +29,13 @@ class GraderAssessments extends Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { user, isFetching, assessments } = nextProps
+    if (user && !isFetching && !assessments.length) {
+      nextProps.dispatch(getUserAssessments(user.id))
+    }
+  }
+
   toggleForm () {
     this.setState({
       isCreating: !this.state.isCreating

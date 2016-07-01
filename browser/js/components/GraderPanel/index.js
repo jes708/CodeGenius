@@ -121,41 +121,40 @@ class GraderPanel extends Component {
   //   })
   //   return cards
   // }
-  renderAssessmentHeader () {
-    const { currentAssessment } = this.props
-    return (
-      <Card style={Object.assign({}, styles.infoCard, styles.skinny)}>
-        <div style={styles.gradingInfo}>
-          <div style={styles.gradingTitle}>{currentAssessment.name}</div>
-          <a style={styles.gradingSubtitle} href={currentAssessment.repoUrl}>
-            GitHub Repo
-          </a>
-        </div>
-        <CardActions>
-          <FlatButton
-            label='Previous Student'
-            hoverColor={'#2196F3'}
-            rippleColor={'#90CAF9'}
-            style={{color: '#F5F5F5'}}
-          />
-          <FlatButton
-            label='Next Student'
-            hoverColor={'#2196F3'}
-            rippleColor={'#90CAF9'}
-            style={{color: '#F5F5F5'}}
-          />
-        </CardActions>
-      </Card>
-    )
-  }
+  // renderAssessmentHeader () {
+  //   return (
+  //     <Card style={Object.assign({}, styles.infoCard, styles.skinny)}>
+  //       <div style={styles.gradingInfo}>
+  //         <div style={styles.gradingTitle}>{currentAssessment.name}</div>
+  //         <a style={styles.gradingSubtitle} href={currentAssessment.repoUrl}>
+  //           GitHub Repo
+  //         </a>
+  //       </div>
+  //       <CardActions>
+  //         <FlatButton
+  //           label='Previous Student'
+  //           hoverColor={'#2196F3'}
+  //           rippleColor={'#90CAF9'}
+  //           style={{color: '#F5F5F5'}}
+  //         />
+  //         <FlatButton
+  //           label='Next Student'
+  //           hoverColor={'#2196F3'}
+  //           rippleColor={'#90CAF9'}
+  //           style={{color: '#F5F5F5'}}
+  //         />
+  //       </CardActions>
+  //     </Card>
+  //   )
+  // }
 
+            // {this.renderAssessmentHeader()}
   render () {
-    const { isFetching, currentAssessment } = this.props
+    const { isFetching } = this.props
     return (
       <CheckLoading isFetching={isFetching}>
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
-            {this.renderAssessmentHeader()}
             <RaisedButton
               label='Add Question'
               primary={true}

@@ -171,20 +171,20 @@ class Comment extends Component {
       </IconMenu>
     );
     return (
+      <Card key={1} >
+      {/*<CardHeader
+      title={this.props.contents.title}
+      actAsExpander={true}
+      showExpandableButton={true}
+      />*/}
       <ListItem style={styles.skinny} primaryText={this.props.contents.title} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
-        <Card key={1} >
-          <CardHeader
-          title={this.props.contents.title}
-          actAsExpander={true}
-          showExpandableButton={true}
-          />
           <CardText expandable={true} style={styles.noTopPadding}>
           <hr style={styles.skinny} />
           {this.renderComment()}
           </CardText>
-        </Card>
       ]}>
       </ListItem>
+      </Card>
     )
   }
 }

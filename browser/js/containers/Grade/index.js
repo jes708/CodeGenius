@@ -152,18 +152,22 @@ export class GradeView extends Component {
     // this.handleClick = this.handleClick.bind(this);
   }
 
-  switcher () {
+  switcher() {
     switch (this.state.current) {
       case 'Home':
-        return <GraderHome />;
+      return <GraderHome />;
       case 'Assessments':
-        return <GraderAssessments switchTabs={this.handleClick.bind(this)}/>;
+      return <GraderAssessments />;
       case 'Students':
-        return <GraderStudents />;
-        case 'Panel':
-          return <GraderPanel comments={ SAMPLE_COMMENTS } />;
+      return <GraderStudents />;
+      case 'Panel':
+      return (
+        <div>
+          <GraderPanel comments={ SAMPLE_COMMENTS } />
+        </div>
+      );
       default:
-        return <GraderHome />;
+      return <GraderHome />;
     }
   }
 

@@ -38,7 +38,7 @@ class AnnotationHandler extends Component{
         selection: _selection,
         selectionString
       });
-      this.props.dispatch(selection(_selection));
+      // this.props.dispatch(selection(_selection));
     }
   }
   handleMouseDown ( ){
@@ -49,6 +49,7 @@ class AnnotationHandler extends Component{
     });
   }
   componentWillReceiveProps(nextProps){
+    console.log('receiving props');
     this.setState({
       selectionString: nextProps.selectionString
     });

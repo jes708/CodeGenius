@@ -7,6 +7,7 @@ import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Avatar from 'material-ui/Avatar'
+import GitHubButton from '../GitHubButton'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
 import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/authActions'
 
@@ -77,19 +78,7 @@ class Navbar extends Component {
     } else {
       return (
         <ToolbarGroup style={styles.rightSide}>
-          <RaisedButton
-            label="Login"
-            primary={true}
-            linkButton={true}
-            containerElement={<Link to='login' />}
-          />
-          <RaisedButton
-            label="Sign Up"
-            secondary={true}
-            linkButton={true}
-            containerElement={<Link to='signup' />}
-            style={styles.shrinkMarginLeft}
-          />
+          <GitHubButton href='/auth/github' label={'Sign In'} />
         </ToolbarGroup>
       )
     }

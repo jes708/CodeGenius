@@ -80,7 +80,7 @@ class AssessmentForm extends Component {
         description: '',
         repoUrl: '',
         org: '',
-        team: '',
+        teamName: '',
         teamId: '',
       },
       errors: {},
@@ -94,8 +94,9 @@ class AssessmentForm extends Component {
   }
 
   handleSubmit () {
-    const { form, paths } = this.state
-    form.solutionPaths = paths
+    const { form, paths, repo } = this.state
+    form.solutionFiles = paths
+    form.basePath = repo
     this.props.onSubmit(form)
   }
 
@@ -174,7 +175,7 @@ class AssessmentForm extends Component {
   handleTeamSelect = (team) => {
     const nextForm = Object.assign({}, this.state.form)
     nextForm.teamId = team.id
-    nextForm.team = team.name
+    nextForm.teamName = team.name
     this.setState({ form: nextForm })
   }
 
@@ -241,7 +242,7 @@ class AssessmentForm extends Component {
                 dataSource={teams}
                 dataSourceConfig={{text: 'name', value: 'name'}}
                 maxSearchResults={4}
-                searchText={form.team}
+                searchText={form.teamName}
                 fullWidth={true}
                 onNewRequest={this.handleTeamSelect}
               />

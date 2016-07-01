@@ -36,12 +36,11 @@ class GraderAssessments extends Component {
   }
 
   submitForm (data) {
-    console.log(data)
-    // this.props.dispatch(createAssessment(data))
-    // this.props.switchTabs('Panel')
+    this.props.dispatch(createAssessment(data))
+    this.setState({
+      isCreating: false
+    })
   }
-
-
 
   renderTags (tags) {
     if (tags) {

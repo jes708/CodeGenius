@@ -18,6 +18,6 @@ module.exports = db.define('user',
     /** class and instance methods are defined in ./methods */
     classMethods: methods.class(db),
     instanceMethods: methods.instance(db),
-    hooks: methods.hooks(db),
+    hooks: methods.hooks(db)
   }
 );

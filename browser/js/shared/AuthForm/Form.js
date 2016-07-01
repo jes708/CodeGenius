@@ -145,5 +145,5 @@ Form.propTypes = {
 export default reduxForm({
   form: 'form',
   fields,
-  // validate
+  validate
 })(Form)

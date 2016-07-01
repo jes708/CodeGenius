@@ -1,5 +1,7 @@
 'use strict'
 
+import 'babel-polyfill'
+
 import React, { Component } from 'react'
 import { render }  from 'react-dom'
 import { Provider } from 'react-redux'
@@ -11,12 +13,12 @@ import injectTapEventPlugin from 'react-tap-event-plugin'
 
 injectTapEventPlugin()
 
-let store = configureStore({})
+const store = configureStore(browserHistory)
 const history = syncHistoryWithStore(browserHistory, store)
 
 render(
   <Provider store={store}>
-    <Router history={history}>
+    <Router history={browserHistory}>
       {routes}
     </Router>
   </Provider>

@@ -62,7 +62,7 @@ export default class Grade extends Component {
     this.state = {
       isLoading: true,
       content: '',
-      current: 'Home'
+      current: 'Assessments'
     }
   }
 
@@ -139,16 +139,13 @@ export class GradeView extends Component {
 
   switcher () {
     switch (this.state.current) {
-      case 'Home':
-        return <GraderHome />;
-      case 'Assessments':
-        return <GraderAssessments switchTabs={this.handleClick.bind(this)}/>;
       case 'Students':
         return <GraderStudents />;
       case 'Panel':
         return <GraderPanel />;
+      case 'Assessments':
       default:
-        return <GraderHome />;
+        return <GraderAssessments switchTabs={this.handleClick.bind(this)}/>;
     }
   }
 
@@ -157,11 +154,6 @@ export class GradeView extends Component {
           <div className='col-lg-4' style={styles.row}>
             <Paper style={styles.panelStyle}>
               <Tabs zDepth={3} style={styles.menu} value={this.state.current}>
-                <Tab
-                  value={'Home'}
-                  icon={<ActionHome />}
-                  onClick={this.handleClick.bind(this, "Home")}
-                />
                 <Tab
                   value={'Assessments'}
                   icon={<EditorInsertDriveFile />}

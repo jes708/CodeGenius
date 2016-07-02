@@ -7,6 +7,15 @@ import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
+import CommentCard from '../Comment';
+import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
+import {List, ListItem} from 'material-ui/List';
+import { connect } from 'react-redux';
+
+
+function buildGraderPanel(dispatch){
+  return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
+}
 
 const styles = {
   paperStyle: {
@@ -47,79 +56,29 @@ const styles = {
   }
 }
 
-const SAMPLE_SPEC = {
-  "Fake Library App": [
-    "static files (from the static folder in the public folder) on /files route",
-    "handles internal server errors",
-    "handles custom errors",
-  ],
-  "Fake Library App /api/books": [
-    "GET all",
-    "POST one"
-  ]
-}
+
 
 export default class GraderPanel extends Component {
-  renderCriterion () {
-    return (
-      <RadioButtonGroup name="criteria">
-        <RadioButton
-          value="1"
-          label="Unbearable"
-        />
-        <RadioButton
-          value="2"
-          label="Horrible"
-        />
-        <RadioButton
-          value="3"
-          label="Acceptable"
-        />
-        <RadioButton
-          value="4"
-          label="Near Perfect"
-        />
-        <RadioButton
-          value="5"
-          label="Flawless"
-        />
-      </RadioButtonGroup>
-    )
+
+  constructor(props){
+    super(props)
+
   }
 
-  renderCards () {
-    let cards = []
-    Object.keys(SAMPLE_SPEC).forEach((title, i) => {
-      SAMPLE_SPEC[title].forEach((spec, j) => {
-        cards.push(
-          <Card style={styles.skinny}>
-            <CardHeader
-              title={title}
-              subtitle={spec}
-              actAsExpander={true}
-              showExpandableButton={true}
-            />
-            <CardText expandable={true} style={styles.noTopPadding}>
-              <hr style={styles.skinny} />
-              {this.renderCriterion()}
-            </CardText>
-            <CardActions expandable={true}>
-              <FlatButton
-                label='Add Criterion'
-                icon={<FontIcon className='fa fa-plus' />}
-              />
-              <FlatButton
-                label='Add Comment'
-                icon={<FontIcon className='fa fa-pencil' />}
-              />
-            </CardActions>
-          </Card>
-        )
-      })
-    })
-    return cards
+  componentWillMount(){
+    console.log(this);
+    buildGraderPanel(this.props.dispatch);
   }
 
+  // renderCards (comments = SAMPLE_SPEC) {
+  //   var self = this;
+  //   return comments.map((contents, index) => {
+  //       return (
+  //         <CommentCard  key={index} currentKey={index} contents={contents} onClick={function(){console.log('howdy')}} {...self.props}  >
+  //         </ CommentCard>
+  //       )
+  //   })
+  // }
   render () {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
@@ -152,9 +111,18 @@ export default class GraderPanel extends Component {
             icon={<FontIcon className='fa fa-plus' />}
             style={styles.skinny}
           />
-          {this.renderCards()}
+          <List>
+            {this.props.comments.map((contents, index) => {
+                return (
+                  <CommentCard key={index} contents={contents} commentIndex={index}  >
+                  </ CommentCard>
+                )
+            })}
+          </List>
         </div>
       </div>
     )
   }
 }
+
+export default connect()(GraderPanel)

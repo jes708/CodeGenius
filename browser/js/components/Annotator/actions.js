@@ -17,6 +17,7 @@ export function annotation(_selection, _annotation){
     type: ANNOTATION,
     annotation: _annotation,
     selection: _selection,
-    selectionString: _selection.toString()
+    selectionString: _selection.toString(),
+    added: false
   }
 }

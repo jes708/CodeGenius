@@ -4,12 +4,6 @@ import React, { Component, PropTypes } from 'react'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
 
-const styles = {
-  fullWidth: {
-    width: '100%'
-  }
-}
-
 export default class GitHubButton extends Component {
   render () {
     return (

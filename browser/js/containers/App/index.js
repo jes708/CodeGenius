@@ -19,9 +19,7 @@ export default class App extends Component {
       <MuiThemeProvider muiTheme={muiTheme}>
         <div>
           <Navbar />
-          <div style={{marginTop: 20}}>
-            {this.props.children}
-          </div>
+          {this.props.children}
         </div>
       </MuiThemeProvider>
     )

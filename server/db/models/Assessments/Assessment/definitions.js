@@ -14,15 +14,11 @@ module.exports = function(db){
         }
       },
       description: {
-<<<<<<< HEAD
         type: Sequelize.TEXT,
         allowNull: false,
         validate: {
           notEmpty: true
         }
-=======
-        type: Sequelize.TEXT
->>>>>>> master
       },
       repoUrl: {
         type: Sequelize.STRING,

@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { reduxForm, reset, change } from 'redux-form'
+import GitHubButton from '../GitHubButton'
 import Formsy from 'formsy-react'
 import { red100 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
@@ -135,11 +136,9 @@ class AuthForm extends Component {
   render () {
     return (
       <div style={styles.form}>
-        { this.props.error ? this.renderErrorMsg() : null }
-        { this.props.location.pathname === 'login'
-          ? <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={false} />
-        : <Form submitting={this.state.submitting} resetForm={this._resetForm} onSubmit={this._submitForm.bind(this)} signUp={true} />
-        }
+        <Paper style={styles.paperStyle}>
+          <GitHubButton href='/auth/github' />
+        </Paper>
       </div>
     )
   }

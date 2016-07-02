@@ -7,6 +7,8 @@ import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
 import RaisedButton from 'material-ui/RaisedButton'
 import Avatar from 'material-ui/Avatar'
+import FontIcon from 'material-ui/FontIcon'
+import { blue300 } from 'material-ui/styles/colors'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
 import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/authActions'
 
@@ -22,12 +24,15 @@ const styles = {
   },
   growMarginRight: {
     marginRight: 8
+  },
+  home: {
+    backgroundColor: blue300,
   }
 }
 
 const NAV_ITEMS = [
-  { label: 'Home', path: '/' },
-  { label: 'Grade', path: 'grade' },
+  { label: 'Home', path: '/', auth: true },
+  { label: 'Grade', path: 'grade', auth: true },
   { label: 'Members Only', path: 'membersOnly', auth: true }
 ]
 
@@ -42,12 +47,12 @@ class Navbar extends Component {
 
   handleLogout () {
     this.props.dispatch(logout())
-    this.context.router.push('/login')
+    this.context.router.push('/')
   }
 
   renderNavItems () {
     return NAV_ITEMS.map((item, i) => {
-      if (!item.auth) {
+      if (this.props.user || !item.auth) {
         return (
           <FlatButton
             key={i}
@@ -78,16 +83,10 @@ class Navbar extends Component {
       return (
         <ToolbarGroup style={styles.rightSide}>
           <RaisedButton
-            label="Login"
+            label="Sign In"
             primary={true}
+            href={'/auth/github'}
             linkButton={true}
-            containerElement={<Link to='login' />}
-          />
-          <RaisedButton
-            label="Sign Up"
-            secondary={true}
-            linkButton={true}
-            containerElement={<Link to='signup' />}
             style={styles.shrinkMarginLeft}
           />
         </ToolbarGroup>
@@ -115,7 +114,7 @@ Navbar.contextTypes = {
 const mapStateToProps = state => {
   const { session } = state
   return {
-    user: session.user
+    user: session.user,
   }
 }
 

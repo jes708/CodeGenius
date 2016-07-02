@@ -50,8 +50,10 @@ const styles = {
   },
   tags: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
   },
+  addTag: {width: '32px', height: '32px'},
+  addTagIcon: {margin: '-8px -8px' },
   toggle: {
     display: 'inline-table',
     width: 'auto',

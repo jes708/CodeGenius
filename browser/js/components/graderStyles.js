@@ -39,22 +39,9 @@ const styles = {
     fontSize: 24,
     fontWeight: '400'
   },
-  inactiveCard: {
-    backgroundColor: '#aaa'
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
   paperStyle: {
     height: '100%',
     overflow: 'scroll'
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
   },
   student: {
     borderRadius: '50%',

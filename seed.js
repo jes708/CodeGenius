@@ -68,7 +68,7 @@ const seedUsers = function ( n = 100 ) {
       length: n
     }, credentials => createRandomCredentials() );
   let Omri = new Credentials(
-    'omriBear',
+    'omiBear',
     'password',
     'testing@fsa.com'
   );
@@ -160,20 +160,22 @@ let seedAssessments = function () {
       if ( !instructor.teams[ 0 ] ) return
       let name = faker.lorem.words( randomN( 20 ) + 1 );
       let description = faker.lorem.paragraph();
-      // let tags = faker.random.words( randomN( 10 ) )
-      //   .toLowerCase()
-      //   .split( ' ' );
       let repoUrl = faker.internet.url();
       let instructorId = instructor.id;
       let team = instructor.teams[ 0 ].userTeam;
       let teamId = team.id;
+      let basePath = faker.random.words(2).split(' ').join('/') + '.js'
+      let org = faker.random.word()
+      let solutionFiles = faker.random.words(5).split(' ')
       return Assessment.create( {
         name,
         description,
-        // tags,
         repoUrl,
+        basePath,
         instructorId,
-        teamId
+        teamId,
+        org,
+        solutionFiles
       } )
     } )
   return Promise.all( assessments );
@@ -200,7 +202,6 @@ let seedQuestions = function ( n = 20 ) {
 }
 
 let seedRubrics = function ( n = 20 ) {
-  console.log( 'seeding rubrics' );
   let rubrics = Question.findAll()
     .map( question => {
       let N = randomN( n );
@@ -218,12 +219,10 @@ let seedRubrics = function ( n = 20 ) {
       } )
       return Rubric.bulkCreate( rubrics );
     } )
-  console.log( 'here come the rubrics' );
   return Promise.all( rubrics );
 }
 
 let seedStudents = function ( n = 20 ) {
-  console.log( 'seeding students' );
   let students = Promise.all( Array.from( {
       length: randomN( n )
     },
@@ -287,7 +286,6 @@ let seedStudentTests = function () {
 // }
 
 let seedTags = function ( numTags = 10, tagsPer = 10 ) {
-  console.log( 'seeding tags' );
   let numberOfTags = randomN( tagsPer + 2 )
   let tags = Promise.all( Array.from( {
       length: randomN( numTags + 2 )

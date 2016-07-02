@@ -7,16 +7,43 @@ var Sequelize = require( 'sequelize' );
 module.exports = function(db){
     return {
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       description: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
       },
       repoUrl: {
         type: Sequelize.STRING,
         validate: {
           isUrl: true
         }
+      },
+      basePath: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
+      },
+      org: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
+      },
+      solutionFiles: {
+        type: Sequelize.ARRAY(Sequelize.STRING),
+        allowNull: false,
+        defaultValue: []
       }
     }
 }

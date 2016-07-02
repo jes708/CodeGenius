@@ -32,6 +32,7 @@ class GraderStudents extends Component {
     this.props.dispatch(getAssessmentTeam(1))
   }
 
+  //TODO do not hard-code assessmentId 
   renderStudents () {
     if (!this.props.teamFetching && this.props.team) {
       let students = this.props.team.students;
@@ -42,7 +43,7 @@ class GraderStudents extends Component {
       })
       return students.map((student, i) => {
         return (
-          <StudentCard key={i} student={student}/>
+          <StudentCard key={i} student={student} assessmentId={1}/>
         )
       })
     }

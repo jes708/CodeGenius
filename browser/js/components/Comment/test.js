@@ -19,7 +19,7 @@ import {
   RadioButtonGroup
 } from 'material-ui/RadioButton'
 import Grade from '../../containers/Grade'
-const { cloneDeep as _cloneDeep } = require('lodash');
+import { cloneDeep as _cloneDeep } from 'lodash';
 import {annotation, selection, stopSelection, startSelection} from './actions';
 // import store here //
 

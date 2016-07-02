@@ -8,6 +8,7 @@ const utils = require('../../../utils');
 const {ensureAuthenticated, ensureIsAdmin, Credentials, respondWith404, _err, db} = utils;
 const Assessment = db().models.assessment;
 const Team = db().models.team
+const StudentTest = db().models.studentTest
 const Resource = Assessment;
 
 import omit from 'lodash/object/omit'
@@ -36,6 +37,38 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
 router.put(   '/:id', ensureAuthenticated, sequelizeHandlers.update(Resource));
 router.delete('/:id',  ensureAuthenticated,     sequelizeHandlers.remove(Resource));
 
+
+//studentTest Routes
+
+router.get(   '/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
+  StudentTest.findOne({
+    where: {
+      assessmentId: req.params.id,
+      userId: req.params.studentId
+    }
+  }).then(test => res.json(test))
+  .catch(next)
+})
+
+router.post(   '/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
+  let credentials = Object.assign({}, req.body, {assessmentId: req.params.id, userId: req.params.studentId})
+  StudentTest.create(credentials)
+  .then(test => res.json(test))
+  .catch(next)
+})
+
+router.put(   '/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
+  StudentTest.update(
+    req.body,
+    {
+      where: {
+        assessmentId: req.params.id,
+        userId: req.params.studentId      
+      }
+    }
+  ).then(test => res.json(test))
+  .catch(next)
+})
 
 respondWith404(router);
 

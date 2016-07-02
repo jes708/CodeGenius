@@ -11,45 +11,57 @@ import AlertError from 'material-ui/svg-icons/alert/error'
 import ToggleRadioButtonUnchecked from 'material-ui/svg-icons/toggle/radio-button-unchecked'
 import styles from '../graderStyles'
 import { green500, red500 } from 'material-ui/styles/colors'
+import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
 
-export default class StudentCard extends Component {
+class StudentCard extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      toggled: this.props.student.isStudent || true,
-      style: styles.infoCard,
-      status: 'done'
-    }
+  }
+
+  componentWillMount () {
+    this.props.dispatch(getStudentTestInfo(this.props.assessmentId, this.props.student.id))
   }
 
   handleToggle () {
-    if (this.state.toggled) this.setState({toggled: false, style: styles.inactiveCard});
-    else if (!this.state.toggled) this.setState({toggled: true, style: styles.infoCard});
+    this.props.dispatch(putStudentTestInfo(this.props.assessmentId, this.props.student.id, !this.props.toggled));
   }
 
   render () {
     let iconSwitcher = () => {
-      switch (this.state.status) {
+      switch (this.props.status) {
         case 'done':
           return <ActionCheckCircle style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={green500}/>;
         case 'no-repo':
           return <AlertError style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={red500}/>;
         default:
-          return <div style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}><span style={styles.gradeNum}>{this.state.status}</span></div>;
+          return <div style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}><span style={styles.gradeNum}>{this.props.status}</span></div>;
       }
     }
     return (
-      <Card style={Object.assign({}, this.state.style, styles.skinny, styles.roundedCard)}>
+      <Card style={Object.assign({}, this.props.style, styles.skinny, styles.roundedCard)}>
         <div style={styles.gradingInfo}>
           <a href="#" style={styles.gradingSubtitle}>
             <img src={this.props.student.photo} alt={this.props.student.name} style={styles.student}/>
             {this.props.student.name}
           </a>
           {iconSwitcher()}
-          <Toggle toggled={this.state.toggled} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
+          <Toggle toggled={this.props.toggled} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
         </div>
       </Card>
     )
   }
 }
+
+const mapStateToProps = state => {
+  const { studentTestInfo } = state
+  const { isFetching, toggled, style, status } = studentTestInfo
+  return {
+    isFetching,
+    toggled,
+    style,
+    status
+  }
+}
+
+export default connect(mapStateToProps)(StudentCard)

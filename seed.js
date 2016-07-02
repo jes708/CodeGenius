@@ -285,20 +285,20 @@ let seedStudentTests = function () {
 //   )
 // }
 
-let seedTags = function ( numTags = 10, tagsPer = 10 ) {
-  let numberOfTags = randomN( tagsPer + 2 )
-  let tags = Promise.all( Array.from( {
-      length: randomN( numTags + 2 )
-    },
-    tag => Tag.create( { name: faker.random.word(), color: faker.internet.color() } )
-  ) ).then( tags => Assessment.findAll( { limit: numberOfTags} )
-                              .map( assessment => {
-                                let theseTags = _.times(Math.ceil(numberOfTags/2), ()=>faker.random.arrayElement(tags))
-                                console.log(theseTags.length);
-                                return assessment.addTags( theseTags ) } ) )
-     .catch( error => console.log(error) )
-  return Promise.all( tags );
-}
+// let seedTags = function ( numTags = 10, tagsPer = 10 ) {
+//   let numberOfTags = randomN( tagsPer + 2 )
+//   let tags = Promise.all( Array.from( {
+//       length: randomN( numTags + 2 )
+//     },
+//     tag => Tag.create( { name: faker.random.word(), color: faker.internet.color() } )
+//   ) ).then( tags => Assessment.findAll( { limit: numberOfTags} )
+//                               .map( assessment => {
+//                                 let theseTags = _.times(Math.ceil(numberOfTags/2), ()=>faker.random.arrayElement(tags))
+//                                 console.log(theseTags.length);
+//                                 return assessment.addTags( theseTags ) } ) )
+//      .catch( error => console.log(error) )
+//   return Promise.all( tags );
+// }
 
 //execution
 db.sync( {
@@ -313,7 +313,7 @@ db.sync( {
   .then( () => seedStudents() )
   // .then( () => seedRubrics() )
   .then( () => seedStudentTests() )
-  .then( () => seedTags() )
+  // .then( () => seedTags() )
   // .then( () => seedTests() )
   // .then( () => seedAnnotations())
   .then( function () {

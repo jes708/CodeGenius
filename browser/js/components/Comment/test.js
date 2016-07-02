@@ -19,7 +19,7 @@ import {
   RadioButtonGroup
 } from 'material-ui/RadioButton'
 import Grade from '../../containers/Grade'
-const _ = require('lodash');
+const { cloneDeep as _cloneDeep } = require('lodash');
 import {annotation, selection, stopSelection, startSelection} from './actions';
 // import store here //
 
@@ -60,7 +60,7 @@ export class AnnotationHandler extends Component{
     }
   }
   handleMouseDown (e){
-    let annotationState = _.cloneDeep(this.state.annotationStyles);
+    let annotationState = _cloneDeep(this.state.annotationStyles);
     annotationState.opacity = 0;
     this.setState({
       annotationStyles: annotationState

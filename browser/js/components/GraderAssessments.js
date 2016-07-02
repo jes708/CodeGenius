@@ -13,6 +13,7 @@ import { getUserAssessments, createAssessment } from '../actions/assessmentActio
 import styles from './graderStyles'
 import AssessmentForm from './AssessmentForm'
 import { onActive } from 'material-ui/Tabs'
+import { switchAssessment } from '../actions/assessmentActions'
 import { getAllAssessments } from '../reducers/assessments'
 
 class GraderAssessments extends Component {
@@ -25,6 +26,10 @@ class GraderAssessments extends Component {
 
   componentWillMount () {
     this.props.dispatch(getUserAssessments())
+  }
+
+  handleClick (assessmentId) {
+    this.props.dispatch(switchAssessment(assessmentId))
   }
 
   toggleForm () {
@@ -49,12 +54,17 @@ class GraderAssessments extends Component {
   }
 
   renderAssessments () {
-    if (!this.props.isFetching && this.props.assessments.length) {
-      return this.props.assessments.map((assessment, i) => {
+    const { isFetching, assessments } = this.props
+    if (!isFetching && assessments.length) {
+      return assessments.map((assessment, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
             <div style={styles.gradingInfo}>
-              <div style={styles.gradingTitle}>{assessment.name}</div>
+              <div
+                onTouchTap={() => this.handleClick(assessment.id)}
+                style={styles.gradingTitle}>
+                {assessment.name}
+              </div>
               <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>
               <div style={styles.tags}>
                 {this.renderTags(assessment.tags)}
@@ -63,7 +73,7 @@ class GraderAssessments extends Component {
           </Card>
         )
       })
-    } else if (!this.props.isFetching && !this.props.assessments.length) {
+    } else if (!isFetching && !assessments.length) {
       return <h1 style={{textAlign: 'center'}}>No Assessments</h1>
     } else {
       return <h1 style={{textAlign: 'center'}}>Loading...</h1>
@@ -87,7 +97,7 @@ class GraderAssessments extends Component {
 
   render () {
     return (
-      <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
+      <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
           {this.renderToggleFormButton()}
           { this.state.isCreating

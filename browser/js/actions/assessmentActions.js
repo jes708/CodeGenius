@@ -8,6 +8,10 @@ export const LOAD_ASSESSMENTS_FAILURE = 'LOAD_ASSESSMENTS_FAILURE'
 export const CREATE_ASSESSMENT_REQUEST = 'CREATE_ASSESSMENT_REQUEST'
 export const CREATE_ASSESSMENT_SUCCESS = 'CREATE_ASSESSMENT_SUCCESS'
 export const CREATE_ASSESSMENT_FAILURE = 'CREATE_ASSESSMENT_FAILURE'
+export const SWITCH_ASSESSMENT_REQUEST = 'SWITCH_ASSESSMENT_REQUEST'
+export const SWITCH_ASSESSMENT_SUCCESS = 'SWITCH_ASSESSMENT_SUCCESS'
+export const SWITCH_ASSESSMENT_FAILURE = 'SWITCH_ASSESSMENT_FAILURE'
+import { getAssessment } from '../reducers/assessments'
 
 const API_URL = '/api/v1'
 const USER_URL = `${API_URL}/users`
@@ -35,4 +39,21 @@ export const createAssessment = (assessment) => (dispatch, getState) => {
     assessment: resData
   }))
   .catch(error => dispatch({ type: CREATE_ASSESSMENT_FAILURE, error }))
+}
+
+export const switchAssessment = (id) => (dispatch, getState) => {
+  dispatch({ type: SWITCH_ASSESSMENT_REQUEST })
+
+  const assessment = getAssessment(getState().assessments, id)
+
+  if (assessment) {
+    dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment })
+  } else {
+    return axios.get(`${ASSESSMENT_URL}/${id}`)
+    .then(resData => dispatch({
+      type: SWITCH_ASSESSMENT_SUCCESS, assessment: resData
+    })
+    .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error })))
+  }
+
 }

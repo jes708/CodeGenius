@@ -61,8 +61,7 @@ module.exports = function (app, db) {
     app.get('/auth/github/callback',
         passport.authenticate('github', {failureRedirect: '/login'}),
         function (req, res) {
-          res.json({user: {id: 36}})
-            // res.redirect('/');
+            res.redirect('/');
         });
 
 };

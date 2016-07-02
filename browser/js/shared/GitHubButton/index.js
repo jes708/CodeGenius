@@ -3,7 +3,6 @@
 import React, { Component, PropTypes } from 'react'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
-import { login } from '../../actions/AuthActions'
 
 const styles = {
   fullWidth: {
@@ -17,7 +16,8 @@ export default class GitHubButton extends Component {
       <div style={styles.fullWidth}>
         <RaisedButton
           label={this.props.label || "Sign Up with Github"}
-          onClick={this.props.onClick}
+          linkButton={true}
+          href={this.props.href}
           primary={true}
           style={styles.fullWidth}
           icon={<FontIcon className="fa fa-github" />}

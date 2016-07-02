@@ -2,7 +2,6 @@
 
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
-import ngKookie from 'react-cookie'
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -25,18 +24,15 @@ class GraderAssessments extends Component {
   }
 
   componentWillMount () {
-    const userId = localStorage.getItem('userId')
-    console.log(userId)
-    // this.props.dispatch(getUserAssessments(userId))
-    // if (this.props.user) {
-    //   this.props.dispatch(getUserAssessments(this.props.user.id))
-    // }
+    if (this.props.user) {
+      this.props.dispatch(getUserAssessments(this.props.user.id))
+    }
   }
 
   componentWillReceiveProps (nextProps) {
-    const { isFetching, user, assessments } = nextProps
-    if (!isFetching && user) {
-      console.log('Recieved Dispatch')
+    const { user, isFetching, assessments } = nextProps
+    if (user && !isFetching && !assessments.length) {
+      nextProps.dispatch(getUserAssessments(user.id))
     }
   }
 
@@ -62,10 +58,8 @@ class GraderAssessments extends Component {
   }
 
   renderAssessments () {
-    const { isFetching, assessments } = this.props
-
-    if (!isFetching && assessments.length) {
-      return assessments.map((assessment, i) => {
+    if (!this.props.isFetching && this.props.assessments.length) {
+      return this.props.assessments.map((assessment, i) => {
         return (
           <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
             <div style={styles.gradingInfo}>
@@ -78,7 +72,7 @@ class GraderAssessments extends Component {
           </Card>
         )
       })
-    } else if (!isFetching && !assessments.length) {
+    } else if (!this.props.isFetching && !this.props.assessments.length) {
       return <h1 style={{textAlign: 'center'}}>No Assessments</h1>
     } else {
       return <h1 style={{textAlign: 'center'}}>Loading...</h1>
@@ -102,7 +96,7 @@ class GraderAssessments extends Component {
 
   render () {
     return (
-      <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
+      <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
           {this.renderToggleFormButton()}
           { this.state.isCreating
@@ -124,11 +118,11 @@ GraderAssessments.contextTypes = {
 
 const mapStateToProps = state => {
   const { session, assessments } = state
-  const { isFetching, byId } = assessments
+  const { isFetching } = assessments
   const { user } = session
   return {
     isFetching,
-    assessments: getAllAssessments(byId),
+    assessments: getAllAssessments(assessments.byId),
     user
   }
 }

@@ -42,7 +42,6 @@ export default function session (state = initialState, action) {
         isFetching: false
       })
     case AUTH_LOGIN_FAILURE:
-    case AUTH_LOGOUT_FAILURE:
       return Object.assign({}, state, {
         error: action.error,
         isFetching: false

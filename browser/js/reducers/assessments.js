@@ -29,6 +29,10 @@ export const byId = (state = {}, action) => {
   }
 }
 
+export const byUser = (state = {}, action) => {
+
+}
+
 export const isFetching = (state = false, action) => {
   switch (action.type) {
     case LOAD_ASSESSMENTS_REQUEST:

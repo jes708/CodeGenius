@@ -20,6 +20,9 @@ import AnnotationHandler from '../../components/Annotator';
 import GraderView from '../../components/GraderView'
 
 const styles = {
+  main: {
+    paddingTop: 20
+  },
   paperStyle: {
     height: '89vh',
     overflow: 'scroll',
@@ -42,10 +45,6 @@ const styles = {
   },
   content: {
     padding: 16
-  },
-  row: {
-    paddingRight: 30,
-    paddingLeft: 30
   },
   container: {
     padding: 10
@@ -123,7 +122,7 @@ export class AnnotatedGrade extends Component {
 
   render(){
     return (
-      <div class="row" >
+      <div style={styles.main}>
         <AnnotationHandler {...this.props} className='col-lg-8' >
           <Grade />
         </AnnotationHandler>
@@ -170,7 +169,7 @@ export class GradeView extends Component {
 
   render () {
       return (
-          <div className='col-lg-4' style={styles.row}>
+          <div className={this.props.className}>
             <Paper style={styles.panelStyle}>
               <Tabs zDepth={3} style={styles.menu} value={this.state.current}>
                 <Tab

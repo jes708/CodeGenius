@@ -77,12 +77,30 @@ const seedUsers = function ( n = 100 ) {
   let creatingInstructors = instructors.map( function ( instructorObj ) {
     return User.create( instructorObj );
   } );
-  instructors[0] = models.user.create({
+  instructors.push(models.user.create({
     username: 'jancodes',
     name: 'Jansen Li',
     github_id: 16806234,
     photo: 'https://avatars.githubusercontent.com/u/16806234?v=3'
-  })
+  }))
+  instructors.push(models.user.create({
+    username: 'jdhang',
+    name: 'Jason Hang',
+    github_id: 5394681,
+    photo: "https://avatars.githubusercontent.com/u/5394681?v=3"
+  }))
+  instructors.push(models.user.create({
+    username: 'jes708',
+    name: 'Jonathan Schwarz',
+    github_id: 16601510,
+    photo: 'https://avatars.githubusercontent.com/u/16601510?v=3'
+  }))
+  instructors.push(models.user.create({
+    username: 'thejohnbackes',
+    name: 'John Backes',
+    github_id: 13596692,
+    photo: 'https://avatars.githubusercontent.com/u/13596692?v=3'
+  }))
   return Promise.all( creatingInstructors );
 };
 
@@ -214,7 +232,51 @@ let seedStudents = function ( n = 20 ) {
       team.addStudent( studentToAdd, { role: 'student' } );
     }
   } ) )
-  return Promise.all( students );
+  let us = Team.findOne({
+    where: {
+      name: 'jjjj'
+    }
+  }).then(function(team) {
+    User.findAll( {
+      where: {
+        github_id: {
+          $ne: null
+        }
+      }
+    } ).then(function(studentsUs) {
+      studentsUs.forEach(function(studentUs) {
+        team.addStudent(studentUs, {role: 'student'})
+      })
+    })
+    
+  })
+
+  return Promise.all( students, us );
+}
+
+let seedStudentTests = function () {
+  let studentTests = User.findAll( {
+      where: {
+        github_id: {
+          $ne: null
+        }
+      }
+    } )
+    .map( user => {
+      let repoUrl = `https://github.com/${user.username}/assessment1`;
+      let isStudent = Boolean(Math.round(Math.random()));
+      let isGraded = Boolean(Math.round(Math.random()));
+      let userId = user.id;
+      let assessmentId = 1;
+      return StudentTest.create( {
+        repoUrl,
+        isStudent,
+        isGraded,
+        userId,
+        assessmentId
+      } )
+    } )
+  return Promise.all( studentTests );
 }
 
 // let seedTests = function( n=2) {
@@ -250,6 +312,7 @@ db.sync( {
   .then( () => seedQuestions() )
   .then( () => seedStudents() )
   // .then( () => seedRubrics() )
+  .then( () => seedStudentTests() )
   .then( () => seedTags() )
   // .then( () => seedTests() )
   // .then( () => seedAnnotations())

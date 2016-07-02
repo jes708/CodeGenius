@@ -82,7 +82,7 @@ class Comment extends Component {
   //   )
   // }
   renderComment () {
-    let contents = this.props.contents || defaultContents ;
+    let contents = this.props.contents || defaultContents;
     let isEditing = this.props.isEditing;
     let buttonStyle = styles.assessmentButtons;
     return ( <div>

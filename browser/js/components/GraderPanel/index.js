@@ -6,67 +6,23 @@ import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import CommentCard from '../Comment';
-import {Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle} from 'material-ui/Toolbar';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
+import styles from '../graderStyles'
 
 
 function buildGraderPanel(dispatch){
   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
 }
 
-const styles = {
-  paperStyle: {
-    height: '100%',
-    overflow: 'scroll'
-  },
-  content: {
-    padding: 16
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
-  gradingInfo: {
-    color: '#FFF',
-    padding: 16
-  },
-  gradingTitle: {
-    fontSize: 24,
-    fontWeight: '400'
-  },
-  gradingSubtitle: {
-    fontSize: 16,
-    color: '#F5F5F5',
-    fontWeight: '300'
-  }
-}
-
-
-
 export default class GraderPanel extends Component {
 
   constructor(props){
     super(props)
-
   }
 
   componentWillMount(){
-    console.log(this);
     buildGraderPanel(this.props.dispatch);
   }
 
@@ -79,6 +35,7 @@ export default class GraderPanel extends Component {
   //       )
   //   })
   // }
+
   render () {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>

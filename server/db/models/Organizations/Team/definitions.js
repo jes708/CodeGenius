@@ -9,6 +9,9 @@ module.exports = function(db){
       name: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      github_team_id: {
+        type: Sequelize.BIGINT
       }
     }
 }

@@ -51,6 +51,17 @@ router.get('/getRepos', (req, res, next) => {
   })
 })
 
+router.get('/assessments', ensureAuthenticated, (req, res, next) => {
+  Assessment.findAll({
+    where: {
+      instructorId: req.user.id
+    }
+  })
+  .then(assessments => res.json(assessments))
+  .catch(next)
+})
+
+
 router.get( '/', sequelizeHandlers.query( Resource ) );
 router.get( '/:id', ( req, res, next ) => {
   if ( req.user && req.user.id === req.params.id ) {
@@ -61,6 +72,7 @@ router.get( '/:id', ( req, res, next ) => {
 router.post( '/', ensureAuthenticated, sequelizeHandlers.create( Resource ) );
 router.put( '/:id', ensureAuthenticated, sequelizeHandlers.update( Resource ) );
 router.delete( '/:id', ensureAuthenticated, sequelizeHandlers.remove( Resource ) );
+
 
 router.get('/:id/assessments', ensureAuthenticated, (req, res, next) => {
   Assessment.findAll({

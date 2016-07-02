@@ -24,16 +24,7 @@ class GraderAssessments extends Component {
   }
 
   componentWillMount () {
-    if (this.props.user) {
-      this.props.dispatch(getUserAssessments(this.props.user.id))
-    }
-  }
-
-  componentWillReceiveProps (nextProps) {
-    const { user, isFetching, assessments } = nextProps
-    if (user && !isFetching && !assessments.length) {
-      nextProps.dispatch(getUserAssessments(user.id))
-    }
+    this.props.dispatch(getUserAssessments())
   }
 
   toggleForm () {

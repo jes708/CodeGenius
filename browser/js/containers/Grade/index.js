@@ -12,12 +12,12 @@ import { Toolbar } from 'material-ui/Toolbar';
 import { Tab, Tabs } from 'material-ui/Tabs';
 import GraderAssessments from '../../components/GraderAssessments';
 import GraderStudents from '../../components/GraderStudents';
-import GraderHome from '../../components/GraderHome';
 import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import SocialGroup from 'material-ui/svg-icons/social/group';
 import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in';
 import AnnotationHandler from '../../components/Annotator';
+import GraderView from '../../components/GraderView'
 
 const styles = {
   paperStyle: {
@@ -85,9 +85,8 @@ export default class Grade extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isLoading: true,
-      content: '',
-      current: 'Assessments'
+      isLoading: false,
+      content: ''
     }
   }
 
@@ -109,18 +108,9 @@ export default class Grade extends Component {
   }
 
   render(){
-    return this.state.isLoading ? (<h1>Loading!</h1>) : (
+    return (
       <div className='col-lg-8'>
-        <Paper zDepth={2} style={styles.paperStyle}>
-          <div style={styles.content}>
-            <h2 style={styles.skinny}>/models/article.js</h2>
-            <pre className='line-numbers language-javascript'>
-              <PrismCode className='language-javascript'>
-                  {this.state.content}
-              </PrismCode>
-            </pre>
-          </div>
-        </Paper>
+        <GraderView isLoading={this.state.isLoading} />
       </div>
     )
   }

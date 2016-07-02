@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import ngKookie from 'react-cookie'
 import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'

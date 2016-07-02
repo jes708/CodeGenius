@@ -8,7 +8,10 @@ const utils = require('../../../utils');
 const {ensureAuthenticated, ensureIsAdmin, Credentials, respondWith404, _err, db} = utils;
 const Assessment = db().models.assessment;
 const Team = db().models.team
+const StudentTest = db().models.studentTest
+const User = db().models.user
 const Resource = Assessment;
+const GitHub = require('../../../../configure/github')
 
 import omit from 'lodash/object/omit'
 
@@ -17,6 +20,7 @@ import omit from 'lodash/object/omit'
 router.get(   '/',  sequelizeHandlers.query(Resource));
 router.get(   '/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
 router.post(  '/',  ensureAuthenticated, (req, res, next) => {
+  let newAssessment
   Promise.all([
     Team.findOrCreate({
       where: {
@@ -28,9 +32,53 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
   ])
   .spread((teams, assessment) => {
     const team = teams[0]
-    return assessment.setTeam(team)
+    let baseUrl = assessment.basePath.split('/')
+    return Promise.all([
+      assessment.setTeam(team),
+      GitHub.repos.getForksAsync({
+        user: baseUrl[0],
+        repo: baseUrl[1]
+      }),
+      GitHub.orgs.getTeamMembersAsync({ id: team.github_team_id }),
+    ])
   })
-  .then(assessment => res.json(assessment))
+  .spread((assessment, forks, members) => {
+    newAssessment = assessment
+    const memberLogins = members.map(member => member.login)
+    const teamForks = forks.filter(fork => memberLogins.includes(fork.owner.login))
+    const creatingUsersAndTests = teamForks.map(teamFork => {
+      let { owner } = teamFork
+      return Promise.all([
+        GitHub.users.getByIdAsync({ id: owner.id })
+        .then(user => {
+          return User.findOrCreate({ where: {
+            github_id: user.id,
+            name: user.name,
+            username: user.login,
+            photo: user.avatar_url
+          }})
+        }),
+        StudentTest.findOrCreate({
+          where: {
+            repoUrl: `${owner.login}/${assessment.basePath.split('/')[1]}`,
+            assessmentId: assessment.id,
+            creatorId: req.user.id
+          }
+        })
+      ])
+    })
+    return Promise.all(creatingUsersAndTests)
+  })
+  .then(usersAndTests => {
+    return Promise.all(
+      usersAndTests.map(userAndTest => {
+        let user = userAndTest[0][0]
+        let test = userAndTest[1][0]
+        return test.setUser(user)
+      })
+    )
+  })
+  .then(() => res.json(newAssessment))
   .catch(next)
 })
 router.put(   '/:id', ensureAuthenticated, sequelizeHandlers.update(Resource));

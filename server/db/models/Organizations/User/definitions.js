@@ -32,7 +32,7 @@ module.exports = function(db){
             type: Sequelize.STRING
         },
         github_id: {
-            type: Sequelize.STRING
+            type: Sequelize.BIGINT
         },
         github_token: {
           type: Sequelize.STRING

@@ -220,7 +220,7 @@ class AssessmentForm extends Component {
           <TextField
             floatingLabelText="Description"
             multiLine={true}
-            rows={2}
+            rows={1}
             rowsMax={Infinity}
             value={form.description}
             fullWidth={true}

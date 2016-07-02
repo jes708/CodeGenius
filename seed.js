@@ -11,8 +11,9 @@ var Promise = require( 'sequelize' )
   .Promise;
 const faker = require( 'faker' );
 const utils = require( './server/app/routes/utils' );
-const  Credentials = utils.Credentials;;
+const Credentials = utils.Credentials;;
 const Sequelize = require( 'sequelize' );
+const _ = require('lodash');
 
 // binding to the models
 const models = db.models;
@@ -30,7 +31,9 @@ const {
   question: Question,
   questionResponse: QuestionResponse,
   rubric: Rubric,
-  studentTest: StudentTest
+  studentTest: StudentTest,
+  tag: Tag,
+  itemTag: ItemTag
 } = models
 
 
@@ -53,19 +56,19 @@ function createRandomCredentials( username, password, email ) {
 }
 
 function randomN( n ) {
-  return Math.ceil( Math.random() * n )
+  return Math.ceil( Math.random() * n ) + 2
 }
 
 //seed methods
 /** seeds a random number of users 1-100 */
-const seedUsers = function ( n = 100 )  {
-  n = randomN(n);
+const seedUsers = function ( n = 100 ) {
+  n = randomN( n );
   let instructors = Array
     .from( {
       length: n
     }, credentials => createRandomCredentials() );
   let Omri = new Credentials(
-    'omriBear',
+    'omiBear',
     'password',
     'testing@fsa.com'
   );
@@ -84,8 +87,8 @@ const seedUsers = function ( n = 100 )  {
 };
 
 /** seeds up to n organizations */
-const seedOrganizations = function ( n = 100 )  {
-  n = randomN(n);
+const seedOrganizations = function ( n = 100 ) {
+  n = randomN( n );
   let organizations = User.findAll( {
       limit: n
     } )
@@ -100,8 +103,8 @@ const seedOrganizations = function ( n = 100 )  {
   return Promise.all( organizations );
 }
 
-const seedTeams = function ( n = 100 )  {
-  n = randomN(n)
+const seedTeams = function ( n = 100 ) {
+  n = randomN( n )
   let teams = Organization.findAll( {
       include: [ {
         model: User
@@ -137,7 +140,7 @@ let seedAssessments = function () {
     } )
     .map( instructor => {
       if ( !instructor.teams[ 0 ] ) return
-      let name = faker.lorem.words( randomN(20)  );
+      let name = faker.lorem.words( randomN( 20 ) + 1 );
       let description = faker.lorem.paragraph();
       let repoUrl = faker.internet.url();
       let instructorId = instructor.id;
@@ -164,10 +167,10 @@ let seedQuestions = function ( n = 20 ) {
   let questions = Assessment.findAll()
     .map( assessment => {
       let questions = Array.from( {
-        length: randomN(n)
+        length: randomN( n )
       }, question => {
-        let prompt = faker.lorem.words( randomN(20)  );
-        let answer = faker.lorem.words( randomN(20)  );
+        let prompt = faker.lorem.words( randomN( 20 ) );
+        let answer = faker.lorem.words( randomN( 20 ) );
         let assessmentId = assessment.id;
         return {
           prompt,
@@ -181,14 +184,13 @@ let seedQuestions = function ( n = 20 ) {
 }
 
 let seedRubrics = function ( n = 20 ) {
-  console.log( 'seeding rubrics' );
   let rubrics = Question.findAll()
     .map( question => {
       let N = randomN( n );
       let rubrics = Array.from( {
         length: N
       }, rubric => {
-        let criterion = faker.lorem.words( randomN(20) );
+        let criterion = faker.lorem.words( randomN( 20 ) );
         let points = randomN( 10 );
         let questionId = question.id;
         return {
@@ -199,22 +201,19 @@ let seedRubrics = function ( n = 20 ) {
       } )
       return Rubric.bulkCreate( rubrics );
     } )
-  console.log( 'here come the rubrics' );
   return Promise.all( rubrics );
 }
 
 let seedStudents = function ( n = 20 ) {
-  console.log( 'seeding students' );
-  let students = Promise.all(Array.from( {
-            length: randomN( n )
-          },
-          student => User.create(createRandomCredentials()))
-     ).then( students => Team.findAll().each( team => {
-    for(let i = 0; i< randomN(6); i++){
-      let studentToAdd = faker.random.arrayElement(students);
-      team.addStudent( studentToAdd, {role: 'student'});
+  let students = Promise.all( Array.from( {
+      length: randomN( n )
+    },
+    student => User.create( createRandomCredentials() ) ) ).then( students => Team.findAll().each( team => {
+    for ( let i = 0; i < randomN( 6 ); i++ ) {
+      let studentToAdd = faker.random.arrayElement( students );
+      team.addStudent( studentToAdd, { role: 'student' } );
     }
-  }))
+  } ) )
   return Promise.all( students );
 }
 
@@ -224,9 +223,25 @@ let seedStudents = function ( n = 20 ) {
 //   )
 // }
 
+let seedTags = function ( numTags = 10, tagsPer = 10 ) {
+  let numberOfTags = randomN( tagsPer + 2 )
+  let tags = Promise.all( Array.from( {
+      length: randomN( numTags + 2 )
+    },
+    tag => Tag.create( { name: faker.random.word(), color: faker.internet.color() } )
+  ) ).then( tags => Assessment.findAll( { limit: numberOfTags} )
+                              .map( assessment => {
+                                let theseTags = _.times(Math.ceil(numberOfTags/2), ()=>faker.random.arrayElement(tags))
+                                console.log(theseTags.length);
+                                return assessment.addTags( theseTags ) } ) )
+     .catch( error => console.log(error) )
+  return Promise.all( tags );
+}
+
 //execution
 db.sync( {
-    force: true
+    force: true,
+    logging: false
   } )
   .then( () => seedUsers() )
   .then( () => seedOrganizations() )
@@ -234,7 +249,8 @@ db.sync( {
   .then( () => seedAssessments() )
   .then( () => seedQuestions() )
   .then( () => seedStudents() )
-  .then( () => seedRubrics() )
+  // .then( () => seedRubrics() )
+  .then( () => seedTags() )
   // .then( () => seedTests() )
   // .then( () => seedAnnotations())
   .then( function () {

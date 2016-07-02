@@ -1,15 +1,11 @@
 'use strict'
 
 const styles = {
-  paperStyle: {
-    height: '100%',
-    overflow: 'scroll'
+  assessmentButtons: {
+    margin: 5
   },
   content: {
     padding: 16
-  },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
   },
   skinny: {
     margin: 0,
@@ -27,34 +23,40 @@ const styles = {
   roundedCard: {
     borderRadius: 50
   },
-  gradingPane: {
-    backgroundColor: '#64B5F6'
-  },
   gradingInfo: {
     color: '#FFF',
     padding: 16
   },
-  gradingTitle: {
-    fontSize: 24,
-    fontWeight: '400'
+  gradingPane: {
+    backgroundColor: '#64B5F6'
   },
   gradingSubtitle: {
     fontSize: 16,
     color: '#F5F5F5',
     fontWeight: '300'
   },
-  tags: {
-    display: 'flex',
-    flexWrap: 'wrap'
+  gradingTitle: {
+    fontSize: 24,
+    fontWeight: '400'
   },
-  tag: {
-    margin: 4
+  paperStyle: {
+    height: '100%',
+    overflow: 'scroll'
   },
   student: {
     borderRadius: '50%',
     height: 40,
     marginRight: 10
   },
+  tag: {
+    margin: 4
+  },
+  tags: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  addTag: {width: '32px', height: '32px'},
+  addTagIcon: {margin: '-8px -8px' },
   toggle: {
     display: 'inline-table',
     width: 'auto',

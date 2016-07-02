@@ -82,7 +82,7 @@ class Comment extends Component {
   //   )
   // }
   renderComment () {
-    let contents = this.props.contents || defaultContents;
+    let contents = this.props.contents || defaultContents ;
     let isEditing = this.props.isEditing;
     let buttonStyle = styles.assessmentButtons;
     return ( <div>
@@ -106,7 +106,7 @@ class Comment extends Component {
             multiLine={true}
              />
           </div>
-          <FlatButton href="/grade">Go to Code</FlatButton>
+          < FlatButton href="/grade">Go to Code</ FlatButton>
         </div>
       ) }
       { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }

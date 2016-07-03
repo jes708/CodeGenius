@@ -6,12 +6,14 @@ import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
+import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import { getUserAssessments, createAssessment } from '../actions/assessmentActions'
 import styles from './graderStyles'
 import AssessmentForm from './AssessmentForm'
+import AssessmentCard from './AssessmentCard'
 import { onActive } from 'material-ui/Tabs'
 import { switchAssessment } from '../actions/assessmentActions'
 import { getAllAssessments } from '../reducers/assessments'
@@ -20,7 +22,9 @@ class GraderAssessments extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      isCreating: false
+      isCreating: false,
+      isEditting: false,
+      editAssessment: {}
     }
   }
 
@@ -28,13 +32,29 @@ class GraderAssessments extends Component {
     this.props.dispatch(getUserAssessments())
   }
 
-  handleClick (assessmentId) {
+  handleSelectAssessment (assessmentId) {
     this.props.dispatch(switchAssessment(assessmentId))
+  }
+
+  handleEditAssessment (assessment) {
+    this.setState({
+      editAssessment: assessment,
+      isEditting: true,
+      isCreating: false
+    })
+  }
+
+  cancelEdit () {
+    this.setState({
+      isCreating: false,
+      isEditting: false
+    })
   }
 
   toggleForm () {
     this.setState({
-      isCreating: !this.state.isCreating
+      isCreating: !this.state.isCreating,
+      isEditting: false
     })
   }
 
@@ -45,32 +65,17 @@ class GraderAssessments extends Component {
     })
   }
 
-  renderTags (tags) {
-    if (tags) {
-      return tags.map((tag, i) => {
-        return <Chip key={i} style={styles.tag}>{tag}</Chip>
-      })
-    }
-  }
-
   renderAssessments () {
     const { isFetching, assessments } = this.props
     if (!isFetching && assessments.length) {
       return assessments.map((assessment, i) => {
         return (
-          <Card key={i} style={Object.assign({}, styles.infoCard, styles.skinny)}>
-            <div style={styles.gradingInfo}>
-              <div
-                onTouchTap={() => this.handleClick(assessment.id)}
-                style={styles.gradingTitle}>
-                {assessment.name}
-              </div>
-              <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>
-              <div style={styles.tags}>
-                {this.renderTags(assessment.tags)}
-              </div>
-            </div>
-          </Card>
+          <AssessmentCard
+            key={i}
+            assessment={assessment}
+            onSelect={this.handleSelectAssessment.bind(this)}
+            onEdit={this.handleEditAssessment.bind(this)}
+          />
         )
       })
     } else if (!isFetching && !assessments.length) {
@@ -81,18 +86,40 @@ class GraderAssessments extends Component {
   }
 
   renderToggleFormButton () {
-    return (
-      <RaisedButton
-        primary={true}
-        label={this.state.isCreating ? 'Cancel' : 'Create Assessment'}
-        icon={
-          this.state.isCreating
-            ? <FontIcon className='fa fa-times' />
-            : <FontIcon className='fa fa-plus' /> }
-        style={styles.skinny}
-        onClick={this.toggleForm.bind(this)}
-      />
-    )
+    const { isCreating, isEditting } = this.state
+
+    if ((!isCreating && !isEditting) || isCreating || isEditting) {
+      return (
+        <RaisedButton
+          primary={true}
+          label={isCreating || isEditting ? 'Cancel' : 'Create Assessment'}
+          icon={
+            isCreating || isEditting
+              ? <FontIcon className='fa fa-times' />
+              : <FontIcon className='fa fa-plus' /> }
+          style={styles.skinny}
+          onClick={
+            !isCreating && !isEditting
+            ? this.toggleForm.bind(this)
+            : this.cancelEdit.bind(this)
+          }
+        />
+      )
+    }
+  }
+
+  renderForm () {
+    const { isEditting, isCreating, editAssessment } = this.state
+    let form
+
+    if (isCreating) {
+      form = <AssessmentForm onSubmit={this.submitForm.bind(this)} />
+    } else if (isEditting) {
+      form = <AssessmentForm assessment={editAssessment} onSubmit={this.submitForm.bind(this)} />
+    } else {
+      form = this.renderAssessments()
+    }
+    return form
   }
 
   render () {
@@ -100,9 +127,7 @@ class GraderAssessments extends Component {
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
           {this.renderToggleFormButton()}
-          { this.state.isCreating
-            ? <AssessmentForm onSubmit={this.submitForm.bind(this)} />
-            : this.renderAssessments() }
+          {this.renderForm()}
         </div>
       </div>
     )

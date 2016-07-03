@@ -1,8 +1,13 @@
 'use strict'
 
+import { blue600 } from 'material-ui/styles/colors'
+
 const styles = {
   assessmentButtons: {
     margin: 5
+  },
+  blueBg: {
+    backgroundColor: blue600
   },
   content: {
     padding: 16
@@ -26,6 +31,10 @@ const styles = {
   gradingInfo: {
     color: '#FFF',
     padding: 16
+  },
+  assessmentInfo: {
+    padding: '20px',
+    backgroundColor: '#1E88E5'
   },
   gradingPane: {
     backgroundColor: '#64B5F6'
@@ -78,6 +87,28 @@ const styles = {
   svgOutline: {
     background: 'white',
     borderRadius: '50%'
+  },
+  editAssessment: {
+    display: 'inline-block',
+    cursor: 'pointer'
+  },
+  center: {
+    textAlign: 'center'
+  },
+  stepLabel: {
+    fontSize: 24
+  },
+  addBtn: {
+    marginLeft: 20,
+    backgroundColor: '#000',
+    borderRadius: '2px',
+    padding: 8,
+    height: 38,
+    width: 38
+  },
+  formPaperStyle: {
+    margin: 'auto',
+    padding: 20
   }
 }
 

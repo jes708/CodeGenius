@@ -15,43 +15,7 @@ import AutoComplete from 'material-ui/AutoComplete'
 import { Step, Stepper, StepLabel, StepContent } from 'material-ui/Stepper'
 import { getUserOrgs, getOrgTeams } from '../actions/githubActions'
 import { getOrgs, getTeams } from '../reducers/github'
-
-const styles = {
-  blueBg: {
-    backgroundColor: blue600
-  },
-  form: {
-    marginTop: 50
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  paperStyle: {
-    margin: 'auto',
-    padding: 20
-  },
-  button: {
-    marginTop: 15
-  },
-  fullWidth: {
-    width: '100%'
-  },
-  center: {
-    textAlign: 'center'
-  },
-  stepLabel: {
-    fontSize: 24
-  },
-  addBtn: {
-    marginLeft: 20,
-    backgroundColor: '#000',
-    borderRadius: '2px',
-    padding: 8,
-    height: 38,
-    width: 38
-  }
-}
+import styles from './graderStyles'
 
 // const validate = (values) => {
 //   const errors = {}
@@ -72,20 +36,23 @@ const styles = {
 class AssessmentForm extends Component {
   constructor(props) {
     super(props)
+
+    const { assessment } = props
+
     this.state = {
       finished: false,
       stepIndex: 0,
       form: {
-        name: '',
-        description: '',
-        repoUrl: '',
-        org: '',
+        name: assessment ? assessment.name : '',
+        description: assessment ? assessment.description : '',
+        repoUrl: assessment ? assessment.repoUrl : '',
+        org: assessment ? assessment.org : '',
         teamName: '',
-        teamId: '',
+        teamId: assessment ? assessment.teamId : '',
       },
       errors: {},
       path: '',
-      paths: []
+      paths: assessment ? assessment.solutionFiles : [],
     }
   }
 
@@ -109,7 +76,7 @@ class AssessmentForm extends Component {
   checkAndAddPath () {
     const { path, paths, repo } = this.state
     axios.get(`/api/v1/github/${repo}/contents?path=${path}`)
-    .then(resData => {
+    .then(() => {
       this.setState({
         paths: paths.concat(path),
         path: '',
@@ -181,11 +148,21 @@ class AssessmentForm extends Component {
 
   renderStepActions(step) {
     const { stepIndex } = this.state
+    const { assessment } = this.props
+    let buttonLabel
+
+    if (stepIndex === 1 && assessment) {
+      buttonLabel = 'Save'
+    } else if (stepIndex === 1) {
+      buttonLabel = 'Create'
+    } else {
+      buttonLabel = 'Next'
+    }
 
     return (
       <div style={{margin: '12px 0'}}>
         <RaisedButton
-          label={stepIndex === 1 ? 'Create' : 'Next'}
+          label={buttonLabel}
           primary={stepIndex !== 1}
           secondary={stepIndex === 1}
           onTouchTap={stepIndex === 1
@@ -209,7 +186,7 @@ class AssessmentForm extends Component {
     const { form, error } = this.state
 
     return (
-      <Paper zDepth={0} style={styles.paperStyle}>
+      <Paper zDepth={0} style={styles.formPaperStyle}>
         <form>
           <TextField
             floatingLabelText="Name"
@@ -220,7 +197,7 @@ class AssessmentForm extends Component {
           <TextField
             floatingLabelText="Description"
             multiLine={true}
-            rows={2}
+            rows={1}
             rowsMax={Infinity}
             value={form.description}
             fullWidth={true}
@@ -235,7 +212,7 @@ class AssessmentForm extends Component {
             fullWidth={true}
             onNewRequest={this.handleOrgSelect}
           />
-          { !isFetchingTeams && teams.length
+          { form.teamId !== '' || !isFetchingTeams && teams.length
             ? <AutoComplete
                 floatingLabelText='Team'
                 filter={AutoComplete.fuzzyFilter}
@@ -266,7 +243,7 @@ class AssessmentForm extends Component {
     const { path, error } = this.state
 
     return (
-      <Paper zDepth={0} style={styles.paperStyle}>
+      <Paper zDepth={0} style={styles.formPaperStyle}>
         <TextField
           floatingLabelText="Solution Path"
           value={path}
@@ -309,7 +286,7 @@ class AssessmentForm extends Component {
     if (isFetchingOrgs && !orgs.length) return <h1>Is Loading...</h1>
     else {
       return (
-        <Paper style={styles.paperStyle}>
+        <Paper style={styles.formPaperStyle}>
           <Stepper activeStep={stepIndex} orientation="vertical">
             <Step>
               <StepLabel style={styles.stepLabel}>Enter Assessment Information</StepLabel>

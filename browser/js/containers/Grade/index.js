@@ -1,5 +1,7 @@
-import axios from "axios"
+'use strict';
+
 import React, { Component, PropTypes } from 'react';
+import axios from "axios"
 import { PrismCode } from 'react-prism';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';

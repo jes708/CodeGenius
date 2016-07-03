@@ -23,6 +23,8 @@ import Chip from 'material-ui/Chip'
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import MarkdownWrapper from '../../containers/Markdown';
 import {Tags} from '../../containers/Tag';
+import FlipMove from 'react-flip-move';
+
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -67,35 +69,43 @@ class Comment extends Component {
     super(props);
     this.buttonOnClickHandler = this.editMode.bind(this);
     this.onClickDoneHandler = this.editModeDone.bind(this);
+    this.state = {
+      contents: this.props.contents
+    }
   }
   componentWillReceiveProps(nextProps){
     if(nextProps.contents) {
       let { contents } = nextProps;
-      this.contents = contents;
+      this.state.contents = contents;
     }
   }
-  // renderTextField(markdown, rendered, showMarkdown = false, editable=false){
-  //   return (
-  //     <div contenteditable={editable}>
-  //       {showMarkdown ? markdown : rendered}
-  //     </div>
-  //   )
-  // }
   renderComment () {
-    let contents = this.props.contents || defaultContents;
+    let contents = this.state.contents || defaultContents;
     let isEditing = this.props.isEditing;
     let buttonStyle = styles.assessmentButtons;
+    let id = 0;
     return ( <div>
+        <span key={id++}>
       { (!contents.description && isEditing) ? <RaisedButton style={buttonStyle} label="Add Description" /> : "" }
+        </span>
+        <span key={id++}>
       { (!contents.score && isEditing) ? <RaisedButton style={buttonStyle} label="Add Score" /> : ""}
+        </span>
+        <span key={id++}>
       { (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : ""}
+        </span>
+        <span key={id++}>
       { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : (
         <div>
           <Tags tags={contents.tags} isEditing={isEditing} />
         </div>
       )
       }
+        </span>
+        <span key={id++}>
       { (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""}
+        </span>
+        <span key={id++}>
       { (!contents.selection) ? (isEditing ? <RaisedButton style={buttonStyle} label="Add Annotation" /> : "") : (
         <div>
           <div>
@@ -109,13 +119,17 @@ class Comment extends Component {
           < FlatButton href="/grade">Go to Code</ FlatButton>
         </div>
       ) }
+        </span>
+        <span key={id++}>
       { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }
+        </span>
+        <span key={id++}>
       { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" /> : (
         <div>
           <MarkdownWrapper markdown={contents.markdown} editable={isEditing}  />
         </div>
       ) }
-
+        </span>
       </div>)
 
   }
@@ -126,14 +140,6 @@ class Comment extends Component {
     this.props.dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null}})
   }
 
-  // renderTags (tags, tagStyle) {
-  //   if (tags) {
-  //     return tags.map((tag, i) => {
-  //       let thisTagStyle = _.cloneDeep(tagStyle);
-  //       return <Chip key={i} tag={tag.name} onRequestDelete={this.deleteTag({i}, {tag})} backgroundColor={tag.color} style={thisTagStyle}>{tag.name}</Chip>
-  //     })
-  //   }
-  // }
   render(){
     const iconButtonElement = (
       <IconButton

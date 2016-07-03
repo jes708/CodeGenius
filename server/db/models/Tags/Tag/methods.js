@@ -19,21 +19,13 @@ module.exports = {
 function addAssociations( db ) {
   const Assessment = db.models['assessment'];
   const Tag = db.models[ 'tag' ];
-  const ItemTag = db.models[ 'itemTag' ];
+  const ItemTag = db.models['itemTag'];
   Assessment.belongsToMany(Tag, {
-    through: {
-      model: ItemTag,
-      unique: false
-    },
-    // foreignKey: 'taggable_id',
-    constraints: false
+    through: {model: ItemTag, unique: false},
+    otherKey: 'tagId'
   });
   Tag.belongsToMany(Assessment, {
-    through: {
-      model: ItemTag,
-      unique: false
-    },
-    // foreignKey: 'tag_id'
-    constraints: false
+    through: {model: ItemTag, unique: false},
+    otherKey: 'assessmentId'
   });
 }

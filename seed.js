@@ -32,15 +32,9 @@ const {
   questionResponse: QuestionResponse,
   rubric: Rubric,
   studentTest: StudentTest,
-  tag: Tag,
-  itemTag: ItemTag
+  tag: Tag
 } = models
-
-
-// console.log(models);
-// const User = db.models[ 'user' ];
-// const Organization = db.models[ 'organization' ];
-// const UserOrganization = db.models[ 'userOrganization' ];
+const ItemTag = db.models[ 'itemTag' ];
 
 function createRandomCredentials( username, password, email ) {
   let credentials = Credentials(
@@ -62,6 +56,7 @@ function randomN( n ) {
 //seed methods
 /** seeds a random number of users 1-100 */
 const seedUsers = function ( n = 100 ) {
+  console.log('seeding users');
   n = randomN( n );
   let instructors = Array
     .from( {
@@ -75,7 +70,7 @@ const seedUsers = function ( n = 100 ) {
   Omri.isAdmin = true;
   instructors.push( Omri );
   let creatingInstructors = instructors.map( function ( instructorObj ) {
-    return User.create( instructorObj );
+    return User.create( instructorObj ).catch(error => console.log('seedUsers error', error));
   } );
   instructors.push(models.user.create({
     username: 'jancodes',
@@ -106,6 +101,7 @@ const seedUsers = function ( n = 100 ) {
 
 /** seeds up to n organizations */
 const seedOrganizations = function ( n = 100 ) {
+  console.log('seeding organizations')
   n = randomN( n );
   let organizations = User.findAll( {
       limit: n
@@ -116,12 +112,13 @@ const seedOrganizations = function ( n = 100 ) {
         name
       }, {
         role: 'creator'
-      } )
+      } ).catch(error => console.log('createOrganizationError', error) )
     } )
   return Promise.all( organizations );
 }
 
 const seedTeams = function ( n = 100 ) {
+  console.log('seeding teams');
   n = randomN( n )
   let teams = Organization.findAll( {
       include: [ {
@@ -143,16 +140,17 @@ const seedTeams = function ( n = 100 ) {
         }, {
           role: 'instructor',
         } )
-        .then( team => team.setOrganization( organization ) )
+        .then( team => team.setOrganization( organization ).catch(error => console.log('setOrganizationError', error) ) ).catch(error => console.log('createTeamError', error)  )
     } )
     teams[0] = models.team.create({
       name: 'jjjj',
       github_team_id: 2059661
-    })
+    }).catch(error => console.log('createJJJJError', error) )
   return Promise.all( teams );
 }
 
 let seedAssessments = function () {
+  console.log('seeding assessments');
   let assessments = User.findAll( {
       include: [ Team ]
     } )
@@ -176,12 +174,13 @@ let seedAssessments = function () {
         teamId,
         org,
         solutionFiles
-      } )
+      } ).catch(error => console.log('createAssessmentError', error) )
     } )
   return Promise.all( assessments );
 }
 
 let seedQuestions = function ( n = 20 ) {
+  console.log('seeding questions');
   let questions = Assessment.findAll()
     .map( assessment => {
       let questions = Array.from( {
@@ -202,6 +201,7 @@ let seedQuestions = function ( n = 20 ) {
 }
 
 let seedRubrics = function ( n = 20 ) {
+  console.log('seeding rubrics');
   let rubrics = Question.findAll()
     .map( question => {
       let N = randomN( n );
@@ -223,38 +223,56 @@ let seedRubrics = function ( n = 20 ) {
 }
 
 let seedStudents = function ( n = 20 ) {
-  let students = Promise.all( Array.from( {
+  console.log('seeding students');
+  return Promise.all( Array.from( {
       length: randomN( n )
     },
-    student => User.create( createRandomCredentials() ) ) ).then( students => Team.findAll().each( team => {
-    for ( let i = 0; i < randomN( 6 ); i++ ) {
-      let studentToAdd = faker.random.arrayElement( students );
-      team.addStudent( studentToAdd, { role: 'student' } );
-    }
-  } ) )
-  let us = Team.findOne({
-    where: {
-      name: 'jjjj'
-    }
-  }).then(function(team) {
-    User.findAll( {
+    student => User.create( createRandomCredentials() ).catch(error => console.log('UserCreateError in seedStudents', error) ) ) )
+}
+
+function addStudentsToTeams(students){
+  return (
+    Team.findAll()
+        .each( team => {
+          let studentsToAdd = new Set()
+          for ( let i = 0; i < randomN( 6 ); i++ ) {
+            studentsToAdd.add(faker.random.arrayElement( students ));
+          }
+          return studentsToAdd.forEach(student =>
+            team.addStudent( student, { role: 'student' } )
+                .catch(error => console.log('addStudentsToTeams', error)) );
+        } )
+  )
+}
+
+function seedUs(){
+  console.log('seeding us');
+  return User.findAll( {
       where: {
         github_id: {
           $ne: null
         }
       }
-    } ).then(function(studentsUs) {
-      studentsUs.forEach(function(studentUs) {
-        team.addStudent(studentUs, {role: 'student'})
-      })
-    })
-    
-  })
-
-  return Promise.all( students, us );
+    } )
 }
 
+function addUsToTeams( studentsUs ){
+  console.log('adding us to teams');
+  return Team.findOne({
+      where: {
+        name: 'jjjj'
+      }
+    }).then( team => {
+          return studentsUs
+            .map(student =>
+              team.addStudent( student, { role: 'student' } )
+                  .catch(error => console.log('addUsToTeams', error)
+                ) )
+              })
+            }
+
 let seedStudentTests = function () {
+  console.log('seeding student tests');
   let studentTests = User.findAll( {
       where: {
         github_id: {
@@ -268,52 +286,60 @@ let seedStudentTests = function () {
       let isGraded = Boolean(Math.round(Math.random()));
       let userId = user.id;
       let assessmentId = 1;
-      return StudentTest.create( {
+      return user.createStudentTest( {
         repoUrl,
         isStudent,
         isGraded,
-        userId,
         assessmentId
-      } )
+      }).catch(error=>console.log('seedStudentTests', error))
     } )
-  return Promise.all( studentTests );
+  return studentTests;
 }
 
-// let seedTests = function( n=2) {
-//   return Assessment.findAll().map(
-//     assessment => assessment.
-//   )
-// }
-
-let seedTags = function ( numTags = 10, tagsPer = 10 ) {
-  let numberOfTags = randomN( tagsPer + 2 )
-  let tags = Promise.all( Array.from( {
+function createTags(numTags = 10){
+  return Promise.all(Array.from( {
       length: randomN( numTags + 2 )
     },
-    tag => Tag.create( { name: faker.random.word(), color: faker.internet.color() } )
-  ) ).then( tags => Assessment.findAll( { limit: numberOfTags} )
-                              .map( assessment => {
-                                let theseTags = _.times(Math.ceil(numberOfTags/2), ()=>faker.random.arrayElement(tags))
-                                console.log(theseTags.length);
-                                return assessment.addTags( theseTags ) } ) )
-     .catch( error => console.log(error) )
-  return Promise.all( tags );
+    tag => Tag.create( {
+         name: faker.random.word(),
+         color: faker.internet.color()
+       } ).catch( error => console.log('createTag error', error))
+  ) )
 }
+
+function addTagsToAssessments ( tags, numTags = 10, tagsPer = 10 ) {
+  console.log('seeding tags');
+  let numberOfTags = Math.ceil(randomN( tagsPer + 2 ) / 2)
+  return Assessment
+    .findAll( { limit: numberOfTags} )
+    .each( assessment => {
+      let tagsToAdd = new Set();
+      for ( let i = 0; i < numberOfTags; i++ ) {
+        tagsToAdd.add(faker.random.arrayElement(tags));
+      }
+      return Promise.all([...tagsToAdd.values()].map( tag =>{
+        return assessment.addTag(tag)
+          .catch(error => console.log(error) )}
+      ) )
+    })
+  }
 
 //execution
 db.sync( {
     force: true,
     logging: false
   } )
+  .then( () => console.log( chalk.white('starting')))
   .then( () => seedUsers() )
   .then( () => seedOrganizations() )
   .then( () => seedTeams() )
   .then( () => seedAssessments() )
-  .then( () => seedQuestions() )
-  .then( () => seedStudents() )
+  // .then( () => seedQuestions() )
+  .then( () => seedStudents() ).then(addStudentsToTeams)
+  .then( () => seedUs() ).then(addUsToTeams)
   // .then( () => seedRubrics() )
+  .then( () => createTags() ).then(tags => addTagsToAssessments(tags, 10, 10) )
   .then( () => seedStudentTests() )
-  .then( () => seedTags() )
   // .then( () => seedTests() )
   // .then( () => seedAnnotations())
   .then( function () {
@@ -322,5 +348,6 @@ db.sync( {
   } )
   .catch( function ( err ) {
     console.error( err );
-    process.exit( 1 );
+    console.log( chalk.white('done with errors'));
+    // process.exit( 1 );
   } );

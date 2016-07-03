@@ -5,6 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   devtool: 'eval-source-map',
+  watch: true,
   entry: ['./browser/js/app.js', './browser/scss/main.scss'],
   output: {
     path: __dirname + '/public',

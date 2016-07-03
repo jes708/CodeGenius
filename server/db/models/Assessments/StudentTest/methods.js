@@ -20,7 +20,7 @@ module.exports = {
         }).then(function(scores) {
           return scores.reduce(function(sum, score) {
             return sum + score;
-          }, 0) 
+          }, 0)
         }).then(function(score) {
           this.update({score: score})
         })
@@ -38,7 +38,7 @@ module.exports = {
         }).then(function(scores) {
           return scores.reduce(function(sum, score) {
             return sum + score;
-          }, 0) 
+          }, 0)
         })
       }
     }
@@ -51,5 +51,5 @@ function addAssociations(db){
   const User = db.models['user'];
 
   StudentTest.belongsTo(Assessment);
-  StudentTest.belongsTo(User);
+  StudentTest.belongsTo(User, {constraints: false});
 }

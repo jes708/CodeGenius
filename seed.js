@@ -35,10 +35,6 @@ const {
   tag: Tag
 } = models
 const ItemTag = db.models[ 'itemTag' ];
-// console.log(models);
-// const User = db.models[ 'user' ];
-// const Organization = db.models[ 'organization' ];
-// const UserOrganization = db.models[ 'userOrganization' ];
 
 function createRandomCredentials( username, password, email ) {
   let credentials = Credentials(
@@ -296,22 +292,9 @@ let seedStudentTests = function () {
         isGraded,
         assessmentId
       }).catch(error=>console.log('seedStudentTests', error))
-      // return StudentTest.create( {
-      //   repoUrl,
-      //   isStudent,
-      //   isGraded,
-      //   userId,
-      //   assessmentId
-      // } )
     } )
   return studentTests;
 }
-
-// let seedTests = function( n=2) {
-//   return Assessment.findAll().map(
-//     assessment => assessment.
-//   )
-// }
 
 function createTags(numTags = 10){
   return Promise.all(Array.from( {
@@ -335,12 +318,11 @@ function addTagsToAssessments ( tags, numTags = 10, tagsPer = 10 ) {
         tagsToAdd.add(faker.random.arrayElement(tags));
       }
       return Promise.all([...tagsToAdd.values()].map( tag =>{
-        console.log('adding tag');
         return assessment.addTag(tag)
           .catch(error => console.log(error) )}
-      ) ) })  }
-
-
+      ) )
+    })
+  }
 
 //execution
 db.sync( {

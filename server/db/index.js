@@ -22,18 +22,9 @@ const Tag = require( './models/Tags/Tag');
 const ItemTag = require( './models/Tags/ItemTag');
 
 bluebird.all( [ User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest, Assessment, Tag ] )
-  .then( Models => Models.forEach( Model => Model.addAssociations ? Model.addAssociations( db ) : null ))
+  .then( Models =>
+    Models.forEach( Model => Model.addAssociations ?
+      Model.addAssociations( db ) : null )
+    )
   .then( () => console.log('done with associations'))
   .catch( error => console.log('association error', error))
-  // .spread( ( User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest, Assessment, Tag, ItemTag ) => {
-  //   User.addAssociations( db );
-  //   Team.addAssociations( db );
-  //   Organization.addAssociations( db );
-  //   Annotation.addAssociations( db );
-  //   CriterionResponse.addAssociations( db );
-  //   Question.addAssociations( db );
-  //   QuestionResponse.addAssociations( db );
-  //   Rubric.addAssociations( db );
-  //   StudentTest.addAssociations( db );
-  //   Assessment.addAssociations( db );
-  // } )

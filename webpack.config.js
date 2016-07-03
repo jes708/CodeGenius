@@ -10,6 +10,7 @@ module.exports = {
     path: __dirname + '/public',
     filename: 'main.js'
   },
+  watch: true,
   resolve: {
     extensions: ['', '.js', '.jsx', '.scss', '.css']
   },

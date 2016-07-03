@@ -6,16 +6,9 @@ var Sequelize = require( 'sequelize' );
 /** Item-Tag methods */
 module.exports = {
   class: function(db){
-    return {
-      addAssociations
-    };
+    return {};
   },
   instance: function(db){
     return {};
   }
-}
-
-
-function addAssociations( db ) {
-
 }

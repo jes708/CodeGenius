@@ -19,6 +19,7 @@ var notify = require('gulp-notify');
 var path = require('path')
 var webpack = require('gulp-webpack')
 var webpackConfigFile = require('./webpack.config.js')
+const newer = require('gulp-newer');
 
 // Development tasks
 // --------------------------------------------------------------
@@ -38,9 +39,9 @@ gulp.task('lintJS', function() {
     .pipe(plumber({
       errorHandler: notify.onError('Linting FAILED! Check your gulp process.')
     }))
-    .pipe(eslint())
-    .pipe(eslint.format())
-    .pipe(eslint.failOnError());
+    .pipe(eslint({quiet: true}))
+    // .pipe(eslint.format())
+    // .pipe(eslint.failOnError());
 
 });
 
@@ -58,6 +59,7 @@ gulp.task('lintJS', function() {
 
 gulp.task('buildJSAndCSS', () => {
   return gulp.src(['./browser/js/app.js', './browser/scss/main.scss'])
+    .pipe(newer('./public'))
     .pipe(webpack(webpackConfigFile))
     .pipe(gulp.dest('./public'))
 })

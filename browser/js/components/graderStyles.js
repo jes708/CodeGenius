@@ -3,38 +3,43 @@
 import { blue600 } from 'material-ui/styles/colors'
 
 const styles = {
+  addBtn: {
+    marginLeft: 20,
+    backgroundColor: '#000',
+    borderRadius: '2px',
+    padding: 8,
+    height: 38,
+    width: 38
+  },
+  addTag: {width: '32px', height: '32px'},
+  addTagIcon: {margin: '-8px -8px' },
   assessmentButtons: {
     margin: 5
-  },
-  blueBg: {
-    backgroundColor: blue600
-  },
-  content: {
-    padding: 16
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  inactiveCard: {
-    backgroundColor: '#aaa'
-  },
-  roundedCard: {
-    borderRadius: 50
-  },
-  gradingInfo: {
-    color: '#FFF',
-    padding: 16
   },
   assessmentInfo: {
     padding: '20px',
     backgroundColor: '#1E88E5'
+  },
+  blueBg: {
+    backgroundColor: blue600
+  },
+  center: {
+    textAlign: 'center'
+  },
+  content: {
+    padding: 16
+  },
+  editAssessment: {
+    display: 'inline-block',
+    cursor: 'pointer'
+  },
+  formPaperStyle: {
+    margin: 'auto',
+    padding: 20
+  },
+  gradingInfo: {
+    color: '#FFF',
+    padding: 16
   },
   gradingPane: {
     backgroundColor: '#64B5F6'
@@ -48,30 +53,33 @@ const styles = {
     fontSize: 24,
     fontWeight: '400'
   },
+  inactiveCard: {
+    backgroundColor: '#aaa'
+  },
+  infoCard: {
+    backgroundColor: '#1E88E5'
+  },
+  noTopPadding: {
+    paddingTop: 0
+  },
   paperStyle: {
     height: '100%',
     overflow: 'scroll'
+  },
+  roundedCard: {
+    borderRadius: 50
+  },
+  skinny: {
+    margin: 0,
+    marginBottom: 15
+  },
+  stepLabel: {
+    fontSize: 20
   },
   student: {
     borderRadius: '50%',
     height: 40,
     marginRight: 10
-  },
-  tag: {
-    margin: 4
-  },
-  tags: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  addTag: {width: '32px', height: '32px'},
-  addTagIcon: {margin: '-8px -8px' },
-  toggle: {
-    display: 'inline-table',
-    width: 'auto',
-    float: 'right',
-    top: 8,
-    position: 'relative'
   },
   studentIcon: {
     top: 7,
@@ -88,23 +96,19 @@ const styles = {
     background: 'white',
     borderRadius: '50%'
   },
-  editAssessment: {
-    display: 'inline-block',
-    cursor: 'pointer'
+  tag: {
+    margin: 4
   },
-  center: {
-    textAlign: 'center'
+  tags: {
+    display: 'flex',
+    flexWrap: 'wrap',
   },
-  stepLabel: {
-    fontSize: 20
-  },
-  addBtn: {
-    marginLeft: 20,
-    backgroundColor: '#000',
-    borderRadius: '2px',
-    padding: 8,
-    height: 38,
-    width: 38
+  toggle: {
+    display: 'inline-table',
+    width: 'auto',
+    float: 'right',
+    top: 8,
+    position: 'relative'
   },
   formPaperStyle: {
     margin: 'auto',

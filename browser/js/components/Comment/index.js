@@ -23,6 +23,9 @@ import Chip from 'material-ui/Chip'
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import MarkdownWrapper from '../../containers/Markdown';
 import {Tags} from '../../containers/Tag';
+import FlipMove from 'react-flip-move';
+import renderComment from './renderComment';
+import { annotationAdded } from '../Annotator/actions';
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -49,12 +52,6 @@ let criteria = (
 </RadioButtonGroup>)
 
 let defaultContents = {
-  // description: "foo bar",
-  // score: 1,
-  // solutionCodeLink: "http://www.google.com",
-  // tags: ['foo', 'bar', 'baz'],
-  // attachments: ['foo', 'bar', 'baz'],
-  // annotation: null,
   tags: [
     {name: 'foo', color: '#3F51B5'}
   ],
@@ -67,57 +64,21 @@ class Comment extends Component {
     super(props);
     this.buttonOnClickHandler = this.editMode.bind(this);
     this.onClickDoneHandler = this.editModeDone.bind(this);
+    this.state = {
+      contents: this.props.contents
+    }
+    this.renderComment = renderComment.bind(this)
   }
   componentWillReceiveProps(nextProps){
-    if(nextProps.contents) {
-      let { contents } = nextProps;
-      this.contents = contents;
+    this.setState({isEditing: nextProps.isEditing});
+    if(nextProps.contents.selection && this.state.isEditing && !nextProps.contents.selection.added) {
+      this.setState(function(previousState, currentProps){
+        let nextState = {...previousState}
+        nextState.contents.selection = nextProps.contents.selection;
+        return nextState;
+      })
+      this.props.dispatch(annotationAdded( true ));
     }
-  }
-  // renderTextField(markdown, rendered, showMarkdown = false, editable=false){
-  //   return (
-  //     <div contenteditable={editable}>
-  //       {showMarkdown ? markdown : rendered}
-  //     </div>
-  //   )
-  // }
-  renderComment () {
-    let contents = this.props.contents || defaultContents;
-    let isEditing = this.props.isEditing;
-    let buttonStyle = styles.assessmentButtons;
-    return ( <div>
-      { (!contents.description && isEditing) ? <RaisedButton style={buttonStyle} label="Add Description" /> : "" }
-      { (!contents.score && isEditing) ? <RaisedButton style={buttonStyle} label="Add Score" /> : ""}
-      { (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : ""}
-      { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : (
-        <div>
-          <Tags tags={contents.tags} isEditing={isEditing} />
-        </div>
-      )
-      }
-      { (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""}
-      { (!contents.selection) ? (isEditing ? <RaisedButton style={buttonStyle} label="Add Annotation" /> : "") : (
-        <div>
-          <div>
-            <TextField
-            hintText="Annotate Code"
-            defaultValue = {contents.selection.toString()}
-            floatingLabelText="Code Annotation"
-            multiLine={true}
-             />
-          </div>
-          < FlatButton href="/grade">Go to Code</ FlatButton>
-        </div>
-      ) }
-      { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }
-      { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" /> : (
-        <div>
-          <MarkdownWrapper markdown={contents.markdown} editable={isEditing}  />
-        </div>
-      ) }
-
-      </div>)
-
   }
   editMode(){
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
@@ -126,14 +87,6 @@ class Comment extends Component {
     this.props.dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null}})
   }
 
-  // renderTags (tags, tagStyle) {
-  //   if (tags) {
-  //     return tags.map((tag, i) => {
-  //       let thisTagStyle = _.cloneDeep(tagStyle);
-  //       return <Chip key={i} tag={tag.name} onRequestDelete={this.deleteTag({i}, {tag})} backgroundColor={tag.color} style={thisTagStyle}>{tag.name}</Chip>
-  //     })
-  //   }
-  // }
   render(){
     const iconButtonElement = (
       <IconButton
@@ -168,13 +121,21 @@ class Comment extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  let nextProps = Object.assign( {}, props.contents);
+  let nextProps = {contents: {}};
+  let stateToUpdate = Object.assign({}, state);
 
-  nextProps.isEditing = state.comment.isEditing.key === props.commentIndex ? true : false;
+  nextProps.isEditing = (
+    state.comment.isEditing.key === props.commentIndex ?
+      true : false
+    );
 
-  if(state.annotation.selectionString != ""){
-    nextProps.selection = annotation.selection
+  nextProps.contents = Object.assign( {}, props.contents);
+  nextProps.contents.selection = props.contents.selection;
+
+  if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){
+    nextProps.contents.selection = stateToUpdate.annotation.selection;
   }
+
   return nextProps;
 }
 

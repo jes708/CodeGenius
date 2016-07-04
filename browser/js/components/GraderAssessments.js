@@ -39,7 +39,9 @@ class GraderAssessments extends Component {
   }
 
   handleSelectAssessment (assessmentId) {
-    this.props.dispatch(switchAssessment(assessmentId))
+    const { dispatch, switchTabs } = this.props
+    dispatch(switchAssessment(assessmentId))
+    switchTabs('Students')
   }
 
   handleEditAssessment (assessment) {

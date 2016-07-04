@@ -36,6 +36,7 @@ class StudentCard extends Component {
 
 // change iconSwitcher to have status done no-repo or score
   render () {
+    const { onSelect } = this.props
     let id = this.props.studentTest.id;
     // this.props.studentTestInfo[id].score.totalScore();
 
@@ -55,7 +56,9 @@ class StudentCard extends Component {
     return (
       <Card style={Object.assign({}, style, styles.skinny, styles.roundedCard)}>
         <div style={styles.gradingInfo}>
-          <a href="#" style={styles.gradingSubtitle}>
+          <a href="#" style={styles.gradingSubtitle}
+            onClick={() => { onSelect(this.props.studentTest.user.id) }}
+          >
             <img src={this.props.studentTest.user.photo} alt={this.props.studentTest.user.name} style={styles.student}/>
             {this.props.studentTest.user.name}
           </a>

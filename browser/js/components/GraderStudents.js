@@ -40,6 +40,12 @@ class GraderStudents extends Component {
     dispatch(getStudentTestsInfo(assessment.id))
   }
 
+  handleSelectStudent (studentId) {
+    const { dispatch, assessment, switchTabs } = this.props
+    dispatch(getStudentTestInfo(assessment.id, studentId))
+    switchTabs('Panel')
+  }
+
   renderStudents () {
     // if (!this.props.teamFetching && this.props.team) {
       let studentTests = this.props.studentTestInfo;
@@ -50,7 +56,11 @@ class GraderStudents extends Component {
       })
       return studentTests.map((studentTest, i) => {
         return (
-          <StudentCard key={i} studentTest={studentTest}/>
+          <StudentCard
+            key={i}
+            studentTest={studentTest}
+            onSelect={this.handleSelectStudent.bind(this)}
+          />
         )
       })
     // }
@@ -87,7 +97,7 @@ const mapStateToProps = state => {
   return {
     isFetching,
     studentTestInfo: getAllStudentTests(studentTestInfo.byId),
-    assessment: assessments.current.base.id
+    assessment: assessments.current.base
 
   }
 }

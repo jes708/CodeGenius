@@ -51,12 +51,12 @@ function addAssociations(db){
   const User = db.models['user'];
 
   StudentTest.belongsTo(Assessment);
-  StudentTest.belongsTo(User, { as: 'creator', constraints: false});
+  StudentTest.belongsTo(User, {constraints: false});
 
   StudentTest.addScope('defaultScope', {
     include: [
       { model: Assessment },
-      { model: User, as: 'creator' }
+      { model: User }
     ]
   }, { override: true })
 }

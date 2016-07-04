@@ -33,6 +33,15 @@ router.get('/orgs', ensureAuthenticated, (req, res, next) => {
   .catch(next)
 })
 
+router.get('/adminOrgs', ensureAuthenticated, (req, res, next) => {
+  GitHub.orgs.getOrganizationMembershipsAsync({ state: 'active' })
+  .then(userOrgs => {
+    const adminOrgs = userOrgs.filter(userOrg => userOrg.role === 'admin')
+    res.json(adminOrgs.map(adminOrg => adminOrg.organization))
+  })
+  .catch(next)
+})
+
 router.get('/:org', ensureAuthenticated, (req, res, next) => {
   GitHub.orgs.getAsync({ org: req.params.org })
   .then(org => res.json(org))

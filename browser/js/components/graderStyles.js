@@ -96,7 +96,7 @@ const styles = {
     textAlign: 'center'
   },
   stepLabel: {
-    fontSize: 24
+    fontSize: 20
   },
   addBtn: {
     marginLeft: 20,

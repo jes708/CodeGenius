@@ -88,24 +88,22 @@ class GraderAssessments extends Component {
   renderToggleFormButton () {
     const { isCreating, isEditting } = this.state
 
-    if ((!isCreating && !isEditting) || isCreating || isEditting) {
-      return (
-        <RaisedButton
-          primary={true}
-          label={isCreating || isEditting ? 'Cancel' : 'Create Assessment'}
-          icon={
-            isCreating || isEditting
-              ? <FontIcon className='fa fa-times' />
-              : <FontIcon className='fa fa-plus' /> }
-          style={styles.skinny}
-          onClick={
-            !isCreating && !isEditting
-            ? this.toggleForm.bind(this)
-            : this.cancelEdit.bind(this)
-          }
-        />
-      )
-    }
+    return (
+      <RaisedButton
+        primary={true}
+        label={isCreating || isEditting ? 'Cancel' : 'Create Assessment'}
+        icon={
+          isCreating || isEditting
+            ? <FontIcon className='fa fa-times' />
+            : <FontIcon className='fa fa-plus' /> }
+        style={styles.skinny}
+        onClick={
+          !isCreating && !isEditting
+          ? this.toggleForm.bind(this)
+          : this.cancelEdit.bind(this)
+        }
+      />
+    )
   }
 
   renderForm () {

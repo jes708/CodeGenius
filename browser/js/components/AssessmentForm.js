@@ -47,7 +47,7 @@ class AssessmentForm extends Component {
         description: assessment ? assessment.description : '',
         repoUrl: assessment ? assessment.repoUrl : '',
         org: assessment ? assessment.org : '',
-        teamName: '',
+        teamName: assessment ? assessment.team.name : '',
         teamId: assessment ? assessment.teamId : '',
       },
       errors: {},
@@ -146,6 +146,71 @@ class AssessmentForm extends Component {
     this.setState({ form: nextForm })
   }
 
+  renderOrgInput () {
+    const { form } = this.state
+    const { orgs, assessment } = this.props
+
+    if (!assessment) {
+      return (
+        <AutoComplete
+          floatingLabelText='Organization'
+          filter={AutoComplete.fuzzyFilter}
+          dataSource={orgs.map(org => org.login)}
+          maxSearchResults={4}
+          searchText={form.org}
+          fullWidth={true}
+          onNewRequest={this.handleOrgSelect}
+        />
+      )
+    } else {
+      return (
+        <TextField
+          floatingLabelText='Organization'
+          value={form.org}
+          fullWidth={true}
+          disabled={true}
+        />
+      )
+    }
+  }
+
+  renderTeamInput () {
+    const { form } = this.state
+    const { assessment, isFetchingTeams, teams } = this.props
+
+    // hidden
+    // if there are not teams yet and isFetchingTeams is true
+    // if there is no teamId
+    // show - create
+    // if isFetchingTeams and there are no teams
+    // show - edit
+    // if there is an assessment
+
+    if (!isFetchingTeams && teams.length && !assessment) {
+      return (
+        <AutoComplete
+          floatingLabelText='Team'
+          filter={AutoComplete.fuzzyFilter}
+          dataSource={teams}
+          dataSourceConfig={{text: 'name', value: 'name'}}
+          maxSearchResults={4}
+          searchText={form.teamName}
+          fullWidth={true}
+          onNewRequest={this.handleTeamSelect}
+        />
+      )
+    } else if (assessment) {
+      return (
+        <TextField
+          floatingLabelText='Team'
+          value={form.teamName}
+          fullWidth={true}
+          disabled={true}
+        />
+      )
+    }
+  }
+
   renderStepActions(step) {
     const { stepIndex } = this.state
     const { assessment } = this.props
@@ -203,33 +268,13 @@ class AssessmentForm extends Component {
             fullWidth={true}
             onChange={(e) => this.handleChange(e, 'description')}
           />
-          <AutoComplete
-            floatingLabelText='Organization'
-            filter={AutoComplete.fuzzyFilter}
-            dataSource={orgs.map(org => org.login)}
-            maxSearchResults={4}
-            searchText={form.org}
-            fullWidth={true}
-            onNewRequest={this.handleOrgSelect}
-          />
-          { form.teamId !== '' || !isFetchingTeams && teams.length
-            ? <AutoComplete
-                floatingLabelText='Team'
-                filter={AutoComplete.fuzzyFilter}
-                dataSource={teams}
-                dataSourceConfig={{text: 'name', value: 'name'}}
-                maxSearchResults={4}
-                searchText={form.teamName}
-                fullWidth={true}
-                onNewRequest={this.handleTeamSelect}
-              />
-            : null }
+          {this.renderOrgInput()}
+          {this.renderTeamInput()}
           { form.teamId === ''
             ? null
             : <TextField
                 floatingLabelText="Repo URL"
                 value={form.repoUrl}
-                fullWidth={true}
                 onChange={(e) => this.handleChange(e, 'repoUrl')}
                 errorText={error && error.statusText}
               />

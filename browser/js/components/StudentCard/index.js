@@ -8,7 +8,7 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import Toggle from 'material-ui/Toggle'
 import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
 import AlertError from 'material-ui/svg-icons/alert/error'
-import ToggleRadioButtonUnchecked from 'material-ui/svg-icons/toggle/radio-button-unchecked'
+import ImageLens from 'material-ui/svg-icons/image/lens'
 import styles from '../graderStyles'
 import { green500, red500 } from 'material-ui/styles/colors'
 import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
@@ -25,24 +25,33 @@ class StudentCard extends Component {
     this.props.dispatch(getStudentTestInfo(this.props.studentTest.assessmentId, this.props.studentTest.userId))
   }
 
+  // componentWillReceiveProps(nextProps) {
+  //   console.log('will receive props', nextProps)
+  //   nextProps.dispatch(getStudentTestInfo(studentTestInfo.assessmentId, studentTestInfo.userId))
+  // }
+
   handleToggle () {
     this.props.dispatch(putStudentTestInfo(this.props.studentTest.assessmentId, this.props.studentTest.userId, !this.props.studentTest.isStudent));
   }
 
 // change iconSwitcher to have status done no-repo or score
   render () {
+    let id = this.props.studentTest.id;
+    // this.props.studentTestInfo[id].score.totalScore();
+    console.log("Let's take a look at the props", this.props)
     let iconSwitcher = () => {
-      switch (this.props.studentTest.isGraded) {
-        case true:
+        if (this.props.studentTestInfo[id].isGraded) {
           return <ActionCheckCircle style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={green500}/>;
-        case false:
+        } else if (!this.props.studentTestInfo[id].repoUrl) {
           return <AlertError style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={red500}/>;
-        default:
-          return <div style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}><span style={styles.gradeNum}>{this.props.studentTest.score}</span></div>;
+        } else {
+          return <ImageLens style={Object.assign({}, styles.toggle, styles.studentIcon)} color={'transparent'}/>;
+          // return <div style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}><span style={styles.gradeNum}>{this.props.studentTestInfo[id].score}</span></div>;
+        }
       }
-    }
+
     let style;
-    style = this.props.studentTest.isStudent ? styles.infoCard : styles.inactiveCard;
+    style = this.props.studentTestInfo[id].isStudent ? styles.infoCard : styles.inactiveCard;
     return (
       <Card style={Object.assign({}, style, styles.skinny, styles.roundedCard)}>
         <div style={styles.gradingInfo}>
@@ -51,7 +60,7 @@ class StudentCard extends Component {
             {this.props.studentTest.user.name}
           </a>
           {iconSwitcher()}
-          <Toggle toggled={this.props.studentTest.isStudent} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
+          <Toggle toggled={this.props.studentTestInfo[id].isStudent} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
         </div>
       </Card>
     )
@@ -61,10 +70,10 @@ class StudentCard extends Component {
 const mapStateToProps = state => {
   const { studentTestInfo } = state
   const { isFetching } = studentTestInfo
-  console.log("AT LEAST YOU GOT THIS FAR", getAllStudentTests(studentTestInfo.byId))
+  console.log("AT LEAST YOU GOT THIS FAR", studentTestInfo.byId)
   return {
     isFetching,
-    studentTestInfo: getAllStudentTests(studentTestInfo.byId)
+    studentTestInfo: studentTestInfo.byId
     // toggled: getStudentTestFor(studentTestInfo, 1),
     // style: getStudentTestFor(studentTestInfo, 1),
     // status: getStudentTestFor(studentTestInfo, 1)

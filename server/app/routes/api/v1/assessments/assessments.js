@@ -74,7 +74,8 @@ router.put(   '/:id/students/:studentId', ensureAuthenticated, function(req, res
     where: {
       assessmentId: req.params.id,
       userId: req.params.studentId      
-    }
+    },
+      include: [User]
   }).then(test => test.update(req.body))
   .then(updatedTest => res.json(updatedTest))
   .catch(next)

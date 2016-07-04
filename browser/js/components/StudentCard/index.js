@@ -38,7 +38,7 @@ class StudentCard extends Component {
   render () {
     let id = this.props.studentTest.id;
     // this.props.studentTestInfo[id].score.totalScore();
-    console.log("Let's take a look at the props", this.props)
+
     let iconSwitcher = () => {
         if (this.props.studentTestInfo[id].isGraded) {
           return <ActionCheckCircle style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)} color={green500}/>;
@@ -70,7 +70,7 @@ class StudentCard extends Component {
 const mapStateToProps = state => {
   const { studentTestInfo } = state
   const { isFetching } = studentTestInfo
-  console.log("AT LEAST YOU GOT THIS FAR", studentTestInfo.byId)
+
   return {
     isFetching,
     studentTestInfo: studentTestInfo.byId

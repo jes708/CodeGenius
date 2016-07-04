@@ -52,4 +52,6 @@ function addAssociations(db){
 
   StudentTest.belongsTo(Assessment);
   StudentTest.belongsTo(User);
+
+  StudentTest.addScope('defaultScope', { include: [{ model: Assessment }] }, { override: true })
 }

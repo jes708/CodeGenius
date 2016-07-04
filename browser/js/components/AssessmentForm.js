@@ -47,6 +47,7 @@ class AssessmentForm extends Component {
         name: assessment ? assessment.name : '',
         description: assessment ? assessment.description : '',
         repoUrl: assessment ? assessment.repoUrl : '',
+        solutionRepoUrl: assessment ? assessment.solutionRepoUrl : '',
         org: assessment ? assessment.org : '',
         teamName: assessment ? assessment.team.name : '',
         teamId: assessment ? assessment.teamId : '',
@@ -62,9 +63,10 @@ class AssessmentForm extends Component {
   }
 
   handleSubmit () {
-    const { form, paths, repo } = this.state
+    const { form, paths, repo, solutionRepo } = this.state
     form.solutionFiles = paths
     form.basePath = repo
+    form.solutionPath = solutionRepo
     this.props.onSubmit(form)
   }
 
@@ -75,15 +77,20 @@ class AssessmentForm extends Component {
   }
 
   checkAndAddPath () {
-    const { path, paths, repo } = this.state
+    console.log('STATE!', this.state)
+    const { path, paths, solutionRepo, errors } = this.state
 
     if (paths.includes(path) || paths.includes(path.substr(1)) || paths.includes(`/${path}`)) {
+      const newErrors = Object.assign({
+        path: { statusText: 'Path already exists' }
+      }, errors)
+
       this.setState({
         path: '',
-        error: { statusText: 'Path already exists' }
+        errors: newErrors
       })
     } else {
-      axios.get(`/api/v1/github/${repo}/contents?path=${path}`)
+      axios.get(`/api/v1/github/${solutionRepo}/contents?path=${path}`)
       .then(() => {
           this.setState({
             paths: paths.concat(path),
@@ -91,25 +98,50 @@ class AssessmentForm extends Component {
             error: null
           })
       })
-      .catch(error => {
-        error.statusText = 'Enter a valid file path'
-        this.setState({ error })
+      .catch(() => {
+        const newErrors = Object.assign({
+          path: { statusText: 'Enter a valid file path' }
+        }, errors)
+
+        this.setState({ errors: newErrors })
       })
     }
   }
 
   handleRepoCheck () {
-    const { stepIndex, form } = this.state
-    const repo = form.repoUrl.split(/^(\s*?https?:\/\/)?(www.)?(github.com\/)/i)[4].trim()
+    const { stepIndex, form, errors } = this.state
+    const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
+    const repo = form.repoUrl.split(regexp)[4].trim()
+    const solutionRepo = form.solutionRepoUrl.split(regexp)[4].trim()
+    const newErrors = Object.assign({}, errors)
+
     axios.get(`/api/v1/github/${repo}`)
     .then(() => {
+      newErrors.repo = {}
       this.setState({
         stepIndex: stepIndex + 1,
-        error: null,
+        errors: newErrors,
         repo
       })
+    }, (error) => {
+      newErrors.repo = { statusText: error.statusText }
+      this.setState({ errors: newErrors })
     })
-    .catch(error => this.setState({ error }))
+    .then(() => {
+      axios.get(`/api/v1/github/${solutionRepo}`)
+      .then(() => {
+        newErrors.solutionRepo = {}
+        this.setState({
+          stepIndex: stepIndex + 1,
+          errors: newErrors,
+          solutionRepo
+        })
+      }, (error) => {
+        newErrors.solutionRepo = { statusText: error.statusText }
+        this.setState({ errors: newErrors })
+      })
+    })
+    .catch(error => console.error(error))
   }
 
   handleNext () {
@@ -217,6 +249,7 @@ class AssessmentForm extends Component {
     const { stepIndex } = this.state
     const { assessment } = this.props
     let buttonLabel
+    let onTap = this.handleSubmit.bind(this)
 
     if (stepIndex === 1 && assessment) {
       buttonLabel = 'Save'
@@ -224,6 +257,7 @@ class AssessmentForm extends Component {
       buttonLabel = 'Create'
     } else {
       buttonLabel = 'Next'
+      onTap = this.handleRepoCheck.bind(this)
     }
 
     return (
@@ -232,9 +266,7 @@ class AssessmentForm extends Component {
           label={buttonLabel}
           primary={stepIndex !== 1}
           secondary={stepIndex === 1}
-          onTouchTap={stepIndex === 1
-            ? this.handleSubmit.bind(this)
-            : this.handleRepoCheck.bind(this) }
+          onTouchTap={onTap}
           style={{marginRight: 12}}
         />
         {step > 0 && (
@@ -250,7 +282,7 @@ class AssessmentForm extends Component {
 
   renderInfoForm () {
     const { orgs, isFetchingTeams, teams } = this.props
-    const { form, error } = this.state
+    const { form, errors } = this.state
 
     return (
       <Paper zDepth={0} style={styles.formPaperStyle}>
@@ -274,13 +306,22 @@ class AssessmentForm extends Component {
           {this.renderTeamInput()}
           { form.teamId === ''
             ? null
-            : <TextField
-                floatingLabelText="Repo URL"
-                value={form.repoUrl}
-                fullWidth={true}
-                onChange={(e) => this.handleChange(e, 'repoUrl')}
-                errorText={error && error.statusText}
-              />
+            : <div>
+                <TextField
+                  floatingLabelText="Repo URL"
+                  value={form.repoUrl}
+                  fullWidth={true}
+                  onChange={(e) => this.handleChange(e, 'repoUrl')}
+                  errorText={errors.repo && errors.repo.statusText}
+                />
+                <TextField
+                  floatingLabelText="Solution Repo URL"
+                  value={form.solutionRepoUrl}
+                  fullWidth={true}
+                  onChange={(e) => this.handleChange(e, 'solutionRepoUrl')}
+                  errorText={errors.solutionRepo && errors.solutionRepo.statusText}
+                />
+              </div>
           }
         </form>
       </Paper>
@@ -288,7 +329,7 @@ class AssessmentForm extends Component {
   }
 
   renderSolutionSelector () {
-    const { path, error } = this.state
+    const { path, errors } = this.state
 
     return (
       <Paper zDepth={0} style={styles.formPaperStyle}>
@@ -296,7 +337,7 @@ class AssessmentForm extends Component {
           floatingLabelText="Solution Path"
           value={path}
           onChange={this.handlePathChange.bind(this)}
-          errorText={error && error.statusText}
+          errorText={errors.path && errors.path.statusText}
         />
         <IconButton
           primary={true}

@@ -29,7 +29,7 @@ class GraderView extends Component {
     if (studentTest) {
       basePath = studentTest.basePath.split('/')
     } else {
-      basePath = assessment.basePath.split('/')
+      basePath = assessment.solutionPath.split('/')
     }
     const user = basePath[0]
     const repo = basePath[1]

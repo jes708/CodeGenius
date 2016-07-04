@@ -133,7 +133,7 @@ const mapStateToProps = (state, props) => {
   nextProps.contents.selection = props.contents.selection;
 
   if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){
-    nextProps.contents.selection = stateToUpdate.selection;
+    nextProps.contents.selection = stateToUpdate.annotation.selection;
   }
 
   return nextProps;

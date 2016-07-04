@@ -4,6 +4,7 @@ import axios from 'axios';
 import APIROUTES from '../../utils/apiRoutes'
 import {cloneDeep as _cloneDeep} from 'lodash';
 import {getXPath} from 'xpath-dom';
+import {finishAnnotation} from './actions'
 
 export const LOAD_ANNOTATIONS_REQUEST = 'LOAD_ANNOTATIONS_REQUEST'
 export const LOAD_ANNOTATIONS_SUCCESS = 'LOAD_ANNOTATIONS_SUCCESS'
@@ -85,10 +86,16 @@ export const postAnnotation =
       })
       return axios.post(APIROUTES.annotation, payload)
         .then(res => res.data)
-          .then(resData => dispatch({
+          .then(resData => {
+            dispatch({
             type: CREATE_ANNOTATION_SUCCESS,
             payload: resData
-          }))
+          })
+          payload.selection = annotation.selection;
+          payload.resData = resData;
+          return dispatch(finishAnnotation(payload))
+        }
+        )
           .catch( err => dispatch({
             type: CREATE_ANNOTATION_FAILURE,
             payload: err

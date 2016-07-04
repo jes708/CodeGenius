@@ -22,6 +22,15 @@ export function annotation(_annotation){
   return api.postAnnotation({selection, annotation, location})
 }
 
+export function finishAnnotation(payload){
+  let finisher = payload;
+  finisher.added = false;
+  return {
+    type: ANNOTATION,
+    payload: payload
+  }
+}
+
 export function clearAnnotation( added = false, selection = null, annotation = null ){
   return {
     type: ANNOTATION_CLEAR,

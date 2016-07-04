@@ -9,7 +9,6 @@ import styles from './graderStyles'
 import SubGradeView from './SubGradeView'
 import { getAssessment } from '../actions/assessmentActions'
 import { getRepoContents } from '../actions/githubActions'
-import isEqual from 'lodash/lang/isEqual'
 
 class GraderView extends Component {
   constructor(props) {
@@ -19,13 +18,6 @@ class GraderView extends Component {
       fileName: ''
     }
   }
-
-  // componentWillReceiveProps (nextProps) {
-  //   const { oldStudentTest } = this.props
-  //   if (!isEqual(oldStudentTest, nextProps.studentTest)) {
-  //     this.setState({ open: true })
-  //   }
-  // }
 
   handleToggle () {
     this.setState({ open: !this.state.open })

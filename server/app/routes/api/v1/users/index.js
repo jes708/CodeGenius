@@ -55,8 +55,7 @@ router.get('/assessments', ensureAuthenticated, (req, res, next) => {
   Assessment.findAll({
     where: {
       instructorId: req.user.id
-    },
-    include: [{ model: Team }]
+    }
   })
   .then(assessments => res.json(assessments))
   .catch(next)

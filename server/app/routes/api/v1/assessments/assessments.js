@@ -24,7 +24,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
         name: req.body.teamName
       }
     }),
-    Assessment.create(omit(req.body, ['teamName','teamId']))
+    Assessment.create(omit(req.body, ['teamName','teamId', 'team']))
   ])
   .spread((teams, assessment) => {
     const team = teams[0]

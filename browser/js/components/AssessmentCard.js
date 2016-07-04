@@ -22,9 +22,11 @@ class AssessmentCard extends Component {
             style={{ float: 'right' }}
             iconStyle={{ color: '#fff' }}
             iconClassName={'fa fa-pencil'}
+            tooltip='Edit Assessment'
             onTouchTap={() => onEdit(assessment)}
           />
         </div>
+        <div style={styles.gradingSubtitle}>{`Team: ${assessment.team.name}`}</div>
         <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>
       </Paper>
     )

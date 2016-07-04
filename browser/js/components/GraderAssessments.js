@@ -10,12 +10,16 @@ import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
-import { getUserAssessments, createAssessment } from '../actions/assessmentActions'
+import {
+  getUserAssessments,
+  createAssessment,
+  updateAssessment,
+  switchAssessment
+} from '../actions/assessmentActions'
 import styles from './graderStyles'
 import AssessmentForm from './AssessmentForm'
 import AssessmentCard from './AssessmentCard'
 import { onActive } from 'material-ui/Tabs'
-import { switchAssessment } from '../actions/assessmentActions'
 import { getAllAssessments } from '../reducers/assessments'
 
 class GraderAssessments extends Component {
@@ -59,10 +63,19 @@ class GraderAssessments extends Component {
   }
 
   submitForm (data) {
-    this.props.dispatch(createAssessment(data))
-    this.setState({
-      isCreating: false
-    })
+    const { isCreating, isEditting } = this.state
+
+    if (isCreating) {
+      this.props.dispatch(createAssessment(data))
+      this.setState({
+        isCreating: false
+      })
+    } else if (isEditting) {
+      this.props.dispatch(updateAssessment(data))
+      this.setState({
+        isEditting: false
+      })
+    }
   }
 
   renderAssessments () {

@@ -33,14 +33,14 @@ class GraderView extends Component {
   }
 
   render () {
-    const { fileName } = this.state
+    const { fileName, open } = this.state
     const { contents, assessment } = this.props
 
     return (
       <Paper zDepth={2} style={styles.paperStyle}>
         <div style={styles.content}>
           <RaisedButton
-            label='Toggle'
+            label={open ? 'Hide Files' : 'Show Files'}
             style={{marginBottom: '10'}}
             onTouchTap={this.handleToggle.bind(this)}
             primary={true}
@@ -64,9 +64,10 @@ class GraderView extends Component {
 
 const mapStateToProps = (state) => {
   const { github, assessments, studentTest } = state
+  const { current } = assessments
   return {
     contents: github.contents,
-    assessment: assessments.current,
+    assessment: current.base,
     studentTest
   }
 }

@@ -8,11 +8,12 @@ import {
   CREATE_ASSESSMENT_REQUEST,
   CREATE_ASSESSMENT_SUCCESS,
   CREATE_ASSESSMENT_FAILURE,
-  SWITCH_ASSESSMENT_REQUEST,
-  SWITCH_ASSESSMENT_SUCCESS,
-  SWITCH_ASSESSMENT_FAILURE
-} from '../actions/assessmentActions'
-import { AUTH_LOGOUT_SUCCESS } from '../actions/authActions'
+  UPDATE_ASSESSMENT_REQUEST,
+  UPDATE_ASSESSMENT_SUCCESS,
+  UPDATE_ASSESSMENT_FAILURE,
+} from '../../actions/assessmentActions'
+import { AUTH_LOGOUT_SUCCESS } from '../../actions/authActions'
+import current from './current'
 
 export const byId = (state = {}, action) => {
   const nextState = Object.assign({}, state)
@@ -23,6 +24,7 @@ export const byId = (state = {}, action) => {
       })
       return nextState
     case CREATE_ASSESSMENT_SUCCESS:
+    case UPDATE_ASSESSMENT_SUCCESS:
       nextState[action.assessment.id] = action.assessment
       return nextState
     case AUTH_LOGOUT_SUCCESS:
@@ -36,24 +38,15 @@ export const isFetching = (state = false, action) => {
   switch (action.type) {
     case LOAD_ASSESSMENTS_REQUEST:
     case CREATE_ASSESSMENT_REQUEST:
-    case SWITCH_ASSESSMENT_REQUEST:
+    case UPDATE_ASSESSMENT_REQUEST:
       return true
     case LOAD_ASSESSMENTS_SUCCESS:
     case LOAD_ASSESSMENTS_FAILURE:
     case CREATE_ASSESSMENT_SUCCESS:
+    case UPDATE_ASSESSMENT_FAILURE:
+    case UPDATE_ASSESSMENT_SUCCESS:
     case CREATE_ASSESSMENT_FAILURE:
-    case SWITCH_ASSESSMENT_SUCCESS:
-    case SWITCH_ASSESSMENT_FAILURE:
       return false
-    default:
-      return state
-  }
-}
-
-export const current = (state = {}, action) => {
-  switch (action.type) {
-    case SWITCH_ASSESSMENT_SUCCESS:
-      return action.assessment
     default:
       return state
   }
@@ -62,7 +55,7 @@ export const current = (state = {}, action) => {
 export default combineReducers({
   byId,
   isFetching,
-  current,
+  current
 })
 
 export const getAssessment = (state, id) => state.byId[id]

@@ -43,6 +43,7 @@ class AssessmentForm extends Component {
       finished: false,
       stepIndex: 0,
       form: {
+        id: assessment ? assessment.id : '',
         name: assessment ? assessment.name : '',
         description: assessment ? assessment.description : '',
         repoUrl: assessment ? assessment.repoUrl : '',
@@ -178,14 +179,6 @@ class AssessmentForm extends Component {
     const { form } = this.state
     const { assessment, isFetchingTeams, teams } = this.props
 
-    // hidden
-    // if there are not teams yet and isFetchingTeams is true
-    // if there is no teamId
-    // show - create
-    // if isFetchingTeams and there are no teams
-    // show - edit
-    // if there is an assessment
-
     if (!isFetchingTeams && teams.length && !assessment) {
       return (
         <AutoComplete
@@ -275,6 +268,7 @@ class AssessmentForm extends Component {
             : <TextField
                 floatingLabelText="Repo URL"
                 value={form.repoUrl}
+                fullWidth={true}
                 onChange={(e) => this.handleChange(e, 'repoUrl')}
                 errorText={error && error.statusText}
               />

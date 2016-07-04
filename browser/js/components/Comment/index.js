@@ -78,6 +78,10 @@ class Comment extends Component {
       let { contents } = nextProps;
       this.state.contents = contents;
     }
+    if(nextProps.selection && this.state.isEditing) {
+      this.state.contents.selection = nextProps.selection;
+    }
+    this.state.isEditing = nextProps.isEditing;
   }
   renderComment () {
     let contents = this.state.contents || defaultContents;
@@ -109,12 +113,15 @@ class Comment extends Component {
       { (!contents.selection) ? (isEditing ? <RaisedButton style={buttonStyle} label="Add Annotation" /> : "") : (
         <div>
           <div>
-            <TextField
+            <pre>
+              {contents.selection.toString()}
+            </pre>
+            {/*<TextField
             hintText="Annotate Code"
             defaultValue = {contents.selection.toString()}
             floatingLabelText="Code Annotation"
             multiLine={true}
-             />
+             />*/}
           </div>
           < FlatButton href="/grade">Go to Code</ FlatButton>
         </div>
@@ -176,10 +183,13 @@ class Comment extends Component {
 const mapStateToProps = (state, props) => {
   let nextProps = Object.assign( {}, props.contents);
 
-  nextProps.isEditing = state.comment.isEditing.key === props.commentIndex ? true : false;
+  nextProps.isEditing = (
+    state.comment.isEditing.key === props.commentIndex ?
+      true : false
+    );
 
   if(state.annotation.selectionString != ""){
-    nextProps.selection = annotation.selection
+    nextProps.selection = state.annotation.selection
   }
   return nextProps;
 }

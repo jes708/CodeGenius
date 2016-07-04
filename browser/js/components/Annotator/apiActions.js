@@ -67,7 +67,7 @@ export const getAnnotationsByUserTest =
 export const postAnnotation =
   annotation =>
     (dispatch, getState) =>{
-      let selection = annotation.selection.selection;
+      let selection = annotation.selection;
       let payload = {
         route: APIROUTES.annotation,
         anchorNode: getXPath(selection.anchorNode),
@@ -77,6 +77,7 @@ export const postAnnotation =
         rangeCount: selection.rangeCount,
         selectionString: selection.toString(),
         color: annotation.color,
+        location: annotation.location
       }
       dispatch({
         type: CREATE_ANNOTATION_REQUEST,

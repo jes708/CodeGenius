@@ -7,6 +7,7 @@ import session from './session'
 import assessments from './assessments'
 import github from './github'
 import assessmentTeam from './assessmentTeam'
+import studentTestInfo from './studentTestInfo'
 import annotation from '../components/Annotator/reducer'
 import {TestReducer} from '../components/test/TestComponent'
 import comment from '../components/Comment/reducer'
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   github,
   assessments,
   assessmentTeam,
+  studentTestInfo,
   form: formReducer,
   routing: routerReducer,
   TestReducer

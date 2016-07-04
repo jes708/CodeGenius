@@ -31,4 +31,6 @@ function addAssociations( db ) {
   Assessment.belongsTo( User, {as: 'instructor'} );
   Assessment.belongsTo( Team );
   Assessment.hasMany( Question );
+
+  Assessment.addScope('defaultScope', { include: [{ model: Team }] }, { override: true })
 }

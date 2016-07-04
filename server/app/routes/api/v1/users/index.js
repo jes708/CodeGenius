@@ -5,7 +5,7 @@ var _ = require( 'lodash' );
 
 const github = require('../../../../configure/github')
 const sequelizeHandlers = require( 'sequelize-handlers' );
-const bluebird = require( 'bluebird' );
+const Promise = require( 'bluebird' );
 const utils = require( '../../../utils' );
 const {
   ensureAuthenticated,
@@ -21,7 +21,8 @@ const {
   user: User,
   team: Team,
   organization: Organization,
-  assessment: Assessment
+  assessment: Assessment,
+  studentTest: StudentTest
 } = models;
 const Resource = User;
 
@@ -51,6 +52,21 @@ router.get('/getRepos', (req, res, next) => {
   })
 })
 
+router.get('/assessments', ensureAuthenticated, (req, res, next) => {
+  StudentTest.findAll({ where: { userId: req.user.id } })
+  .then(studentTests => {
+    return Promise.all(studentTests.map(studentTest => {
+      return Assessment.findById(studentTest.assessmentId)
+    }).concat(Assessment.findAll({ where: { instructorId: req.user.id } })))
+  })
+  .then(result => {
+    let instructorAssessments = result.pop()
+    res.json(result.concat(instructorAssessments))
+  })
+  .catch(next)
+})
+
+
 router.get( '/', sequelizeHandlers.query( Resource ) );
 router.get( '/:id', ( req, res, next ) => {
   if ( req.user && req.user.id === req.params.id ) {
@@ -61,6 +77,7 @@ router.get( '/:id', ( req, res, next ) => {
 router.post( '/', ensureAuthenticated, sequelizeHandlers.create( Resource ) );
 router.put( '/:id', ensureAuthenticated, sequelizeHandlers.update( Resource ) );
 router.delete( '/:id', ensureAuthenticated, sequelizeHandlers.remove( Resource ) );
+
 
 router.get('/:id/assessments', ensureAuthenticated, (req, res, next) => {
   Assessment.findAll({

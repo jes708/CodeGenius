@@ -17,16 +17,9 @@ export function selection(_selection){
   }
 }
 
-export function annotation(selection, annotation){
-  return api.postAnnotation({selection, annotation})
-    // .then((resData)=>{ return {
-    //   type: ANNOTATION,
-    //   added: false,
-    //   response: resData,
-    //   annotation: _annotation,
-    //   selection: _selection,
-    //   selectionString: _selection.toString(),
-    // }} )
+export function annotation(_annotation){
+  let {selection, annotation, location} = _annotation;
+  return api.postAnnotation({selection, annotation, location})
 }
 
 export function clearAnnotation( added = false, selection = null, annotation = null ){

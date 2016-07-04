@@ -11,7 +11,6 @@ import {annotation, selection} from './actions';
 class AnnotationHandler extends Component{
   constructor(props){
     super(props);
-    console.log(this.props);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.state = {
@@ -49,10 +48,12 @@ class AnnotationHandler extends Component{
     });
   }
   componentWillReceiveProps(nextProps){
-    console.log('receiving props');
     this.setState({
       selectionString: nextProps.selectionString
     });
+    this.setState({
+      currentLocation: nextProps.location
+    })
   }
   render (){
     return (
@@ -61,7 +62,10 @@ class AnnotationHandler extends Component{
           {this.props.children}
         </div>
           <div style={this.state.annotationStyles} >
-            <AnnotateContextMenu {...this.props} selection={this.state.selection}>
+            <AnnotateContextMenu
+                selection={this.state.selection}
+                currentLocation={this.state.currentLocation}
+                 {...this.props} >
             </AnnotateContextMenu>
           </div>
       </div>
@@ -74,9 +78,20 @@ export class AnnotateContextMenu extends Component {
   constructor(props) {
     super(props);
     this.annotate = this.annotate.bind( this );
+    this.state = {
+      currentLocation: props.currentLocation
+    }
   }
   annotate( ) {
-    return this.props.dispatch(annotation({selection: this.props.selection, annotation: this.props.selection}));
+    let currentLocation = this.state.currentLocation
+    return this.props.dispatch(annotation({
+      selection: this.props.selection,
+      annotation: this.props.selection,
+      location: currentLocation
+    }));
+  }
+  componentWillReceiveProps(nextProps){
+    this.setState({currentLocation: nextProps.currentLocation})
   }
   render() {
     return (
@@ -88,4 +103,12 @@ export class AnnotateContextMenu extends Component {
   }
 }
 
-export default connect()(AnnotationHandler);
+const mapStateToProps = (state, props)=>{
+  let nextProps = {};
+  // nextProps.currentLocation = state.currentFile.path;
+  // replace this \/ with this /\
+  nextProps.currentLocation = 'https://github.com/Code-Genius/checkpoint-express-review/blob/master/app.js'
+  return nextProps;
+}
+
+export default connect(mapStateToProps)(AnnotationHandler);

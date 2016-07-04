@@ -52,12 +52,6 @@ let criteria = (
 </RadioButtonGroup>)
 
 let defaultContents = {
-  // description: "foo bar",
-  // score: 1,
-  // solutionCodeLink: "http://www.google.com",
-  // tags: ['foo', 'bar', 'baz'],
-  // attachments: ['foo', 'bar', 'baz'],
-  // annotation: null,
   tags: [
     {name: 'foo', color: '#3F51B5'}
   ],
@@ -76,12 +70,8 @@ class Comment extends Component {
     this.renderComment = renderComment.bind(this)
   }
   componentWillReceiveProps(nextProps){
-    console.log('receiving props', 'is editing?', nextProps.isEditing);
-    console.log(nextProps);
     this.setState({isEditing: nextProps.isEditing});
     if(nextProps.contents.selection && this.state.isEditing && !nextProps.contents.selection.added) {
-      console.log('adding selection to state');
-      // this.state.contents.selection = nextProps.selection;
       this.setState(function(previousState, currentProps){
         let nextState = {...previousState}
         nextState.contents.selection = nextProps.contents.selection;
@@ -89,11 +79,6 @@ class Comment extends Component {
       })
       this.props.dispatch(annotationAdded( true ));
     }
-    // if(nextProps.contents) {
-    //   let { contents } = nextProps;
-    //   this.setState({contents});
-    //   // this.state.contents = contents;
-    // }
   }
   editMode(){
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
@@ -146,8 +131,6 @@ const mapStateToProps = (state, props) => {
 
   nextProps.contents = Object.assign( {}, props.contents);
   nextProps.contents.selection = props.contents.selection;
-
-  console.log('stateToUpdate selection:', stateToUpdate.annotation);
 
   if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){
     nextProps.contents.selection = stateToUpdate.selection;

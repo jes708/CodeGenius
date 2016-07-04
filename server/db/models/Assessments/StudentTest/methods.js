@@ -29,19 +29,19 @@ module.exports = {
     };
   },
   getter: function(db){
-    return {
-      totalScore: function() {
-        return db.model('criterionResponse').findAll({
-          where: {
-            studentTestId: this.id
-          }
-        }).then(function(scores) {
-          return scores.reduce(function(sum, score) {
-            return sum + score;
-          }, 0)
-        })
-      }
-    }
+    // return {
+    //   totalScore: function() {
+    //     return db.model('criterionResponse').findAll({
+    //       where: {
+    //         studentTestId: this.id
+    //       }
+    //     }).then(function(scores) {
+    //       return scores.reduce(function(sum, score) {
+    //         return sum + score;
+    //       }, 0) 
+    //     })
+    //   }
+    // }
   }
 }
 
@@ -52,4 +52,6 @@ function addAssociations(db){
 
   StudentTest.belongsTo(Assessment);
   StudentTest.belongsTo(User, {constraints: false});
+
+  StudentTest.addScope('defaultScope', { include: [{ model: Assessment }] }, { override: true })
 }

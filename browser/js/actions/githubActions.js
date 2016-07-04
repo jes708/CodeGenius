@@ -18,6 +18,8 @@ export const CHECK_REPO_PATH_FAILURE = 'CHECK_REPO_PATH_FAILURE'
 const API_GITHUB_URL = '/api/v1/github'
 
 export const getRepoContents = (user, repo, path) => (dispatch) => {
+  const formattedPath = path.charAt(0) === '/' ? path.substr(1) : path
+
   dispatch({ type: FETCH_REPO_REQUEST })
 
   return axios.get(`${API_GITHUB_URL}/${user}/${repo}/contents?path=${path}`)
@@ -25,6 +27,7 @@ export const getRepoContents = (user, repo, path) => (dispatch) => {
   .then(resData => dispatch({
     type: FETCH_REPO_SUCCESS,
     repoUrl: `/${user}/${repo}`,
+    path: `${user}/${repo}/${formattedPath}`,
     contents: resData
   }))
   .catch(error => dispatch({ type: FETCH_REPO_FAILURE, error }))

@@ -154,7 +154,7 @@ export class GradeView extends Component {
   switcher() {
     switch (this.state.current) {
       case 'Students':
-        return <GraderStudents />;
+        return <GraderStudents switchTabs={this.handleClick.bind(this)} />;
       case 'Panel':
         return (
           <div>
@@ -163,7 +163,7 @@ export class GradeView extends Component {
         );
       case 'Assessments':
       default:
-        return <GraderAssessments switchTabs={this.handleClick.bind(this)}/>
+        return <GraderAssessments switchTabs={this.handleClick.bind(this)} />
     }
   }
 

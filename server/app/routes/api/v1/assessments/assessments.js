@@ -30,78 +30,72 @@ import omit from 'lodash/object/omit'
 
 router.get('/', sequelizeHandlers.query(Resource));
 router.get('/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
-router.post('/', ensureAuthenticated, (req, res, next) => {
+router.post(  '/',  ensureAuthenticated, (req, res, next) => {
   let newAssessment
   Promise.all([
-      Team.findOrCreate({
-        where: {
-          github_team_id: req.body.teamId,
-          name: req.body.teamName
-        }
+    Team.findOrCreate({
+      where: {
+        github_team_id: req.body.teamId,
+        name: req.body.teamName
+      }
+    }),
+    Assessment.create(omit(req.body, ['teamName','teamId', 'team']))
+  ])
+  .spread((teams, assessment) => {
+    const team = teams[0]
+    let baseUrl = assessment.basePath.split('/')
+    return Promise.all([
+      assessment.setTeam(team),
+      GitHub.repos.getForksAsync({
+        user: baseUrl[0],
+        repo: baseUrl[1]
       }),
-      Assessment.create(omit(req.body, ['teamName', 'teamId', 'team']))
+      GitHub.orgs.getTeamMembersAsync({ id: team.github_team_id }),
     ])
-    .spread((teams, assessment) => {
-      const team = teams[0]
-      let baseUrl = assessment.basePath.split('/')
+  })
+  .spread((assessment, forks, members) => {
+    newAssessment = assessment
+    const memberLogins = members.map(member => member.login)
+    const teamForks = forks.filter(fork => memberLogins.includes(fork.owner.login))
+    const creatingUsersAndTests = teamForks.map(teamFork => {
+      let { owner } = teamFork
+      let basePath = assessment.basePath.split('/')
       return Promise.all([
-        assessment.setTeam(team),
-        GitHub.repos.getForksAsync({
-          user: baseUrl[0],
-          repo: baseUrl[1]
+        GitHub.users.getByIdAsync({ id: owner.id })
+        .then(user => {
+          return User.findOrCreate({ where: {
+            github_id: user.id,
+            name: user.name,
+            username: user.login,
+            photo: user.avatar_url
+          }})
         }),
-        GitHub.orgs.getTeamMembersAsync({
-          id: team.github_team_id
-        }),
+        StudentTest.findOrCreate({
+          where: {
+            repoUrl: `https://github.com/${owner.login}/${basePath[1]}`,
+            basePath: `${owner.login}/${basePath[1]}`,
+            assessmentId: assessment.id,
+            userId: req.user.id
+          }
+        })
       ])
     })
-    .spread((assessment, forks, members) => {
-      newAssessment = assessment
-      const memberLogins = members.map(member => member.login)
-      const teamForks = forks.filter(fork => memberLogins.includes(fork.owner.login))
-      const creatingUsersAndTests = teamForks.map(teamFork => {
-        let {
-          owner
-        } = teamFork
-        return Promise.all([
-          GitHub.users.getByIdAsync({
-            id: owner.id
-          })
-          .then(user => {
-            return User.findOrCreate({
-              where: {
-                github_id: user.id,
-                name: user.name,
-                username: user.login,
-                photo: user.avatar_url
-              }
-            })
-          }),
-          StudentTest.findOrCreate({
-            where: {
-              repoUrl: `${owner.login}/${assessment.basePath.split('/')[1]}`,
-              assessmentId: assessment.id,
-              creatorId: req.user.id
-            }
-          })
-        ])
+    return Promise.all(creatingUsersAndTests)
+  })
+  .then(usersAndTests => {
+    return Promise.all(
+      usersAndTests.map(userAndTest => {
+        let user = userAndTest[0][0]
+        let test = userAndTest[1][0]
+        return test.setUser(user)
       })
-      return Promise.all(creatingUsersAndTests)
-    })
-    .then(usersAndTests => {
-      return Promise.all(
-        usersAndTests.map(userAndTest => {
-          let user = userAndTest[0][0]
-          let test = userAndTest[1][0]
-          return test.setUser(user)
-        })
-      )
-    })
-    .then(() => {
-      return Assessment.findById(newAssessment.id)
-    })
-    .then(assessment => res.json(assessment))
-    .catch(next)
+    )
+  })
+  .then(() => {
+    return Assessment.findById(newAssessment.id)
+  })
+  .then(assessment => res.json(assessment))
+  .catch(next)
 })
 router.put('/:id', ensureAuthenticated, sequelizeHandlers.update(Resource));
 router.delete('/:id', ensureAuthenticated, sequelizeHandlers.remove(Resource));
@@ -111,23 +105,21 @@ router.delete('/:id', ensureAuthenticated, sequelizeHandlers.remove(Resource));
 
 router.get('/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
   StudentTest.findOne({
-      where: {
-        assessmentId: req.params.id,
-        userId: req.params.studentId
-      },
-      include: [User]
-    }).then(test => res.json(test))
-    .catch(next)
+    where: {
+      assessmentId: req.params.id,
+      userId: req.params.studentId
+    },
+  }).then(test => res.json(test))
+  .catch(next)
 })
 
 router.get('/:id/students/', ensureAuthenticated, function(req, res, next) {
   StudentTest.findAll({
-      where: {
-        assessmentId: req.params.id,
-      },
-      include: [User]
-    }).then(test => res.json(test))
-    .catch(next)
+    where: {
+      assessmentId: req.params.id,
+    },
+  }).then(test => res.json(test))
+  .catch(next)
 })
 
 router.post('/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
@@ -146,7 +138,7 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
         assessmentId: req.params.id,
         userId: req.params.studentId
       },
-      include: [User, Assessment]
+      include:  [Assessment]
     }).then(test => {
       if (req.body.isGraded && !test.isGraded && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({

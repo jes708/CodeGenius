@@ -109,6 +109,10 @@ const styles = {
   formPaperStyle: {
     margin: 'auto',
     padding: 20
+  },
+  studentCardSelect: {
+    cursor: 'pointer',
+    display: 'inline-block'
   }
 }
 

@@ -12,25 +12,23 @@ const styles = {
     backgroundColor: 'white',
     color: 'black'
   }
-
 }
 
-export default class GitHubButton extends Component {
+export default class GitHubInvert extends Component {
   render () {
     return (
       <RaisedButton
-        style={styles.transparent}
+        style={Object.assign({}, styles.transparent, styles.invert)}
         label={this.props.label || "Sign In with Github"}
         linkButton={true}
         href={this.props.href}
-        primary={true}
         icon={<FontIcon className="fa fa-github" />}
       />
     )
   }
 }
 
-GitHubButton.propTypes = {
+GitHubInvert.propTypes = {
   label: PropTypes.string,
   href: PropTypes.string.isRequired
 }

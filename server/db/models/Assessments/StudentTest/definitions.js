@@ -10,10 +10,12 @@ module.exports = function(db){
         type: Sequelize.TEXT
       },
       isStudent: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: true
       },
       isGraded: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       score: {
         type: Sequelize.INTEGER,

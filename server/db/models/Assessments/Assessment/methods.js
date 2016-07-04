@@ -17,6 +17,7 @@ module.exports = {
 
 
 function addAssociations( db ) {
+
   const Team = db.models[ 'team' ];
   const Organization = db.models[ 'organization' ];
   const User = db.models[ 'user' ];
@@ -24,8 +25,12 @@ function addAssociations( db ) {
   const UserOrganization = db.models[ 'userOrganization' ];
   const Assessment = db.models[ 'assessment' ];
   const Question = db.models[ 'question' ];
+  const Tag = db.models[ 'tag' ];
+  const ItemTag = db.models[ 'itemTag' ];
 
   Assessment.belongsTo( User, {as: 'instructor'} );
   Assessment.belongsTo( Team );
   Assessment.hasMany( Question );
+
+  Assessment.addScope('defaultScope', { include: [{ model: Team }] }, { override: true })
 }

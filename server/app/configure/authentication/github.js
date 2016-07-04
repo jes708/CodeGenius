@@ -55,7 +55,7 @@ module.exports = function (app, db) {
     passport.use(new GitHubStrategy(githubCredentials, verifyCallback));
 
     app.get('/auth/github', passport.authenticate('github', {
-      scope: 'repo gist'
+      scope: 'repo gist read:org'
     }));
 
     app.get('/auth/github/callback',

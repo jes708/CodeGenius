@@ -33,7 +33,7 @@ export const getRepoContents = (user, repo, path) => (dispatch) => {
 export const getUserOrgs = () => (dispatch) => {
   dispatch({ type: FETCH_ORGS_REQUEST })
 
-  return axios.get(`${API_GITHUB_URL}/orgs`)
+  return axios.get(`${API_GITHUB_URL}/adminOrgs`)
   .then(res => res.data)
   .then(resData => dispatch({
     type: FETCH_ORGS_SUCCESS,

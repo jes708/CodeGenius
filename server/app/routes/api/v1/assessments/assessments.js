@@ -8,6 +8,7 @@ const utils = require('../../../utils');
 const {ensureAuthenticated, ensureIsAdmin, Credentials, respondWith404, _err, db} = utils;
 const Assessment = db().models.assessment;
 const Team = db().models.team
+const User = db().models.user
 const StudentTest = db().models.studentTest
 const Resource = Assessment;
 
@@ -45,7 +46,18 @@ router.get(   '/:id/students/:studentId', ensureAuthenticated, function(req, res
     where: {
       assessmentId: req.params.id,
       userId: req.params.studentId
-    }
+    },
+      include: [User]
+  }).then(test => res.json(test))
+  .catch(next)
+})
+
+router.get(   '/:id/students/', ensureAuthenticated, function(req, res, next) {
+  StudentTest.findAll({
+    where: {
+      assessmentId: req.params.id,
+    },
+      include: [User]
   }).then(test => res.json(test))
   .catch(next)
 })
@@ -58,15 +70,13 @@ router.post(   '/:id/students/:studentId', ensureAuthenticated, function(req, re
 })
 
 router.put(   '/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
-  StudentTest.update(
-    req.body,
-    {
-      where: {
-        assessmentId: req.params.id,
-        userId: req.params.studentId      
-      }
+  StudentTest.findOne({
+    where: {
+      assessmentId: req.params.id,
+      userId: req.params.studentId      
     }
-  ).then(test => res.json(test))
+  }).then(test => test.update(req.body))
+  .then(updatedTest => res.json(updatedTest))
   .catch(next)
 })
 

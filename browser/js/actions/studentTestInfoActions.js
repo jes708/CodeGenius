@@ -5,9 +5,23 @@ import axios from 'axios'
 export const LOAD_STUDENTTEST_REQUEST = 'LOAD_STUDENTTEST_REQUEST'
 export const LOAD_STUDENTTEST_SUCCESS = 'LOAD_STUDENTTEST_SUCCESS'
 export const LOAD_STUDENTTEST_FAILURE = 'LOAD_STUDENTTEST_FAILURE'
+export const LOAD_STUDENTTESTS_REQUEST = 'LOAD_STUDENTTESTS_REQUEST'
+export const LOAD_STUDENTTESTS_SUCCESS = 'LOAD_STUDENTTESTS_SUCCESS'
+export const LOAD_STUDENTTESTS_FAILURE = 'LOAD_STUDENTTEST_FAILURE'
 // export const UPDATE_STUDENTTEST_REQUEST = 'UPDATE_STUDENTTEST_REQUEST'
 export const UPDATE_STUDENTTEST_SUCCESS = 'UPDATE_STUDENTTEST_SUCCESS'
 export const UPDATE_STUDENTTEST_FAILURE = 'UPDATE_STUDENTTEST_FAILURE'
+
+export function getStudentTestsInfo (assessmentId) {
+  return dispatch => {
+    dispatch({ type: LOAD_STUDENTTESTS_REQUEST })
+    return axios.get(`/api/v1/assessments/${assessmentId}/students`)
+    .then(res => res.data)
+    .then(resData => dispatch({ type: LOAD_STUDENTTESTS_SUCCESS, studentTests: resData }))
+    .catch(err => dispatch({ type: LOAD_STUDENTTESTS_FAILURE, err }))
+  }
+
+}
 
 export function getStudentTestInfo (assessmentId, studentId) {
   return dispatch => {

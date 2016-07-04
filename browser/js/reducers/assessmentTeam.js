@@ -18,6 +18,7 @@ export default function assessmentTeam (state = initialState, action) {
         teamFetching: true
       })
     case LOAD_TEAM_SUCCESS:
+      console.log(action.team)
       return Object.assign({}, state, {
         teamFetching: false,
         team: action.team

@@ -58,7 +58,6 @@ function addAssociations( db ) {
     through: UserOrganization
   } );
   User.hasMany( Annotation, {foreignKey: 'creatorId'} );
-  User.hasMany( StudentTest, {foreignKey: 'creatorId'} );
   User.hasMany( Assessment, {foreignKey: 'studentId'} );
 
 }

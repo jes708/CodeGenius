@@ -13,6 +13,8 @@ import { getAssessmentTeam } from '../actions/assessmentTeamActions'
 import Toggle from 'material-ui/Toggle'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
+import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
+import { getAllStudentTests, getStudentTestFor } from '../reducers/studentTestInfo'
 
 const SAMPLE_SPEC = {
   "Fake Library App": [
@@ -28,31 +30,36 @@ const SAMPLE_SPEC = {
 
 class GraderStudents extends Component {
 
-  componentWillMount () {
-    this.props.dispatch(getAssessmentTeam(1))
-  }
+  // componentWillMount () {
+  //   this.props.dispatch(getAssessmentTeam(1))
+  // }
 
   //TODO do not hard-code assessmentId 
+  componentWillMount () {
+    this.props.dispatch(getStudentTestsInfo(1))
+  }
+
   renderStudents () {
-    if (!this.props.teamFetching && this.props.team) {
-      let students = this.props.team.students;
-      students = students.sort(function(a,b) {
-        if (a.name < b.name) return -1;
-        else if (a.name > b.name) return 1;
+    // if (!this.props.teamFetching && this.props.team) {
+      let studentTests = this.props.studentTestInfo;
+      studentTests = studentTests.sort(function(a,b) {
+        if (a.user.name < b.user.name) return -1;
+        else if (a.user.name > b.user.name) return 1;
         else return 0;
       })
-      return students.map((student, i) => {
+      return studentTests.map((studentTest, i) => {
         return (
-          <StudentCard key={i} student={student} assessmentId={1}/>
+          <StudentCard key={i} studentTest={studentTest}/>
         )
       })
-    }
+    // }
   }
 
   render () {
-    if (this.props.teamFetching && !this.props.team) {
-      return <h1>Loading...</h1>
-    } else {
+    // if (this.props.teamFetching && !this.props.team) {
+    //   return <h1>Loading...</h1>
+    // } else {
+
       return (
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
@@ -60,16 +67,25 @@ class GraderStudents extends Component {
           </div>
         </div>
       )
-    }
+    // }
   }
 }
 
+// const mapStateToProps = state => {
+//   const { assessmentTeam } = state
+//   const { teamFetching, team } = assessmentTeam
+//   return {
+//     teamFetching,
+//     team
+//   }
+// }
+
 const mapStateToProps = state => {
-  const { assessmentTeam } = state
-  const { teamFetching, team } = assessmentTeam
+  const { studentTestInfo } = state
+  const { isFetching } = studentTestInfo
   return {
-    teamFetching,
-    team
+    isFetching,
+    studentTestInfo: getAllStudentTests(studentTestInfo.byId)
   }
 }
 

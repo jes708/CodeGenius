@@ -36,7 +36,8 @@ class GraderStudents extends Component {
 
   //TODO do not hard-code assessmentId 
   componentWillMount () {
-    this.props.dispatch(getStudentTestsInfo(1))
+    const { dispatch, assessment } = this.props
+    dispatch(getStudentTestsInfo(assessment.id))
   }
 
   renderStudents () {
@@ -81,11 +82,13 @@ class GraderStudents extends Component {
 // }
 
 const mapStateToProps = state => {
-  const { studentTestInfo } = state
+  const { studentTestInfo, assessments } = state
   const { isFetching } = studentTestInfo
   return {
     isFetching,
-    studentTestInfo: getAllStudentTests(studentTestInfo.byId)
+    studentTestInfo: getAllStudentTests(studentTestInfo.byId),
+    assessment: assessments.current.base.id
+
   }
 }
 

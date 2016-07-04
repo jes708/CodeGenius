@@ -59,5 +59,6 @@ function addAssociations( db ) {
   } );
   User.hasMany( Annotation, {foreignKey: 'creatorId', constraints: false} );
   User.hasMany( StudentTest, {foreignKey: 'creatorId', constraints: false} );
+  // User.hasMany( StudentTest, { as: 'creator' , constraints: false });
   User.hasMany( Assessment, {foreignKey: 'studentId', constraints: false} );
 }

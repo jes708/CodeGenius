@@ -96,7 +96,6 @@ router.get(   '/:id/students/:studentId', ensureAuthenticated, function(req, res
       assessmentId: req.params.id,
       userId: req.params.studentId
     },
-      include: [User]
   }).then(test => res.json(test))
   .catch(next)
 })
@@ -106,7 +105,6 @@ router.get(   '/:id/students/', ensureAuthenticated, function(req, res, next) {
     where: {
       assessmentId: req.params.id,
     },
-      include: [User]
   }).then(test => res.json(test))
   .catch(next)
 })
@@ -124,7 +122,6 @@ router.put(   '/:id/students/:studentId', ensureAuthenticated, function(req, res
       assessmentId: req.params.id,
       userId: req.params.studentId      
     },
-      include: [User]
   }).then(test => test.update(req.body))
   .then(updatedTest => res.json(updatedTest))
   .catch(next)

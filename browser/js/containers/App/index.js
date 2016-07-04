@@ -5,6 +5,7 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import { grey900, amber700 } from 'material-ui/styles/colors'
 import Navbar from '../../shared/Navbar'
+import Socket from '../../io';
 
 const muiTheme = getMuiTheme({
   palette: {
@@ -20,6 +21,7 @@ export default class App extends Component {
         <div>
           <Navbar />
           {this.props.children}
+          <Socket />
         </div>
       </MuiThemeProvider>
     )

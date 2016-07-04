@@ -1,27 +1,13 @@
 'use strict'
 
 const styles = {
+  addTag: {width: '32px', height: '32px'},
+  addTagIcon: {margin: '-8px -8px' },
   assessmentButtons: {
     margin: 5
   },
   content: {
     padding: 16
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  },
-  noTopPadding: {
-    paddingTop: 0
-  },
-  infoCard: {
-    backgroundColor: '#1E88E5'
-  },
-  inactiveCard: {
-    backgroundColor: '#aaa'
-  },
-  roundedCard: {
-    borderRadius: 50
   },
   gradingInfo: {
     color: '#FFF',
@@ -39,30 +25,30 @@ const styles = {
     fontSize: 24,
     fontWeight: '400'
   },
+  inactiveCard: {
+    backgroundColor: '#aaa'
+  },
+  infoCard: {
+    backgroundColor: '#1E88E5'
+  },
+  noTopPadding: {
+    paddingTop: 0
+  },
   paperStyle: {
     height: '100%',
     overflow: 'scroll'
+  },
+  roundedCard: {
+    borderRadius: 50
+  },
+  skinny: {
+    margin: 0,
+    marginBottom: 15
   },
   student: {
     borderRadius: '50%',
     height: 40,
     marginRight: 10
-  },
-  tag: {
-    margin: 4
-  },
-  tags: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  addTag: {width: '32px', height: '32px'},
-  addTagIcon: {margin: '-8px -8px' },
-  toggle: {
-    display: 'inline-table',
-    width: 'auto',
-    float: 'right',
-    top: 8,
-    position: 'relative'
   },
   studentIcon: {
     top: 7,
@@ -78,7 +64,21 @@ const styles = {
   svgOutline: {
     background: 'white',
     borderRadius: '50%'
-  }
+  },
+  tag: {
+    margin: 4
+  },
+  tags: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  toggle: {
+    display: 'inline-table',
+    width: 'auto',
+    float: 'right',
+    top: 8,
+    position: 'relative'
+  },
 }
 
 export default styles

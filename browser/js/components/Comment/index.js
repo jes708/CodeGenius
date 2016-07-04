@@ -24,7 +24,8 @@ import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
 import MarkdownWrapper from '../../containers/Markdown';
 import {Tags} from '../../containers/Tag';
 import FlipMove from 'react-flip-move';
-
+import renderComment from './renderComment';
+import { annotationAdded } from '../Annotator/actions';
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -72,73 +73,27 @@ class Comment extends Component {
     this.state = {
       contents: this.props.contents
     }
+    this.renderComment = renderComment.bind(this)
   }
   componentWillReceiveProps(nextProps){
-    if(nextProps.contents) {
-      let { contents } = nextProps;
-      this.state.contents = contents;
+    console.log('receiving props', 'is editing?', nextProps.isEditing);
+    console.log(nextProps);
+    this.setState({isEditing: nextProps.isEditing});
+    if(nextProps.contents.selection && this.state.isEditing && !nextProps.contents.selection.added) {
+      console.log('adding selection to state');
+      // this.state.contents.selection = nextProps.selection;
+      this.setState(function(previousState, currentProps){
+        let nextState = {...previousState}
+        nextState.contents.selection = nextProps.contents.selection;
+        return nextState;
+      })
+      this.props.dispatch(annotationAdded( true ));
     }
-    if(nextProps.selection && this.state.isEditing) {
-      this.state.contents.selection = nextProps.selection;
-    }
-    this.state.isEditing = nextProps.isEditing;
-  }
-  renderComment () {
-    let contents = this.state.contents || defaultContents;
-    let isEditing = this.props.isEditing;
-    let buttonStyle = styles.assessmentButtons;
-    let id = 0;
-    return ( <div>
-        <span key={id++}>
-      { (!contents.description && isEditing) ? <RaisedButton style={buttonStyle} label="Add Description" /> : "" }
-        </span>
-        <span key={id++}>
-      { (!contents.score && isEditing) ? <RaisedButton style={buttonStyle} label="Add Score" /> : ""}
-        </span>
-        <span key={id++}>
-      { (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : ""}
-        </span>
-        <span key={id++}>
-      { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : (
-        <div>
-          <Tags tags={contents.tags} isEditing={isEditing} />
-        </div>
-      )
-      }
-        </span>
-        <span key={id++}>
-      { (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""}
-        </span>
-        <span key={id++}>
-      { (!contents.selection) ? (isEditing ? <RaisedButton style={buttonStyle} label="Add Annotation" /> : "") : (
-        <div>
-          <div>
-            <pre>
-              {contents.selection.toString()}
-            </pre>
-            {/*<TextField
-            hintText="Annotate Code"
-            defaultValue = {contents.selection.toString()}
-            floatingLabelText="Code Annotation"
-            multiLine={true}
-             />*/}
-          </div>
-          < FlatButton href="/grade">Go to Code</ FlatButton>
-        </div>
-      ) }
-        </span>
-        <span key={id++}>
-      { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }
-        </span>
-        <span key={id++}>
-      { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" /> : (
-        <div>
-          <MarkdownWrapper markdown={contents.markdown} editable={isEditing}  />
-        </div>
-      ) }
-        </span>
-      </div>)
-
+    // if(nextProps.contents) {
+    //   let { contents } = nextProps;
+    //   this.setState({contents});
+    //   // this.state.contents = contents;
+    // }
   }
   editMode(){
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
@@ -181,16 +136,23 @@ class Comment extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-  let nextProps = Object.assign( {}, props.contents);
+  let nextProps = {contents: {}};
+  let stateToUpdate = Object.assign({}, state);
 
   nextProps.isEditing = (
     state.comment.isEditing.key === props.commentIndex ?
       true : false
     );
 
-  if(state.annotation.selectionString != ""){
-    nextProps.selection = state.annotation.selection
+  nextProps.contents = Object.assign( {}, props.contents);
+  nextProps.contents.selection = props.contents.selection;
+
+  console.log('stateToUpdate selection:', stateToUpdate.annotation);
+
+  if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){
+    nextProps.contents.selection = stateToUpdate.selection;
   }
+
   return nextProps;
 }
 

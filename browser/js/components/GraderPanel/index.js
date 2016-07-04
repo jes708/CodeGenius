@@ -26,19 +26,9 @@ export default class GraderPanel extends Component {
     buildGraderPanel(this.props.dispatch);
   }
 
-  // renderCards (comments = SAMPLE_SPEC) {
-  //   var self = this;
-  //   return comments.map((contents, index) => {
-  //       return (
-  //         <CommentCard  key={index} currentKey={index} contents={contents} onClick={function(){console.log('howdy')}} {...self.props}  >
-  //         </ CommentCard>
-  //       )
-  //   })
-  // }
-
   render () {
     return (
-      <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
+      <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
           <Card style={Object.assign(styles.infoCard, styles.skinny)}>
             <div style={styles.gradingInfo}>
@@ -63,7 +53,7 @@ export default class GraderPanel extends Component {
             </CardActions>
           </Card>
           <RaisedButton
-            label='Add Question'
+            label='Add Comment'
             primary={true}
             icon={<FontIcon className='fa fa-plus' />}
             style={styles.skinny}

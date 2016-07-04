@@ -76,7 +76,7 @@ export class AnnotateContextMenu extends Component {
     this.annotate = this.annotate.bind( this );
   }
   annotate( ) {
-    this.props.dispatch(annotation(this.props.selection));
+    return this.props.dispatch(annotation({selection: this.props.selection, annotation: this.props.selection}));
   }
   render() {
     return (

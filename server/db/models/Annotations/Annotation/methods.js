@@ -18,8 +18,8 @@ module.exports = {
 function addAssociations(db){
   const Annotation = db.models['annotation'];
   const User = db.models['user'];
-  const Location = db.models['location'];
+  // const Location = db.models['location'];
 
   Annotation.belongsTo(User, {as: 'creator'})
-  Annotation.belongsTo(Location)
+  // Annotation.belongsTo(Location)
 }

@@ -320,6 +320,7 @@ function addTagsToAssessments ( tags, numTags = 10, tagsPer = 10 ) {
         tagsToAdd.add(faker.random.arrayElement(tags));
       }
       return Promise.all([...tagsToAdd.values()].map( tag =>{
+        console.log(assessment);
         return assessment.addTag(tag)
           .catch(error => console.log(error) )}
       ) )

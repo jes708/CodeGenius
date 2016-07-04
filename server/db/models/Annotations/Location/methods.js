@@ -16,5 +16,5 @@ module.exports = {
 
 function addAssociations(){
   const Annotation = db.models['annotation'];
-  Location.belongsTo(Annotation);
+  // Location.belongsTo(Annotation);
 }

@@ -30,6 +30,9 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
     const team = teams[0]
     return assessment.setTeam(team)
   })
+  .then(assessment => {
+    return Assessment.findById(assessment.id)
+  })
   .then(assessment => res.json(assessment))
   .catch(next)
 })

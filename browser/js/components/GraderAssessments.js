@@ -8,6 +8,7 @@ import FlatButton from 'material-ui/FlatButton';
 import FontIcon from 'material-ui/FontIcon';
 import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
+import TextField from 'material-ui/TextField'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import {
@@ -28,7 +29,8 @@ class GraderAssessments extends Component {
     this.state = {
       isCreating: false,
       isEditting: false,
-      editAssessment: {}
+      editAssessment: {},
+      filteredAssessments: ''
     }
   }
 
@@ -44,7 +46,7 @@ class GraderAssessments extends Component {
     this.setState({
       editAssessment: assessment,
       isEditting: true,
-      isCreating: false
+      isCreating: false,
     })
   }
 
@@ -60,6 +62,16 @@ class GraderAssessments extends Component {
       isCreating: !this.state.isCreating,
       isEditting: false
     })
+  }
+
+  handleFilter (e) {
+    const { assessments } = this.props
+    let searchText = e.target.value.toLowerCase()
+    let filtered =assessments.filter(assessment => {
+      return (assessment.name.toLowerCase().includes(searchText) || assessment.org.toLowerCase().includes(searchText) || assessment.team.name.toLowerCase().includes(searchText))
+    })
+
+    this.setState({ filteredAssessments: filtered })
   }
 
   submitForm (data) {
@@ -79,7 +91,12 @@ class GraderAssessments extends Component {
   }
 
   renderAssessments () {
-    const { isFetching, assessments } = this.props
+    const { filteredAssessments } = this.state
+    let { isFetching, assessments } = this.props
+
+    if (filteredAssessments !== '') {
+      assessments = filteredAssessments
+    }
     if (!isFetching && assessments.length) {
       return assessments.map((assessment, i) => {
         return (
@@ -119,6 +136,24 @@ class GraderAssessments extends Component {
     )
   }
 
+  renderSearchBar() {
+    const { isEditting, isCreating } = this.state
+    const { isFetching, assessments } = this.props
+
+    if (!isFetching && assessments.length && !isEditting && !isCreating) {
+      return (
+        <TextField
+          floatingLabelText='Search Assessments'
+          hintText='by Name, Team or Organization'
+          fullWidth={true}
+          style={{marginBottom: '20px'}}
+          onChange={this.handleFilter.bind(this)}
+        />
+      )
+    }
+
+  }
+
   renderForm () {
     const { isEditting, isCreating, editAssessment } = this.state
     let form
@@ -138,6 +173,7 @@ class GraderAssessments extends Component {
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
           {this.renderToggleFormButton()}
+          {this.renderSearchBar()}
           {this.renderForm()}
         </div>
       </div>

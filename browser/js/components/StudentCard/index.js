@@ -56,12 +56,12 @@ class StudentCard extends Component {
     return (
       <Card style={Object.assign({}, style, styles.skinny, styles.roundedCard)}>
         <div style={styles.gradingInfo}>
-          <a href="#" style={styles.gradingSubtitle}
+          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}
             onClick={() => { onSelect(this.props.studentTest.user.id) }}
           >
             <img src={this.props.studentTest.user.photo} alt={this.props.studentTest.user.name} style={styles.student}/>
             {this.props.studentTest.user.name}
-          </a>
+          </div>
           {iconSwitcher()}
           <Toggle toggled={this.props.studentTestInfo[id].isStudent} onToggle={this.handleToggle.bind(this)} style={styles.toggle}/>
         </div>

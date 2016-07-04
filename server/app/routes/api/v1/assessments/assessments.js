@@ -64,7 +64,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
             repoUrl: `https://github.com/${owner.login}/${basePath[1]}`,
             basePath: `${owner.login}/${basePath[1]}`,
             assessmentId: assessment.id,
-            creatorId: req.user.id
+            userId: req.user.id
           }
         })
       ])

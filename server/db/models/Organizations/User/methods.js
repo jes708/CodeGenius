@@ -52,13 +52,13 @@ function addAssociations( db ) {
   const Assessment = db.models[ 'assessment' ];
 
   User.belongsToMany( Team, {
-    through: UserTeam
+    through: {model: UserTeam, unique: false}, constraints: false
   } );
   User.belongsToMany( Organization, {
-    through: UserOrganization
+    through: UserOrganization, constraints: false
   } );
-  User.hasMany( Annotation, {foreignKey: 'creatorId'} );
-  User.hasMany( StudentTest, {foreignKey: 'creatorId'} );
-  User.hasMany( Assessment, {foreignKey: 'studentId'} );
+  User.hasMany( Annotation, {foreignKey: 'creatorId', constraints: false} );
+  User.hasMany( StudentTest, {foreignKey: 'creatorId', constraints: false} );
+  User.hasMany( Assessment, {foreignKey: 'studentId', constraints: false} );
 
 }

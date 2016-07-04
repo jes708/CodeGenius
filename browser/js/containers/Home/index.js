@@ -20,8 +20,11 @@ const styles = {
     marginBottom:'60px'
   },
   paperStyle: {
-    backgroundImage: "url('http://i.imgur.com/3GPNYHn.jpg')",
-    backgroundSize: '100%',
+    background: 'url("http://i.imgur.com/3GPNYHn.jpg") no-repeat center center fixed',
+    WebkitBackgroundSize: 'cover',
+    MozBackgroundSize: 'cover',
+    OBackgroundSize: 'cover',
+    backgroundSize: 'cover',
     width: '100%',
     height: 'calc(100vh - 56px)',
     textAlign: 'center',

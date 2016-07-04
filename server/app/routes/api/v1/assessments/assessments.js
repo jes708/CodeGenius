@@ -48,6 +48,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
     const teamForks = forks.filter(fork => memberLogins.includes(fork.owner.login))
     const creatingUsersAndTests = teamForks.map(teamFork => {
       let { owner } = teamFork
+      let basePath = assessment.basePath.split('/')
       return Promise.all([
         GitHub.users.getByIdAsync({ id: owner.id })
         .then(user => {
@@ -60,7 +61,8 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
         }),
         StudentTest.findOrCreate({
           where: {
-            repoUrl: `${owner.login}/${assessment.basePath.split('/')[1]}`,
+            repoUrl: `https://github.com/${owner.login}/${basePath[1]}`,
+            basePath: `${owner.login}/${basePath[1]}`,
             assessmentId: assessment.id,
             creatorId: req.user.id
           }

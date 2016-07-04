@@ -9,6 +9,9 @@ module.exports = function(db){
       repoUrl: {
         type: Sequelize.TEXT
       },
+      basePath: {
+        type: Sequelize.STRING
+      },
       isStudent: {
         type: Sequelize.BOOLEAN,
         defaultValue: true

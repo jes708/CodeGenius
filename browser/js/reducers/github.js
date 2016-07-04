@@ -86,6 +86,15 @@ const isFetchingRepoContent = (state = false, action) => {
   }
 }
 
+const contents = (state = '', action) => {
+  switch (action.type) {
+    case FETCH_REPO_SUCCESS:
+      return action.contents
+    default:
+      return state
+  }
+}
+
 export const getOrgs = (state) => Object.keys(state).map(id => state[id])
 export const getTeams = (state) => Object.keys(state).map(id => state[id])
 export const getRepos = (state) => Object.keys(state).map(id => state[id])
@@ -102,5 +111,6 @@ export default combineReducers({
   reposContent: combineReducers({
     byRepoUrl,
     isFetchingRepoContent
-  })
+  }),
+  contents
 })

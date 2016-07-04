@@ -313,7 +313,7 @@ db.sync( {
   .then( () => seedStudents() )
   // .then( () => seedRubrics() )
   .then( () => seedStudentTests() )
-  .then( () => seedTags() )
+  // .then( () => seedTags() )
   // .then( () => seedTests() )
   // .then( () => seedAnnotations())
   .then( function () {

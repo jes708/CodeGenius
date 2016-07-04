@@ -24,11 +24,14 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
         name: req.body.teamName
       }
     }),
-    Assessment.create(omit(req.body, ['teamName','teamId']))
+    Assessment.create(omit(req.body, ['teamName','teamId', 'team']))
   ])
   .spread((teams, assessment) => {
     const team = teams[0]
     return assessment.setTeam(team)
+  })
+  .then(assessment => {
+    return Assessment.findById(assessment.id)
   })
   .then(assessment => res.json(assessment))
   .catch(next)

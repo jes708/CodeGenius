@@ -2,6 +2,8 @@
 
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
+var GitHub = require('../github');
+var Promise = require('bluebird');
 
 module.exports = function (app, db) {
 
@@ -16,6 +18,10 @@ module.exports = function (app, db) {
     };
 
     var verifyCallback = function (accessToken, refreshToken, profile, done) {
+      GitHub.authenticate({
+        type: 'oauth',
+        token: accessToken
+      })
 
         User.findOne({
                 where: {
@@ -23,24 +29,37 @@ module.exports = function (app, db) {
                 }
             })
             .then(function (user) {
+              var getEmails = GitHub.users.getEmails({
+                per_page: 100
+              })
                 if (user) {
-                    return user.update({
+                    var userUpdate = user.update({
                         github_id: profile.id,
                         name: profile.displayName,
-                        email: profile.emails ? profile.emails[0].value : [profile.username , 'no-email.com'].join('@'),
-                        photo: profile.photos[0].value,
-                        github_token: accessToken                        
-                    });
-                } else {
-                    return User.create({
-                        github_id: profile.id,
-                        name: profile.displayName,
-                        username: profile.username,
-                        email: profile.emails ? profile.emails[0].value : [profile.username , 'no-email.com'].join('@'),
+                        email: profile.email ? profile.email.value : [profile.username , 'no-email.com'].join('@'),
                         photo: profile.photos[0].value,
                         github_token: accessToken
                     });
+                    return Promise.all([userUpdate, getEmails])
+                } else {
+                    var userCreate = User.create({
+                        github_id: profile.id,
+                        name: profile.displayName,
+                        username: profile.username,
+                        email: profile.email ? profile.email.value : [profile.username , 'no-email.com'].join('@'),
+                        photo: profile.photos[0].value,
+                        github_token: accessToken
+                    });
+                    return Promise.all([userCreate, getEmails])
                 }
+            })
+            .spread((user, emails) => {
+              let primaryEmail = emails.filter(email => {
+                return email.primary === true
+              })
+              return user.update({
+                  email: primaryEmail[0].email
+              })
             })
             .then(function (userToLogin) {
                 done(null, userToLogin);
@@ -55,7 +74,7 @@ module.exports = function (app, db) {
     passport.use(new GitHubStrategy(githubCredentials, verifyCallback));
 
     app.get('/auth/github', passport.authenticate('github', {
-      scope: 'repo gist'
+      scope: 'repo gist user:email read:org'
     }));
 
     app.get('/auth/github/callback',

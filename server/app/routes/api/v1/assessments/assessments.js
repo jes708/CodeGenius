@@ -28,7 +28,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
         name: req.body.teamName
       }
     }),
-    Assessment.create(omit(req.body, ['teamName','teamId']))
+    Assessment.create(omit(req.body, ['teamName','teamId', 'team']))
   ])
   .spread((teams, assessment) => {
     const team = teams[0]
@@ -78,7 +78,10 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
       })
     )
   })
-  .then(() => res.json(newAssessment))
+  .then(() => {
+    return Assessment.findById(newAssessment.id)
+  })
+  .then(assessment => res.json(assessment))
   .catch(next)
 })
 router.put(   '/:id', ensureAuthenticated, sequelizeHandlers.update(Resource));

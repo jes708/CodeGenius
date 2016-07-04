@@ -19,8 +19,7 @@ const User = db().models.user
 const StudentTest = db().models.studentTest
 const Resource = Assessment;
 const GitHub = require('../../../../configure/github');
-const Promise = require('bludbird');
-const nodemailer = Promise.promisfiy(require('nodemailer'));
+const nodemailer = Promise.promisifyAll(require("nodemailer"));
 const transport = nodemailer.createTransport('direct', {
   debug: true
 })

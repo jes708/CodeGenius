@@ -282,12 +282,14 @@ let seedStudentTests = function () {
     } )
     .map( user => {
       let repoUrl = `https://github.com/${user.username}/assessment1`;
+      let basePath = `${user.username}/assessment1`
       let isStudent = Boolean(Math.round(Math.random()));
       let isGraded = Boolean(Math.round(Math.random()));
       let userId = user.id;
       let assessmentId = 1;
       return user.createStudentTest( {
         repoUrl,
+        basePath,
         isStudent,
         isGraded,
         assessmentId

@@ -48,6 +48,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
     const teamForks = forks.filter(fork => memberLogins.includes(fork.owner.login))
     const creatingUsersAndTests = teamForks.map(teamFork => {
       let { owner } = teamFork
+      let basePath = assessment.basePath.split('/')
       return Promise.all([
         GitHub.users.getByIdAsync({ id: owner.id })
         .then(user => {
@@ -60,9 +61,10 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
         }),
         StudentTest.findOrCreate({
           where: {
-            repoUrl: `${owner.login}/${assessment.basePath.split('/')[1]}`,
+            repoUrl: `https://github.com/${owner.login}/${basePath[1]}`,
+            basePath: `${owner.login}/${basePath[1]}`,
             assessmentId: assessment.id,
-            creatorId: req.user.id
+            userId: req.user.id
           }
         })
       ])
@@ -96,7 +98,6 @@ router.get(   '/:id/students/:studentId', ensureAuthenticated, function(req, res
       assessmentId: req.params.id,
       userId: req.params.studentId
     },
-      include: [User]
   }).then(test => res.json(test))
   .catch(next)
 })
@@ -106,7 +107,6 @@ router.get(   '/:id/students/', ensureAuthenticated, function(req, res, next) {
     where: {
       assessmentId: req.params.id,
     },
-      include: [User]
   }).then(test => res.json(test))
   .catch(next)
 })
@@ -124,7 +124,6 @@ router.put(   '/:id/students/:studentId', ensureAuthenticated, function(req, res
       assessmentId: req.params.id,
       userId: req.params.studentId      
     },
-      include: [User]
   }).then(test => test.update(req.body))
   .then(updatedTest => res.json(updatedTest))
   .catch(next)

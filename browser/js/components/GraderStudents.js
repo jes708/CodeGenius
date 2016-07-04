@@ -36,7 +36,14 @@ class GraderStudents extends Component {
 
   //TODO do not hard-code assessmentId 
   componentWillMount () {
-    this.props.dispatch(getStudentTestsInfo(1))
+    const { dispatch, assessment } = this.props
+    dispatch(getStudentTestsInfo(assessment.id))
+  }
+
+  handleSelectStudent (studentId) {
+    const { dispatch, assessment, switchTabs } = this.props
+    dispatch(getStudentTestInfo(assessment.id, studentId))
+    switchTabs('Panel')
   }
 
   renderStudents () {
@@ -49,7 +56,11 @@ class GraderStudents extends Component {
       })
       return studentTests.map((studentTest, i) => {
         return (
-          <StudentCard key={i} studentTest={studentTest}/>
+          <StudentCard
+            key={i}
+            studentTest={studentTest}
+            onSelect={this.handleSelectStudent.bind(this)}
+          />
         )
       })
     // }
@@ -81,11 +92,13 @@ class GraderStudents extends Component {
 // }
 
 const mapStateToProps = state => {
-  const { studentTestInfo } = state
+  const { studentTestInfo, assessments } = state
   const { isFetching } = studentTestInfo
   return {
     isFetching,
-    studentTestInfo: getAllStudentTests(studentTestInfo.byId)
+    studentTestInfo: getAllStudentTests(studentTestInfo.byId),
+    assessment: assessments.current.base
+
   }
 }
 

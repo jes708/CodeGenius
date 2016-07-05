@@ -122,7 +122,13 @@ class Comment extends Component {
           </CardText>
         ]}>
         </ListItem>
-        {this.state.isEditing ? (<FlatButton onClick={this.deleteComment}>Delete</FlatButton>) : ("")}
+        {
+          this.state.isEditing ? (
+            <FlatButton onClick={this.deleteComment}>
+              Delete
+            </FlatButton>
+          ) : ("")
+        }
       </Card>
     )
   }

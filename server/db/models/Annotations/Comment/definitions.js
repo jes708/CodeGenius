@@ -3,7 +3,7 @@ var crypto = require( 'crypto' );
 var _ = require( 'lodash' );
 var Sequelize = require( 'sequelize' );
 
-/** annotation definitions */
+/** comment definitions */
 module.exports = function(db){
     return {
       description: {
@@ -32,6 +32,18 @@ module.exports = function(db){
       },
       rangeCount: {
         type: Sequelize.INTEGER
+      },
+      score: {
+        type: Sequelize.INTEGER
+      },
+      attachments: {
+        type: Sequelize.STRING
+      },
+      criteria: {
+        type: Sequelize.STRING
+      },
+      markdown: {
+        type: Sequelize.TEXT
       }
     }
 }

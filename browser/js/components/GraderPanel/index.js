@@ -29,7 +29,11 @@ export default class GraderPanel extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({commentCollection: nextProps.commentCollection})
+    console.log('adding props', nextProps)
+    this.setState({
+      commentCollection: nextProps.commentCollection
+    })
+    console.log('updated state', this.state.commentCollection);
   }
 
   componentWillMount(){
@@ -100,9 +104,11 @@ export default class GraderPanel extends Component {
 }
 
 const mapStateToProps = (state) =>{
-  let nextProps = {};
-  nextProps.commentCollection = state.comment.collection;
-  return nextProps;
+  const { comment } = state
+
+  return {
+    commentCollection: comment.collection ? state.comment.collection.map( comment => comment ) : null
+  }
 }
 
 export default connect(mapStateToProps)(GraderPanel)

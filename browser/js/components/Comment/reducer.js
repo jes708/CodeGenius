@@ -18,6 +18,21 @@ export default function commentReducer(state = comment_initialState, action){
       return Object.assign({}, state, {
         isEditing: action.payload
       })
+    case 'LOAD_COMMENTS_SUCCESS':
+      return Object.assign({}, state, {
+        collection: action.payload.map( comment => {
+          return Object.assign({}, {
+            commentIndex: comment.id,
+          }, comment )
+        }) })
+
+    return commentCollection
+    case 'LOAD_COMMENTS_REQUEST':
+    case 'CREATE_COMMENT_SUCCESS':
+      let nextState = Object.assign({}, state);
+      if( !nextState.collection ) nextState.collection = [];
+      nextState.collection.push(action.payload);
+      return nextState;
     default:
       return state
   }

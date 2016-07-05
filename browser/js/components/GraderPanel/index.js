@@ -9,7 +9,9 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import CommentCard from '../Comment';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
-import styles from '../graderStyles'
+import styles from '../graderStyles';
+import {getComments, postComment} from '../Comment/apiActions';
+import sampleComments from './sampleComments'
 
 
 function buildGraderPanel(dispatch){
@@ -20,10 +22,27 @@ export default class GraderPanel extends Component {
 
   constructor(props){
     super(props)
+    this.getComments();
+    this.createNewComment = this.createNewComment.bind(this);
+    this.state = {
+      commentCollection: []
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    this.setState({commentCollection: nextProps.commentCollection})
   }
 
   componentWillMount(){
     buildGraderPanel(this.props.dispatch);
+  }
+
+  createNewComment(){
+    this.props.dispatch(postComment({}));
+  }
+
+  getComments(){
+    this.props.dispatch(getComments());
   }
 
   render () {
@@ -57,14 +76,23 @@ export default class GraderPanel extends Component {
             primary={true}
             icon={<FontIcon className='fa fa-plus' />}
             style={styles.skinny}
+            onClick={this.createNewComment}
           />
           <List>
-            {this.props.comments.map((contents, index) => {
-                return (
-                  <CommentCard key={index} contents={contents} commentIndex={index}  >
-                  </ CommentCard>
-                )
-            })}
+              {(this.state.commentCollection.length) ? (
+                this.state.commentCollection.map((contents, index) => {
+                    return (
+                      <CommentCard
+                        key={index}
+                        commentIndex={contents.commentIndex}
+                        contents={contents}
+                          >
+                      </ CommentCard>
+                    )
+                  })) : (
+                    <h2>Add a comment!</h2>
+                  )
+              }
           </List>
         </div>
       </div>
@@ -72,4 +100,11 @@ export default class GraderPanel extends Component {
   }
 }
 
-export default connect()(GraderPanel)
+const mapStateToProps = (state) =>{
+  let nextProps = {};
+  nextProps.commentCollection = state.comment.collection;
+  // nextProps.commentCollection = sampleComments;
+  return nextProps;
+}
+
+export default connect(mapStateToProps)(GraderPanel)

@@ -20,6 +20,7 @@ const Rubric = require( './models/Assessments/Rubric' );
 const StudentTest = require( './models/Assessments/StudentTest' );
 const Tag = require( './models/Tags/Tag');
 const ItemTag = require( './models/Tags/ItemTag');
+const Comment = require( './models/Annotations/Comment')
 
 bluebird.all( [ User, Team, Organization, Annotation, CriterionResponse, Question, QuestionResponse, Rubric, StudentTest, Assessment, Tag ] )
   .then( Models =>

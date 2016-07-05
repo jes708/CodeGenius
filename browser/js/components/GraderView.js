@@ -24,8 +24,13 @@ class GraderView extends Component {
   }
 
   handleFileSelect (filePath) {
-    const { dispatch, assessment } = this.props
-    const basePath = assessment.basePath.split('/')
+    const { dispatch, assessment, studentTest } = this.props
+    let basePath
+    if (studentTest) {
+      basePath = studentTest.basePath.split('/')
+    } else {
+      basePath = assessment.basePath.split('/')
+    }
     const user = basePath[0]
     const repo = basePath[1]
     this.setState({ fileName: filePath })
@@ -63,12 +68,12 @@ class GraderView extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { github, assessments, studentTest } = state
+  const { github, assessments } = state
   const { current } = assessments
   return {
     contents: github.contents,
     assessment: current.base,
-    studentTest
+    studentTest: current.student
   }
 }
 

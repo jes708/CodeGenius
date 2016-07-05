@@ -76,18 +76,26 @@ class AssessmentForm extends Component {
 
   checkAndAddPath () {
     const { path, paths, repo } = this.state
-    axios.get(`/api/v1/github/${repo}/contents?path=${path}`)
-    .then(() => {
+
+    if (paths.includes(path) || paths.includes(path.substr(1)) || paths.includes(`/${path}`)) {
       this.setState({
-        paths: paths.concat(path),
         path: '',
-        error: null
+        error: { statusText: 'Path already exists' }
       })
-    })
-    .catch(error => {
-      error.statusText = 'Enter a valid file path'
-      this.setState({ error })
-    })
+    } else {
+      axios.get(`/api/v1/github/${repo}/contents?path=${path}`)
+      .then(() => {
+          this.setState({
+            paths: paths.concat(path),
+            path: '',
+            error: null
+          })
+      })
+      .catch(error => {
+        error.statusText = 'Enter a valid file path'
+        this.setState({ error })
+      })
+    }
   }
 
   handleRepoCheck () {
@@ -118,6 +126,7 @@ class AssessmentForm extends Component {
     if (stepIndex > 0) {
       this.setState({
         stepIndex: stepIndex - 1,
+        path: '',
         error: null
       })
     }

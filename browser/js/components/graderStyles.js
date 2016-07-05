@@ -109,6 +109,14 @@ const styles = {
     float: 'right',
     top: 8,
     position: 'relative'
+  },
+  formPaperStyle: {
+    margin: 'auto',
+    padding: 20
+  },
+  studentCardSelect: {
+    cursor: 'pointer',
+    display: 'inline-block'
   }
 }
 

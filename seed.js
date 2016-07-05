@@ -161,7 +161,7 @@ let seedAssessments = function () {
       let repoUrl = faker.internet.url();
       let instructorId = instructor.id;
       let team = instructor.teams[ 0 ].userTeam;
-      let teamId = team.id;
+      let teamId = 1;
       let basePath = faker.random.words(2).split(' ').join('/') + '.js'
       let org = faker.random.word()
       let solutionFiles = faker.random.words(5).split(' ')
@@ -282,12 +282,14 @@ let seedStudentTests = function () {
     } )
     .map( user => {
       let repoUrl = `https://github.com/${user.username}/assessment1`;
+      let basePath = `${user.username}/assessment1`
       let isStudent = Boolean(Math.round(Math.random()));
       let isGraded = Boolean(Math.round(Math.random()));
       let userId = user.id;
       let assessmentId = 1;
       return user.createStudentTest( {
         repoUrl,
+        basePath,
         isStudent,
         isGraded,
         assessmentId

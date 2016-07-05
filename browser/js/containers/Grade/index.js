@@ -38,7 +38,8 @@ const styles = {
     background: 'white',
     position: 'absolute',
     width: '100%',
-    height: 50
+    height: 50,
+    zIndex: 4
   },
   panel: {
     paddingTop: 50,

@@ -84,7 +84,6 @@ class Comment extends Component {
   }
 
   deleteComment(){
-    console.log('deleting', this.props.commentIndex);
     this.props.dispatch(deleteComment(this.props.commentIndex))
   }
 
@@ -114,7 +113,6 @@ class Comment extends Component {
         <MenuItem>Delete</MenuItem>
       </IconMenu>
     );
-    console.log(this.props);
     return (
       <Card key={0}  style={styles.skinny} >
         <ListItem primaryText={this.props.contents.title} initiallyOpen={true} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
@@ -124,7 +122,7 @@ class Comment extends Component {
           </CardText>
         ]}>
         </ListItem>
-        <FlatButton onClick={this.deleteComment}>Delete</FlatButton>
+        {this.state.isEditing ? (<FlatButton onClick={this.deleteComment}>Delete</FlatButton>) : ("")}
       </Card>
     )
   }

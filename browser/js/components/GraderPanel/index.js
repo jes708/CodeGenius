@@ -11,7 +11,6 @@ import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import styles from '../graderStyles';
 import {getComments, postComment} from '../Comment/apiActions';
-import sampleComments from './sampleComments'
 
 
 function buildGraderPanel(dispatch){
@@ -103,7 +102,6 @@ export default class GraderPanel extends Component {
 const mapStateToProps = (state) =>{
   let nextProps = {};
   nextProps.commentCollection = state.comment.collection;
-  // nextProps.commentCollection = sampleComments;
   return nextProps;
 }
 

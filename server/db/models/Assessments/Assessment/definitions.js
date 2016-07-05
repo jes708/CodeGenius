@@ -26,7 +26,20 @@ module.exports = function(db){
           isUrl: true
         }
       },
+      solutionRepoUrl: {
+        type: Sequelize.STRING,
+        validate: {
+          isUrl: true
+        }
+      },
       basePath: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true
+        }
+      },
+      solutionPath: {
         type: Sequelize.STRING,
         allowNull: false,
         validate: {

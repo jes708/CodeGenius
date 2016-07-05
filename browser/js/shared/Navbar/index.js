@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import getState from 'redux'
 import { Link } from 'react-router'
 import FlatButton from 'material-ui/FlatButton'
@@ -31,23 +32,26 @@ const styles = {
 }
 
 const NAV_ITEMS = [
-  { label: 'Home', path: '/', auth: true },
-  { label: 'Grade', path: 'grade', auth: true },
-  { label: 'Members Only', path: 'membersOnly', auth: true }
+  { label: 'Grade', path: '/grade', auth: true }
 ]
 
 class Navbar extends Component {
   componentWillMount () {
-    this.props.dispatch(getLoggedInUser())
+    const { user, dispatch } = this.props
+
+    if (!user) {
+      dispatch(getLoggedInUser())
+    }
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.user) this.context.router.push('/grade')
+    const { user, pathname, dispatch } = nextProps
+
+    if (user && pathname === '/') dispatch(push('/grade'))
   }
 
   handleLogout () {
     this.props.dispatch(logout())
-    this.context.router.push('/')
   }
 
   renderNavItems () {
@@ -112,9 +116,10 @@ Navbar.contextTypes = {
 }
 
 const mapStateToProps = state => {
-  const { session } = state
+  const { session, routing } = state
   return {
     user: session.user,
+    pathname: routing.locationBeforeTransitions.pathname
   }
 }
 

@@ -1,6 +1,7 @@
 'use strict'
 
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { connect } from 'react-redux'
 import GitHubInvert from '../../shared/GitHubInvert'
 import Paper from 'material-ui/Paper'
 import { blue300, blue600 } from 'material-ui/styles/colors'
@@ -51,14 +52,32 @@ const styles = {
   }
 }
 
-export default function Home () {
-  return (
-    <div style={styles.paperStyle}>
-        <div style={styles.header}>CodeGenius</div>
-        <hr style={styles.hr} />
-        <p style={styles.p}>CodeGenius optimizes the process of evaluating student code assessments<br />so you can get all of your grading done in one sitting.</p>
-      <GitHubInvert style={styles.button} href='/auth/github' />
-    </div>
-  )
+class Home extends Component {
+  render () {
+    const { isFetching } = this.props
+
+    if (!isFetching) {
+      return (
+        <div style={styles.paperStyle}>
+          <div style={styles.header}>CodeGenius</div>
+          <hr style={styles.hr} />
+          <p style={styles.p}>CodeGenius optimizes the process of evaluating student code assessments<br />so you can get all of your grading done in one sitting.</p>
+          <GitHubInvert style={styles.button} href='/auth/github' />
+        </div>
+      )
+    } else {
+      return (<div style={{textAlign: 'center'}}></div>)
+    }
+  }
 }
+
+const mapStateToProps = (state) => {
+  const { session } = state
+
+  return {
+    isFetching: session.isFetching
+  }
+}
+
+export default connect(mapStateToProps)(Home)
 

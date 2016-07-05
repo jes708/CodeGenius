@@ -29,7 +29,7 @@ class GraderView extends Component {
     if (studentTest) {
       basePath = studentTest.basePath.split('/')
     } else {
-      basePath = assessment.basePath.split('/')
+      basePath = assessment.solutionPath.split('/')
     }
     const user = basePath[0]
     const repo = basePath[1]
@@ -37,12 +37,30 @@ class GraderView extends Component {
     dispatch(getRepoContents(user, repo, filePath))
   }
 
+  renderCodeView () {
+    const { contents, contentError } = this.props
+
+    if (contents || contentError.statusText) {
+      return (
+        <pre className='line-numbers language-javascript'>
+          <PrismCode className='language-javascript'>
+            {contentError && contentError.status ? `File ${contentError.statusText}` : contents || null}
+          </PrismCode>
+        </pre>
+      )
+    } else {
+      return (
+        <div style={styles.gradingTitle}>No File Selected</div>
+      )
+    }
+  }
+
   render () {
     const { fileName, open } = this.state
-    const { contents, assessment } = this.props
+    const { assessment } = this.props
 
     return (
-      <Paper zDepth={2} style={styles.paperStyle}>
+      <Paper zDepth={2} style={styles.graderView}>
         <div style={styles.content}>
           <RaisedButton
             label={open ? 'Hide Files' : 'Show Files'}
@@ -56,11 +74,7 @@ class GraderView extends Component {
             onSelect={this.handleFileSelect.bind(this)}
           />
           <h2 style={styles.skinny}>{fileName}</h2>
-          <pre className='line-numbers language-javascript'>
-            <PrismCode className='language-javascript'>
-              {contents || null}
-            </PrismCode>
-          </pre>
+          {this.renderCodeView()}
         </div>
       </Paper>
     )
@@ -72,6 +86,7 @@ const mapStateToProps = (state) => {
   const { current } = assessments
   return {
     contents: github.contents,
+    contentError: github.error,
     assessment: current.base,
     studentTest: current.student
   }

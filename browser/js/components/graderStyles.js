@@ -64,6 +64,10 @@ const styles = {
   },
   paperStyle: {
     height: '100%',
+    overflow: 'scroll',
+  },
+  graderView: {
+    height: '89vh',
     overflow: 'scroll'
   },
   roundedCard: {

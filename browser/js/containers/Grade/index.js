@@ -112,7 +112,7 @@ export default class Grade extends Component {
   render(){
     return (
       <div className='col-lg-8'>
-        <GraderView isLoading={this.state.isLoading} />
+        <GraderView />
       </div>
     )
   }

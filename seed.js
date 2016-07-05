@@ -159,17 +159,21 @@ let seedAssessments = function () {
       let name = faker.lorem.words( randomN( 20 ) + 1 );
       let description = faker.lorem.paragraph();
       let repoUrl = faker.internet.url();
+      let solutionRepoUrl = faker.internet.url();
       let instructorId = instructor.id;
       let team = instructor.teams[ 0 ].userTeam;
       let teamId = 1;
       let basePath = faker.random.words(2).split(' ').join('/') + '.js'
+      let solutionPath = faker.random.words(2).split(' ').join('/') + '.js'
       let org = faker.random.word()
       let solutionFiles = faker.random.words(5).split(' ')
       return Assessment.create( {
         name,
         description,
         repoUrl,
+        solutionRepoUrl,
         basePath,
+        solutionPath,
         instructorId,
         teamId,
         org,

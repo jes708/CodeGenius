@@ -133,6 +133,8 @@ router.post('/:id/students/:studentId', ensureAuthenticated, function(req, res, 
 })
 
 router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, next) {
+  console.log("params", req.params)
+  console.log("body", req.body)
   StudentTest.findOne({
       where: {
         assessmentId: req.params.id,
@@ -140,7 +142,8 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
       },
       include:  [Assessment]
     }).then(test => {
-      if (req.body.isGraded && !test.isGraded && !test.user.email.includes('no-email.com')) {
+      console.log("test", test)
+      if (req.body.isGraded && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({
           from: '"Code Genius" <CodeGenius@codegenius.io>',
           to: test.user.email,
@@ -153,6 +156,7 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
       }
     })
     .then(updatedTest => {
+        console.log("updatedTest", updatedTest)
         if (Array.isArray(updatedTest)) {
             updatedTest = updatedTest[1]
         }

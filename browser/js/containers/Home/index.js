@@ -45,7 +45,8 @@ const styles = {
   p: {
     fontSize: '23px',
     color: 'white',
-    fontWeight: 100,
+    fontWeight: 200,
+    textShadow: '0px 0px 10px black, 0px 0px 10px black, 0px 0px 10px black',
     letterSpacing: '1px',
     marginBottom: '20px'
   }

@@ -6,9 +6,9 @@ import App from '../containers/App'
 import Home from '../containers/Home'
 // import Grade from '../containers/Grade'
 import {AnnotatedGrade as Grade} from '../containers/Grade'
-import AuthForm from '../shared/AuthForm'
 import TestAnnotate from '../components/Annotator/test.js'
 import TestComponent from '../components/test/TestComponent'
+import NotFound from '../shared/NotFound'
 
 const routes = (
   <Route path='/' component={App}>
@@ -16,7 +16,9 @@ const routes = (
     <Route path='grade' component={Grade} />
     <Route path='/test/annotate' component={TestAnnotate} />
     <Route path='/test/component' component={TestComponent} />
+    <Route path='*' component={NotFound} />
   </Route>
 );
 
 export default routes;
+

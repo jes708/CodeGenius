@@ -35,7 +35,8 @@ class GraderAssessments extends Component {
   }
 
   componentWillMount () {
-    this.props.dispatch(getUserAssessments())
+    const { dispatch, isFetchingUser } = this.props
+    if (!isFetchingUser) dispatch(getUserAssessments())
   }
 
   handleSelectAssessment (assessmentId) {
@@ -171,15 +172,19 @@ class GraderAssessments extends Component {
   }
 
   render () {
-    return (
-      <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
-        <div style={styles.content}>
-          {this.renderToggleFormButton()}
-          {this.renderSearchBar()}
-          {this.renderForm()}
+    const { isUserFetching } = this.props
+
+    if (!isUserFetching) {
+      return (
+        <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
+          <div style={styles.content}>
+            {this.renderToggleFormButton()}
+            {this.renderSearchBar()}
+            {this.renderForm()}
+          </div>
         </div>
-      </div>
-    )
+      )
+    } else return (<div></div>)
   }
 }
 
@@ -196,6 +201,7 @@ const mapStateToProps = state => {
   const { isFetching } = assessments
   const { user } = session
   return {
+    isFetchingUser: session.isFetching,
     isFetching,
     assessments: getAllAssessments(assessments.byId),
     user

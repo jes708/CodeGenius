@@ -85,6 +85,20 @@ export const byId = (state = {}, action) => {
   }
 }
 
+export const byAssessmentId = (state = {}, action) => {
+  const nextState = Object.assign({}, state)
+  switch (action.type) {
+    case LOAD_STUDENTTESTS_SUCCESS:
+      action.studentTests.forEach(studentTest => {
+        if (!nextState[studentTest.assessmentId]) nextState[studentTest.assessmentId] = []
+        nextState[studentTest.assessmentId].push(studentTest)
+      })
+      return nextState
+    default:
+      return state
+  }
+}
+
 export const isFetching = (state = false, action) => {
   switch (action.type) {
     default:
@@ -94,8 +108,10 @@ export const isFetching = (state = false, action) => {
 
 export default combineReducers({
   byId,
+  byAssessmentId,
   isFetching
 })
 
+export const getAssessmentStudentTests = (state, id) => state[id]
 export const getAllStudentTests = (state) => Object.keys(state).map(id => state[id])
 export const getStudentTestFor = (state, userId) => Object.keys(state).map(userId => state[userId])

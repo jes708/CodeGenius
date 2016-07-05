@@ -14,7 +14,7 @@ import Toggle from 'material-ui/Toggle'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
 import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
-import { getAllStudentTests, getStudentTestFor } from '../reducers/studentTestInfo'
+import { getAssessmentStudentTests } from '../reducers/studentTestInfo'
 
 const SAMPLE_SPEC = {
   "Fake Library App": [
@@ -93,12 +93,13 @@ class GraderStudents extends Component {
 
 const mapStateToProps = state => {
   const { studentTestInfo, assessments } = state
-  const { isFetching } = studentTestInfo
+  const { isFetching, byAssessmentId } = studentTestInfo
+  const currentAssessment = assessments.current.base
+
   return {
     isFetching,
-    studentTestInfo: getAllStudentTests(studentTestInfo.byId),
-    assessment: assessments.current.base
-
+    studentTestInfo: getAssessmentStudentTests(byAssessmentId, currentAssessment.id),
+    assessment: currentAssessment
   }
 }
 

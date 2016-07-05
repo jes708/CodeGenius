@@ -38,7 +38,8 @@ export default function renderComment () {
         <div>
           <div>
             <pre>
-              {contents.selection.toString()}
+              {/*contents.selection.toString()*/}
+              {contents.annotation && contents.annotation.selectionString ? contents.annotation.selectionString : null}
             </pre>
             {/*<TextField
             hintText="Annotate Code"

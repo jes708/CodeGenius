@@ -84,6 +84,7 @@ export default class GraderPanel extends Component {
           <List>
               {(this.state.commentCollection.length) ? (
                 this.state.commentCollection.map((contents, index) => {
+                  console.log(contents);
                     return (
                       <CommentCard
                         key={index}
@@ -104,10 +105,12 @@ export default class GraderPanel extends Component {
 }
 
 const mapStateToProps = (state) =>{
-  const { comment } = state
+  const { comment } = Object.assign({}, state)
+
+  console.log(comment);
 
   return {
-    commentCollection: comment.collection ? state.comment.collection.map( comment => comment ) : null
+    commentCollection: comment.collection ? comment.collection.map( comment => comment ) : null
   }
 }
 

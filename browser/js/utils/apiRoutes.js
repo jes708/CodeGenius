@@ -8,6 +8,7 @@ function api(routes, id){
 
 const APIROUTES = {
   annotation: api('/annotations'),
+  annotationByCommentId: (commentId) => api(`/comments/${commentId}/annotation`),
   comments: api('/comments'),
   commentById: (id) => api('/comments', id)
 }

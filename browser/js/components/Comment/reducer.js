@@ -27,7 +27,6 @@ export default function commentReducer(state = comment_initialState, action){
         }) })
 
     return commentCollection
-    case 'LOAD_COMMENTS_REQUEST':
     case 'CREATE_COMMENT_SUCCESS':
       console.log('adding comment to state', state);
       let nextState = Object.assign({}, state);

@@ -17,9 +17,9 @@ export function selection(_selection){
   }
 }
 
-export function annotation(_annotation){
+export function annotation(_annotation, commentId){
   let {selection, annotation, location} = _annotation;
-  return api.postAnnotation({selection, annotation, location})
+  return api.postAnnotation({selection, annotation, location}, commentId)
 }
 
 export function finishAnnotation(payload){

@@ -27,7 +27,7 @@ const styles = {
     textAlign: 'center'
   },
   content: {
-    padding: 16
+    padding: 16,
   },
   editAssessment: {
     display: 'inline-block',
@@ -64,6 +64,10 @@ const styles = {
   },
   paperStyle: {
     height: '100%',
+    overflow: 'scroll',
+  },
+  graderView: {
+    height: '89vh',
     overflow: 'scroll'
   },
   roundedCard: {

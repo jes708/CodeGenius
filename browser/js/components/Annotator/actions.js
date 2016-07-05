@@ -27,7 +27,7 @@ export function finishAnnotation(payload){
   finisher.added = false;
   return {
     type: ANNOTATION,
-    payload: payload
+    payload: finisher
   }
 }
 
@@ -47,7 +47,7 @@ export function annotationAdded( added = true, clear = false ){
     return {
       type: ANNOTATION_ADDED,
       payload: {
-        added
+        added: true
       }
     }
 }

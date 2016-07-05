@@ -138,6 +138,8 @@ const mapStateToProps = (state, props) => {
   let nextProps = {contents: {}};
   let stateToUpdate = Object.assign({}, state);
 
+
+
   nextProps.isEditing = (
     state.comment.isEditing.key === props.commentIndex ?
       true : false
@@ -146,6 +148,7 @@ const mapStateToProps = (state, props) => {
   nextProps.contents = Object.assign( {}, props.contents);
   if(props.contents){
     nextProps.contents.selection = props.contents.selection || {};
+    nextProps.contents.selection.added = stateToUpdate.annotation.added;
   }
 
   if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){

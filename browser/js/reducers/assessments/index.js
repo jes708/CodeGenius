@@ -12,7 +12,7 @@ import {
   UPDATE_ASSESSMENT_SUCCESS,
   UPDATE_ASSESSMENT_FAILURE,
 } from '../../actions/assessmentActions'
-import { AUTH_LOGOUT_SUCCESS } from '../../actions/authActions'
+import { AUTH_LOGOUT_SUCCESS } from '../../actions/AuthActions'
 import current from './current'
 
 export const byId = (state = {}, action) => {

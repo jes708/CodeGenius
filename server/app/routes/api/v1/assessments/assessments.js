@@ -20,10 +20,10 @@ const User = db().models.user
 const StudentTest = db().models.studentTest
 const Resource = Assessment;
 const GitHub = require('../../../../configure/github');
+const GMAIL_ID = process.env.EMAIL_ID;
+const GMAIL_PASSWORD = process.env.PASSWORD;
 const nodemailer = Promise.promisifyAll(require("nodemailer"));
-const transport = nodemailer.createTransport('direct', {
-  debug: true
-})
+const transport = nodemailer.createTransport(`stmps://${GMAIL_ID}:${GMAIL_PASSWORD}@gmail.com`);
 
 import omit from 'lodash/object/omit'
 

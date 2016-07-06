@@ -50,10 +50,6 @@ export default class GraderPanel extends Component {
     this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
   }
 
-  handleNext() {
-    this.props.dispatch(getStudentTestInfo(this.props.assessment.id, this.props.student.userId))
-  }  
-
   renderStudentInfo() {
     if (this.props.student.user) {
       return (

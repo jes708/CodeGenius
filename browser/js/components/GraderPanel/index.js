@@ -11,7 +11,7 @@ import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import styles from '../graderStyles'
 import Checkbox from 'material-ui/Checkbox'
-import { putStudentTestInfo } from '../../actions/studentTestInfoActions'
+import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
 
 function buildGraderPanel(dispatch){
   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
@@ -30,6 +30,29 @@ export default class GraderPanel extends Component {
   handleCheck() {
     this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
   }
+
+  handleStudentShift(direction) {
+    let currentId = String(this.props.student.id);
+    let studentTestArray = Object.keys(this.props.studentTests)
+    let currentIndex = studentTestArray.indexOf(currentId);
+    let newIndex;
+    
+    if (direction === "prev") {
+      if (currentIndex === 0) newIndex = studentTestArray.length - 1;
+      else newIndex = currentIndex - 1;
+    } else {
+      if (currentIndex === studentTestArray.length - 1) newIndex = 0;
+      else newIndex = currentIndex + 1;
+    }
+
+    let newId = Number(studentTestArray[newIndex])
+    let studentId = this.props.studentTests[newId].userId
+    this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
+  }
+
+  handleNext() {
+    this.props.dispatch(getStudentTestInfo(this.props.assessment.id, this.props.student.userId))
+  }  
 
   renderStudentInfo() {
     if (this.props.student.user) {
@@ -54,12 +77,14 @@ export default class GraderPanel extends Component {
             <CardActions>
               <FlatButton
                 label='Previous Student'
+                onClick={this.handleStudentShift.bind(this, "prev")}
                 hoverColor={'#2196F3'}
                 rippleColor={'#90CAF9'}
                 style={{color: '#F5F5F5'}}
               />
               <FlatButton
                 label='Next Student'
+                onClick={this.handleStudentShift.bind(this, "next")}
                 hoverColor={'#2196F3'}
                 rippleColor={'#90CAF9'}
                 style={{color: '#F5F5F5'}}
@@ -92,10 +117,11 @@ export default class GraderPanel extends Component {
 }
 
 const mapStateToProps = state => {
-  const { assessments } = state
+  const { assessments, studentTestInfo } = state
   return {
     assessment: assessments.current.base,
-    student: assessments.current.student
+    student: assessments.current.student,
+    studentTests: studentTestInfo.byId
   }
 }
 

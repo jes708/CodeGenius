@@ -10,7 +10,9 @@ const APIROUTES = {
   annotation: api('/annotations'),
   annotationByCommentId: (commentId) => api(`/comments/${commentId}/annotation`),
   comments: api('/comments'),
-  commentById: (id) => api('/comments', id)
+  commentById: (id) => api('/comments', id),
+  commentByAssessmentStudent: (assessmentId, studentId) => api(`/assessments/${assessmentId}/students/${studentId}/comments`),
+  commentByStudentTest: (studentTestId) => api(`/studenttest/${studentTestId}/comments`)
 }
 
 export default APIROUTES;

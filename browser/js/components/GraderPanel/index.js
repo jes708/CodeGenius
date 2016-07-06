@@ -10,7 +10,7 @@ import CommentCard from '../Comment';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import styles from '../graderStyles';
-import {getComments, postComment} from '../Comment/apiActions';
+import {getComments, postComment, getCommentsByStudentAndAssessment, postCommentByStudentAndAssessment} from '../Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
 
@@ -40,11 +40,14 @@ export default class GraderPanel extends Component {
   }
 
   createNewComment(){
-    this.props.dispatch(postComment({}));
+    let {studentId, assessmentId} = this.getStudentAndAssessment()
+    this.props.dispatch(postCommentByStudentAndAssessment(studentId, assessmentId, {}));
   }
 
   getComments(){
-    this.props.dispatch(getComments());
+    let {studentId, assessmentId} = this.getStudentAndAssessment()
+    // this.props.dispatch(getComments());
+    this.props.dispatch(getCommentsByStudentAndAssessment(assessmentId, studentId))
   }
 
     handleCheck() {
@@ -68,6 +71,12 @@ export default class GraderPanel extends Component {
       let newId = Number(studentTestArray[newIndex])
       let studentId = this.props.studentTests[newId].userId
       this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
+    }
+
+    getStudentAndAssessment(){
+      let assessmentId = this.props.assessment.id;
+      let studentId = this.props.student.userId;
+      return {studentId, assessmentId}
     }
 
     renderStudentInfo() {

@@ -4,6 +4,14 @@ const comment_initialState = {
   commentKey: null
 }
 
+function mapCommentsToIndex(comments){
+  return comments.map( comment => {
+    return Object.assign({}, {
+      commentIndex: comment.id,
+    }, comment )
+  })
+}
+
 export default function commentReducer(state = comment_initialState, action){
   let nextState = Object.assign({}, state);
   switch(action.type){
@@ -36,6 +44,9 @@ export default function commentReducer(state = comment_initialState, action){
     case 'CREATE_ANNOTATION_SUCCESS':
       let commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.payload.commentId)
       commentToUpdate.annotation = action.payload;
+      return nextState;
+    case 'LOAD_STUDENTTEST_SUCCESS':
+      nextState.collection = mapCommentsToIndex(action.studentTest.comments);
       return nextState;
     default:
       return state

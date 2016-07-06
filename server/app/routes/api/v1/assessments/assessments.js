@@ -164,6 +164,32 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
     .catch(next)
 })
 
+router.post('/:id/students/:studentId/comments', (req, res, next) => {
+  StudentTest.findOne({
+      where: {
+        assessmentId: req.params.id,
+        userId: req.params.studentId
+      },
+      include:  [Assessment]
+    }).then( studentTest => {
+      if(!studentTest) throw 'no student test'
+      return studentTest.createComment(req.body)} )
+      .then( comment => res.status(201).send(comment) )
+      .catch(next);
+})
+
+router.get('/:id/students/:studentId/comments', (req, res, next) => {
+  StudentTest.findOne({
+      where: {
+        assessmentId: req.params.id,
+        userId: req.params.studentId
+      },
+      include:  [Assessment]
+    }).then( studentTest => studentTest.getComments() )
+      .then( comments => res.status(200).send( comments ) )
+      .catch(next);
+})
+
 respondWith404(router);
 
 module.exports = router;

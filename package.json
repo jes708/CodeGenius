@@ -82,7 +82,8 @@
     "socket.io": "^1.3.4",
     "socket.io-client": "^1.3.5",
     "webpack": "^1.13.1",
-    "xpath-dom": "^0.2.2"
+    "xpath-dom": "^0.2.2",
+    "extract-text-webpack-plugin": "^1.0.1"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.0",

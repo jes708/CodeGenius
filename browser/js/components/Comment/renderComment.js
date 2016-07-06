@@ -9,8 +9,7 @@ import FlatButton from 'material-ui/FlatButton'
 
 
 export default function renderComment () {
-    let contents = this.state.contents || defaultContents;
-    let isEditing = this.state.isEditing;
+    let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
     let id = 0;
     return ( <div>
@@ -39,7 +38,8 @@ export default function renderComment () {
         <div>
           <div>
             <pre>
-              {contents.selection.toString()}
+              {/*contents.selection.toString()*/}
+              {contents.annotation && contents.annotation.selectionString ? contents.annotation.selectionString : null}
             </pre>
             {/*<TextField
             hintText="Annotate Code"

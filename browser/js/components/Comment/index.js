@@ -26,6 +26,7 @@ import {Tags} from '../../containers/Tag';
 import FlipMove from 'react-flip-move';
 import renderComment from './renderComment';
 import { annotationAdded } from '../Annotator/actions';
+import { deleteComment } from './apiActions';
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -64,6 +65,7 @@ class Comment extends Component {
     super(props);
     this.buttonOnClickHandler = this.editMode.bind(this);
     this.onClickDoneHandler = this.editModeDone.bind(this);
+    this.deleteComment = this.deleteComment.bind(this);
     this.state = {
       contents: this.props.contents
     }
@@ -71,15 +73,24 @@ class Comment extends Component {
   }
   componentWillReceiveProps(nextProps){
     this.setState({isEditing: nextProps.isEditing});
-    if(nextProps.contents.selection && this.state.isEditing && !nextProps.contents.selection.added) {
-      this.setState(function(previousState, currentProps){
-        let nextState = {...previousState}
-        nextState.contents.selection = nextProps.contents.selection;
-        return nextState;
-      })
+    this.setState({contents: nextProps.contents});
+    if(nextProps.contents.selection &&
+       this.state.isEditing &&
+       !nextProps.contents.selection.added) {
+
+        this.setState(function(previousState, currentProps){
+          let nextState = {...previousState}
+          nextState.contents.selection = nextProps.contents.selection;
+          return nextState;
+        })
       this.props.dispatch(annotationAdded( true ));
     }
   }
+
+  deleteComment(){
+    this.props.dispatch(deleteComment(this.props.commentIndex))
+  }
+
   editMode(){
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
   }
@@ -107,14 +118,21 @@ class Comment extends Component {
       </IconMenu>
     );
     return (
-      <Card key={1}  style={styles.skinny} >
+      <Card key={0}  style={styles.skinny} >
         <ListItem primaryText={this.props.contents.title} initiallyOpen={true} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
-          <CardText expandable={true} style={styles.noTopPadding}>
+          <CardText key={0} expandable={true} style={styles.noTopPadding}>
             <hr style={styles.skinny} />
             {this.renderComment()}
           </CardText>
         ]}>
         </ListItem>
+        {
+          this.state.isEditing ? (
+            <FlatButton onClick={this.deleteComment}>
+              Delete
+            </FlatButton>
+          ) : ("")
+        }
       </Card>
     )
   }
@@ -124,13 +142,21 @@ const mapStateToProps = (state, props) => {
   let nextProps = {contents: {}};
   let stateToUpdate = Object.assign({}, state);
 
+  let thisComment = stateToUpdate.comment.collection.find( comment => comment.commentIndex === props.commentIndex);
+
+  // nextProps.contents = thisComment;
+
   nextProps.isEditing = (
     state.comment.isEditing.key === props.commentIndex ?
       true : false
     );
 
-  nextProps.contents = Object.assign( {}, props.contents);
-  nextProps.contents.selection = props.contents.selection;
+  nextProps.contents = Object.assign( {}, props.contents, thisComment);
+
+  if(props.contents){
+    nextProps.contents.selection = props.contents.selection || {};
+    nextProps.contents.selection.added = stateToUpdate.annotation.added;
+  }
 
   if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){
     nextProps.contents.selection = stateToUpdate.annotation.selection;

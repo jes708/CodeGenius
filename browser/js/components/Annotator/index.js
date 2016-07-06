@@ -88,7 +88,7 @@ export class AnnotateContextMenu extends Component {
       selection: this.props.selection,
       annotation: this.props.selection,
       location: currentLocation
-    }));
+    }, this.props.commentId));
   }
   componentWillReceiveProps(nextProps){
     this.setState({currentLocation: nextProps.currentLocation})
@@ -105,9 +105,13 @@ export class AnnotateContextMenu extends Component {
 
 const mapStateToProps = (state, props)=>{
   let nextProps = {};
+  let nextState = Object.assign({}, state);
   // nextProps.currentLocation = state.currentFile.path;
   // replace this \/ with this /\
+
+  nextProps.commentId = nextState.comment.isEditing ? nextState.comment.isEditing.key : null;
   nextProps.currentLocation = 'https://github.com/Code-Genius/checkpoint-express-review/blob/master/app.js'
+  // change this ^
   return nextProps;
 }
 

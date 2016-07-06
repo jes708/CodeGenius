@@ -2,7 +2,6 @@
 
 import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
-import { reducer as formReducer } from 'redux-form'
 import session from './session'
 import assessments from './assessments'
 import currentFile from './currentFile'
@@ -22,7 +21,6 @@ const rootReducer = combineReducers({
   currentFile,
   assessmentTeam,
   studentTestInfo,
-  form: formReducer,
   routing: routerReducer,
   TestReducer
 })

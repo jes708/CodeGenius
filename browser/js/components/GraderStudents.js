@@ -59,6 +59,11 @@ class GraderStudents extends Component {
       return (
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
+          <Card style={Object.assign(styles.infoCard, styles.skinny)}>
+            <div style={styles.gradingInfo}>
+              <div style={styles.gradingTitle}>{this.props.assessment.name}</div>
+            </div>
+          </Card>
             {this.renderStudents()}
           </div>
         </div>

@@ -24,9 +24,9 @@ class GraderStudents extends Component {
     switchTabs('Panel')
   }
 
-  handleToggleStudent (studentId, data) {
+  handleToggleStudent (studentId, status) {
     const { dispatch, assessment } = this.props
-    dispatch(putStudentTestInfo(assessment.id, studentId, data))
+    dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}))
   }
 
   renderStudents () {

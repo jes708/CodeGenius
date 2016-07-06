@@ -54,6 +54,12 @@ router.get('/:org/teams', ensureAuthenticated, (req, res, next) => {
   .catch(next)
 })
 
+router.get('/:org/repos', ensureAuthenticated, (req, res, next) => {
+  GitHub.repos.getForOrgAsync({ org: req.params.org})
+  .then(repos => res.json(repos))
+  .catch(next)
+})
+
 router.get('/:teamId/members', ensureAuthenticated, (req, res, next) => {
   GitHub.orgs.getTeamMembersAsync({ id: req.params.teamId })
   .then(members => res.json(members))

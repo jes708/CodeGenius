@@ -13,25 +13,9 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import AutoComplete from 'material-ui/AutoComplete'
 import { Step, Stepper, StepLabel, StepContent } from 'material-ui/Stepper'
-import { getUserOrgs, getOrgTeams } from '../actions/githubActions'
-import { getOrgs, getTeams } from '../reducers/github'
+import { getUserOrgs, getOrgTeams, getOrgRepo } from '../actions/githubActions'
+import { getOrgs, getTeams, getOrgRepos } from '../reducers/github'
 import styles from './graderStyles'
-
-// const validate = (values) => {
-//   const errors = {}
-//   if (!values.name) {
-//     errors.name = 'Required'
-//   }
-//   if (!values.description) {
-//     errors.description = 'Required'
-//   }
-//   if (!values.repoUrl) {
-//     errors.repoUrl = 'Required'
-//   } else if (/^(https?:\/\/)?(www.)?(github.com\/)/i.test(values.repoUrl)) {
-//     errors.repoUrl = 'Please enter valid GitHub URL'
-//   }
-//   return errors
-// }
 
 class AssessmentForm extends Component {
   constructor(props) {
@@ -186,6 +170,19 @@ class AssessmentForm extends Component {
     nextForm.teamId = team.id
     nextForm.teamName = team.name
     this.setState({ form: nextForm })
+    this.props.dispatch(getOrgRepo(nextForm.org))
+  }
+
+  handleRepoUrl = (repoUrl) => {
+    const nextForm = Object.assign({}, this.state.form)
+    nextForm.repoUrl = repoUrl
+    this.setState({ form: nextForm })
+  }
+
+  handleSolutionUrl = (solutionRepoUrl) => {
+    const nextForm = Object.assign({}, this.state.form)
+    nextForm.solutionRepoUrl = solutionRepoUrl
+    this.setState({ form: nextForm })
   }
 
   renderOrgInput () {
@@ -281,7 +278,7 @@ class AssessmentForm extends Component {
   }
 
   renderInfoForm () {
-    const { orgs, isFetchingTeams, teams } = this.props
+    const { orgs, isFetchingTeams, teams, orgrepo } = this.props
     const { form, errors } = this.state
 
     return (
@@ -307,19 +304,23 @@ class AssessmentForm extends Component {
           { form.teamId === ''
             ? null
             : <div>
-                <TextField
-                  floatingLabelText="Repo URL"
-                  value={form.repoUrl}
-                  fullWidth={true}
-                  onChange={(e) => this.handleChange(e, 'repoUrl')}
-                  errorText={errors.repo && errors.repo.statusText}
+                <AutoComplete
+                floatingLabelText="Repo Url"
+                filter={AutoComplete.fuzzyFilter}
+                dataSource={orgrepo.map(repo => `https://github.com/${repo}`)}
+                maxSearchResults={4}
+                searchText={form.repoUrl}
+                onNewRequest={this.handleRepoUrl}
+                errorText={errors && errors.statusText}
                 />
-                <TextField
-                  floatingLabelText="Solution Repo URL"
-                  value={form.solutionRepoUrl}
-                  fullWidth={true}
-                  onChange={(e) => this.handleChange(e, 'solutionRepoUrl')}
-                  errorText={errors.solutionRepo && errors.solutionRepo.statusText}
+                <AutoComplete
+                floatingLabelText="Solution Url"
+                filter={AutoComplete.fuzzyFilter}
+                dataSource={orgrepo.map(repo => `https://github.com/${repo}`)}
+                maxSearchResults={4}
+                searchText={form.solutionRepoUrl}
+                onNewRequest={this.handleSolutionUrl}
+                errorText={errors && errors.statusText}
                 />
               </div>
           }
@@ -417,15 +418,19 @@ AssessmentForm.propTypes = {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state)
   const { github } = state
   const { isFetchingOrgs, byId } = github.orgs
   const { isFetchingTeams, byTeamId } = github.teams
+  const { isFetchingOrgRepo, byRepoId } = github.orgRepos
 
   return {
     isFetchingOrgs,
     isFetchingTeams,
+    isFetchingOrgRepo,
     orgs: getOrgs(byId),
-    teams: getTeams(byTeamId)
+    teams: getTeams(byTeamId),
+    orgrepo: getOrgRepos(byRepoId)
   }
 }
 

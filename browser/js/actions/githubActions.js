@@ -14,6 +14,9 @@ export const FETCH_ORG_TEAMS_FAILURE = 'FETCH_ORG_TEAMS_FAILURE'
 export const CHECK_REPO_PATH_REQUEST = 'CHECK_REPO_PATH_REQUEST'
 export const CHECK_REPO_PATH_SUCCESS = 'CHECK_REPO_PATH_SUCCESS'
 export const CHECK_REPO_PATH_FAILURE = 'CHECK_REPO_PATH_FAILURE'
+export const FETCH_ORGREPO_REQUEST = 'FETCH_ORGREPO_REQUEST'
+export const FETCH_ORGREPO_SUCCESS = 'FETCH_ORGREPO_SUCCESS'
+export const FETCH_ORGREPO_FAILURE = 'FETCH_ORGREPO_FAILURE'
 
 const API_GITHUB_URL = '/api/v1/github'
 
@@ -55,4 +58,16 @@ export const getOrgTeams = (org) => (dispatch) => {
     teams: resData
   }))
   .catch(error => dispatch({ type: FETCH_ORG_TEAMS_FAILURE, error }))
+}
+
+export const getOrgRepo = (org) => (dispatch) => {
+  dispatch({ type: FETCH_ORGREPO_REQUEST })
+
+  return axios.get(`${API_GITHUB_URL}/${org}/repos`)
+  .then(res => res.data)
+  .then(resData => dispatch({
+    type: FETCH_ORGREPO_SUCCESS,
+    orgrepo: resData
+  }))
+  .catch(error => dispatch({ type: FETCH_ORGREPO_FAILURE, error}))
 }

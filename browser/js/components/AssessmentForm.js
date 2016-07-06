@@ -17,22 +17,6 @@ import { getUserOrgs, getOrgTeams, getOrgRepo } from '../actions/githubActions'
 import { getOrgs, getTeams, getOrgRepos } from '../reducers/github'
 import styles from './graderStyles'
 
-// const validate = (values) => {
-//   const errors = {}
-//   if (!values.name) {
-//     errors.name = 'Required'
-//   }
-//   if (!values.description) {
-//     errors.description = 'Required'
-//   }
-//   if (!values.repoUrl) {
-//     errors.repoUrl = 'Required'
-//   } else if (/^(https?:\/\/)?(www.)?(github.com\/)/i.test(values.repoUrl)) {
-//     errors.repoUrl = 'Please enter valid GitHub URL'
-//   }
-//   return errors
-// }
-
 class AssessmentForm extends Component {
   constructor(props) {
     super(props)
@@ -319,22 +303,6 @@ class AssessmentForm extends Component {
           {this.renderTeamInput()}
           { form.teamId === ''
             ? null
-            // : <div>
-            //     <TextField
-            //       floatingLabelText="Repo URL"
-            //       value={form.repoUrl}
-            //       fullWidth={true}
-            //       onChange={(e) => this.handleChange(e, 'repoUrl')}
-            //       errorText={errors.repo && errors.repo.statusText}
-            //     />
-            //     <TextField
-            //       floatingLabelText="Solution Repo URL"
-            //       value={form.solutionRepoUrl}
-            //       fullWidth={true}
-            //       onChange={(e) => this.handleChange(e, 'solutionRepoUrl')}
-            //       errorText={errors.solutionRepo && errors.solutionRepo.statusText}
-            //     />
-            //   </div>
             : <div>
                 <AutoComplete
                 floatingLabelText="Repo Url"

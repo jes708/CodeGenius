@@ -1,4 +1,5 @@
 'use strict';
+
 var router = require('express').Router();
 var _ = require('lodash');
 
@@ -93,16 +94,6 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
     })
     return Promise.all(creatingUsersAndTests)
   })
-  .then(tests => {
-    console.log(tests[0])
-    // return Promise.all(
-    //   usersAndTests.map(userAndTest => {
-    //     let user = userAndTest[0][0]
-    //     let test = userAndTest[1][0]
-    //     return test.setUser(user)
-    //   })
-    // )
-  })
   .then(() => {
     return Assessment.findById(newAssessment.id)
   })
@@ -152,7 +143,7 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
       },
       include:  [Assessment]
     }).then(test => {
-      if (req.body.isGraded && !test.isGraded && !test.user.email.includes('no-email.com')) {
+      if (req.body.isGraded && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({
           from: '"Code Genius" <CodeGenius@codegenius.io>',
           to: test.user.email,

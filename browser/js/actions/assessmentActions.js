@@ -15,6 +15,7 @@ export const SWITCH_ASSESSMENT_REQUEST = 'SWITCH_ASSESSMENT_REQUEST'
 export const SWITCH_ASSESSMENT_SUCCESS = 'SWITCH_ASSESSMENT_SUCCESS'
 export const SWITCH_ASSESSMENT_FAILURE = 'SWITCH_ASSESSMENT_FAILURE'
 import { getAssessment } from '../reducers/assessments'
+import { getStudentTestsInfo } from '../actions/studentTestInfoActions'
 
 const API_URL = '/api/v1'
 const USER_URL = `${API_URL}/users`
@@ -61,12 +62,14 @@ export const switchAssessment = (id) => (dispatch, getState) => {
 
   if (assessment) {
     dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment })
+    dispatch(getStudentTestsInfo(assessment.id))
   } else {
     return axios.get(`${ASSESSMENT_URL}/${id}`)
-    .then(resData => dispatch({
-      type: SWITCH_ASSESSMENT_SUCCESS, assessment: resData
+    .then(resData => {
+      dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: resData })
+      dispatch(getStudentTestsInfo(resData.id))
     })
-    .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error })))
+    .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error }))
   }
 
 }

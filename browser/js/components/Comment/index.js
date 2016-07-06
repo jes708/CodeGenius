@@ -73,12 +73,16 @@ class Comment extends Component {
   }
   componentWillReceiveProps(nextProps){
     this.setState({isEditing: nextProps.isEditing});
-    if(nextProps.contents.selection && this.state.isEditing && !nextProps.contents.selection.added) {
-      this.setState(function(previousState, currentProps){
-        let nextState = {...previousState}
-        nextState.contents.selection = nextProps.contents.selection;
-        return nextState;
-      })
+    this.setState({contents: nextProps.contents});
+    if(nextProps.contents.selection &&
+       this.state.isEditing &&
+       !nextProps.contents.selection.added) {
+
+        this.setState(function(previousState, currentProps){
+          let nextState = {...previousState}
+          nextState.contents.selection = nextProps.contents.selection;
+          return nextState;
+        })
       this.props.dispatch(annotationAdded( true ));
     }
   }
@@ -138,14 +142,18 @@ const mapStateToProps = (state, props) => {
   let nextProps = {contents: {}};
   let stateToUpdate = Object.assign({}, state);
 
+  console.log('adding next state to COMMENT', state, props);
+  let thisComment = stateToUpdate.comment.collection.find( comment => comment.commentIndex === props.commentIndex);
 
+  // nextProps.contents = thisComment;
 
   nextProps.isEditing = (
     state.comment.isEditing.key === props.commentIndex ?
       true : false
     );
 
-  nextProps.contents = Object.assign( {}, props.contents);
+  nextProps.contents = Object.assign( {}, props.contents, thisComment);
+
   if(props.contents){
     nextProps.contents.selection = props.contents.selection || {};
     nextProps.contents.selection.added = stateToUpdate.annotation.added;

@@ -1,4 +1,5 @@
 'use strict';
+
 var router = require('express').Router();
 var _ = require('lodash');
 
@@ -54,14 +55,15 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
     ])
   })
   .spread((assessment, forks, members) => {
+    let forkByOwner = {}
     newAssessment = assessment
-    const memberLogins = members.map(member => member.login)
-    const teamForks = forks.filter(fork => memberLogins.includes(fork.owner.login))
-    const creatingUsersAndTests = teamForks.map(teamFork => {
-      let { owner } = teamFork
+    forks.forEach(fork => {
+      forkByOwner[fork.owner.login] = fork
+    })
+    const creatingUsersAndTests = members.map(member => {
       let basePath = assessment.basePath.split('/')
       return Promise.all([
-        GitHub.users.getByIdAsync({ id: owner.id })
+        GitHub.users.getByIdAsync({ id: member.id })
         .then(user => {
           return User.findOrCreate({ where: {
             github_id: user.id,
@@ -69,27 +71,28 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
             username: user.login,
             photo: user.avatar_url
           }})
-        }),
-        StudentTest.findOrCreate({
-          where: {
-            repoUrl: `https://github.com/${owner.login}/${basePath[1]}`,
-            basePath: `${owner.login}/${basePath[1]}`,
-            assessmentId: assessment.id,
-            userId: req.user.id
-          }
         })
+        .then(user => {
+          let repo = ''
+          let userFork = forkByOwner[user[0].username]
+          if (userFork) {
+            repo = userFork.html_url
+          }
+
+          if (assessment.instructorId !== user[0].id && basePath[0] !== user[0].username) {
+            return StudentTest.findOrCreate({
+              where: {
+                repoUrl: repo,
+                basePath: `${member.login}/${basePath[1]}`,
+                assessmentId: assessment.id,
+                userId: user[0].id
+              }
+            })
+          }
+        }),
       ])
     })
     return Promise.all(creatingUsersAndTests)
-  })
-  .then(usersAndTests => {
-    return Promise.all(
-      usersAndTests.map(userAndTest => {
-        let user = userAndTest[0][0]
-        let test = userAndTest[1][0]
-        return test.setUser(user)
-      })
-    )
   })
   .then(() => {
     return Assessment.findById(newAssessment.id)
@@ -140,7 +143,7 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
       },
       include:  [Assessment]
     }).then(test => {
-      if (req.body.isGraded && !test.isGraded && !test.user.email.includes('no-email.com')) {
+      if (req.body.isGraded && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({
           from: '"Code Genius" <CodeGenius@codegenius.io>',
           to: test.user.email,

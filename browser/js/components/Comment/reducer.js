@@ -5,6 +5,7 @@ const comment_initialState = {
 }
 
 export default function commentReducer(state = comment_initialState, action){
+  let nextState = Object.assign({}, state);
   switch(action.type){
     case 'SELECT_COMMENT':
       return Object.assign({}, state, {
@@ -29,11 +30,16 @@ export default function commentReducer(state = comment_initialState, action){
     return commentCollection
     case 'CREATE_COMMENT_SUCCESS':
       console.log('adding comment to state', state);
-      let nextState = Object.assign({}, state);
       if( !nextState.collection ) nextState.collection = [];
-      console.log(action.payload);
+      console.log('comment to add: ', action.payload);
+      action.payload.commentIndex = action.payload.id;
       nextState.collection.unshift(action.payload);
       console.log(nextState);
+      return nextState;
+    case 'CREATE_ANNOTATION_SUCCESS':
+      console.log('annotation to add', action.payload);
+      let commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.payload.commentId)
+      commentToUpdate.annotation = action.payload;
       return nextState;
     default:
       return state

@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import { PrismCode } from 'react-prism';
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
-import styles from './graderStyles'
 import SubGradeView from './SubGradeView'
-import { getAssessment } from '../actions/assessmentActions'
+import styles from './graderStyles'
 import { getRepoContents } from '../actions/githubActions'
 
 class GraderView extends Component {
@@ -26,7 +25,7 @@ class GraderView extends Component {
   handleFileSelect (filePath) {
     const { dispatch, assessment, studentTest } = this.props
     let basePath
-    if (studentTest) {
+    if (studentTest.basePath) {
       basePath = studentTest.basePath.split('/')
     } else {
       basePath = assessment.solutionPath.split('/')

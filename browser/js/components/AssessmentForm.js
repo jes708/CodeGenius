@@ -185,13 +185,13 @@ class AssessmentForm extends Component {
 
   handleRepoUrl = (repoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.repoUrl = repoUrl
+    nextForm.repoUrl = `https://github.com/${repoUrl}`
     this.setState({ form: nextForm })
   }
 
   handleSolutionUrl = (solutionRepoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.solutionRepoUrl = solutionRepoUrl
+    nextForm.solutionRepoUrl = `https://github.com/${solutionRepoUrl}`
     this.setState({ form: nextForm })
   }
 
@@ -321,7 +321,7 @@ class AssessmentForm extends Component {
                 <AutoComplete
                 floatingLabelText="Repo Url"
                 filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `https://github.com/${repo}`)}
+                dataSource={orgrepo.map(repo => `${repo}`)}
                 maxSearchResults={4}
                 searchText={form.repoUrl}
                 onNewRequest={this.handleRepoUrl}
@@ -330,7 +330,7 @@ class AssessmentForm extends Component {
                 <AutoComplete
                 floatingLabelText="Solution Url"
                 filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `https://github.com/${repo}`)}
+                dataSource={orgrepo.map(repo => `${repo}`)}
                 maxSearchResults={4}
                 searchText={form.solutionRepoUrl}
                 onNewRequest={this.handleSolutionUrl}

@@ -2,6 +2,7 @@
 
 import axios from 'axios'
 import { replace } from 'react-router-redux'
+import { getUserAssessments } from '../actions/assessmentActions'
 
 export const AUTH_LOGIN_REQUEST = 'AUTH_LOGIN_REQUEST'
 export const AUTH_LOGIN_SUCCESS = 'AUTH_LOGIN_SUCCESS'
@@ -55,7 +56,10 @@ export const getLoggedInUser = () => (dispatch, getState) => {
   } else {
     return axios.get('/session')
     .then(res => res.data)
-    .then(resData => dispatch(userReceived(resData.user)))
+    .then(resData => {
+      dispatch(userReceived(resData.user))
+      dispatch(getUserAssessments())
+    })
     .catch(() => {
       dispatch({ type: AUTH_NO_USER })
       dispatch(replace('/'))

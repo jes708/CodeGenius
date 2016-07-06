@@ -8,19 +8,19 @@ import TextField from 'material-ui/TextField';
 export default class MarkdownWrapper extends Component {
   constructor(props){
     super(props);
-    console.log(this.props.editable);
+
     this.state = {
-      markdown: this.props.markdown,
-      rendered: markdown.toHTML(this.props.markdown),
+      markdown: this.props.markdown ? this.props.markdown : null,
+      rendered: this.props.markdown ? markdown.toHTML(this.props.markdown) : null,
       editable: this.props.editable
     }
   }
   componentWillReceiveProps(nextProps){
-    this.state = {
-      markdown: nextProps.markdown,
-      rendered: markdown.toHTML(nextProps.markdown),
-      editable: nextProps.editable
-    }
+      this.setState({
+        markdown: nextProps.markdown ? nextProps.markdown : null,
+        rendered: nextProps.markdown ? markdown.toHTML(nextProps.markdown) : null,
+        editable: nextProps.editable
+      })
   }
   render(){
     if(this.state.editable){

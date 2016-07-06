@@ -11,7 +11,7 @@ import Avatar from 'material-ui/Avatar'
 import FontIcon from 'material-ui/FontIcon'
 import { blue300 } from 'material-ui/styles/colors'
 import { Toolbar, ToolbarGroup, ToolbarSeparator, ToolbarTitle } from 'material-ui/Toolbar'
-import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/authActions'
+import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/AuthActions'
 
 const styles = {
   shrinkMarginLeft: {

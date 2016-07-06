@@ -16,6 +16,7 @@ import { Step, Stepper, StepLabel, StepContent } from 'material-ui/Stepper'
 import { getUserOrgs, getOrgTeams, getOrgRepo } from '../actions/githubActions'
 import { getOrgs, getTeams, getOrgRepos } from '../reducers/github'
 import styles from './graderStyles'
+import CircularProgress from 'material-ui/CircularProgress'
 
 class AssessmentForm extends Component {
   constructor(props) {
@@ -39,6 +40,7 @@ class AssessmentForm extends Component {
       errors: {},
       path: '',
       paths: assessment ? assessment.solutionFiles : [],
+      isRepoChecking: false
     }
   }
 
@@ -61,14 +63,11 @@ class AssessmentForm extends Component {
   }
 
   checkAndAddPath () {
-    console.log('STATE!', this.state)
     const { path, paths, solutionRepo, errors } = this.state
+    const newErrors = Object.assign({}, errors)
 
     if (paths.includes(path) || paths.includes(path.substr(1)) || paths.includes(`/${path}`)) {
-      const newErrors = Object.assign({
-        path: { statusText: 'Path already exists' }
-      }, errors)
-
+      newErrors.path = { statusText: 'Path already exists' }
       this.setState({
         path: '',
         errors: newErrors
@@ -76,17 +75,15 @@ class AssessmentForm extends Component {
     } else {
       axios.get(`/api/v1/github/${solutionRepo}/contents?path=${path}`)
       .then(() => {
-          this.setState({
-            paths: paths.concat(path),
-            path: '',
-            error: null
-          })
+        newErrors.path = {}
+        this.setState({
+          paths: paths.concat(path),
+          path: '',
+          errors: newErrors
+        })
       })
       .catch(() => {
-        const newErrors = Object.assign({
-          path: { statusText: 'Enter a valid file path' }
-        }, errors)
-
+        newErrors.path = { statusText: 'Enter a valid file path' }
         this.setState({ errors: newErrors })
       })
     }
@@ -98,6 +95,10 @@ class AssessmentForm extends Component {
     const repo = form.repoUrl.split(regexp)[4].trim()
     const solutionRepo = form.solutionRepoUrl.split(regexp)[4].trim()
     const newErrors = Object.assign({}, errors)
+
+    this.setState({
+      isRepoChecking: true
+    })
 
     axios.get(`/api/v1/github/${repo}`)
     .then(() => {
@@ -126,6 +127,10 @@ class AssessmentForm extends Component {
       })
     })
     .catch(error => console.error(error))
+
+    this.setState({
+      isRepoChecking: false
+    })
   }
 
   handleNext () {
@@ -175,13 +180,13 @@ class AssessmentForm extends Component {
 
   handleRepoUrl = (repoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.repoUrl = repoUrl
+    nextForm.repoUrl = `https://github.com/${repoUrl}`
     this.setState({ form: nextForm })
   }
 
   handleSolutionUrl = (solutionRepoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.solutionRepoUrl = solutionRepoUrl
+    nextForm.solutionRepoUrl = `https://github.com/${solutionRepoUrl}`
     this.setState({ form: nextForm })
   }
 
@@ -243,8 +248,8 @@ class AssessmentForm extends Component {
   }
 
   renderStepActions(step) {
-    const { stepIndex } = this.state
-    const { assessment } = this.props
+    const { stepIndex, isRepoChecking } = this.state
+    const { assessment, isCreatingAssessment } = this.props
     let buttonLabel
     let onTap = this.handleSubmit.bind(this)
 
@@ -273,6 +278,10 @@ class AssessmentForm extends Component {
             onTouchTap={this.handlePrev.bind(this)}
           />
         )}
+        { isRepoChecking || isCreatingAssessment
+          ? <CircularProgress style={{position: 'absolute', bottom: 5}} size={0.5} />
+          : null
+        }
       </div>
     );
   }
@@ -307,19 +316,21 @@ class AssessmentForm extends Component {
                 <AutoComplete
                 floatingLabelText="Repo Url"
                 filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `https://github.com/${repo}`)}
+                dataSource={orgrepo.map(repo => `${repo}`)}
                 maxSearchResults={4}
                 searchText={form.repoUrl}
                 onNewRequest={this.handleRepoUrl}
+                fullWidth={true}
                 errorText={errors && errors.statusText}
                 />
                 <AutoComplete
                 floatingLabelText="Solution Url"
                 filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `https://github.com/${repo}`)}
+                dataSource={orgrepo.map(repo => `${repo}`)}
                 maxSearchResults={4}
                 searchText={form.solutionRepoUrl}
                 onNewRequest={this.handleSolutionUrl}
+                fullWidth={true}
                 errorText={errors && errors.statusText}
                 />
               </div>
@@ -418,8 +429,7 @@ AssessmentForm.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
-  const { github } = state
+  const { github, assessments } = state
   const { isFetchingOrgs, byId } = github.orgs
   const { isFetchingTeams, byTeamId } = github.teams
   const { isFetchingOrgRepo, byRepoId } = github.orgRepos
@@ -430,7 +440,8 @@ const mapStateToProps = (state) => {
     isFetchingOrgRepo,
     orgs: getOrgs(byId),
     teams: getTeams(byTeamId),
-    orgrepo: getOrgRepos(byRepoId)
+    orgrepo: getOrgRepos(byRepoId),
+    isCreatingAssessment: assessments.isFetching
   }
 }
 

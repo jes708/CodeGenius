@@ -9,7 +9,8 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import CommentCard from '../Comment';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
-import styles from '../graderStyles'
+import styles from '../graderStyles';
+import {getComments, postComment} from '../Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
 
@@ -21,45 +22,64 @@ export default class GraderPanel extends Component {
 
   constructor(props){
     super(props)
+    this.getComments();
+    this.createNewComment = this.createNewComment.bind(this);
+    this.state = {
+      commentCollection: []
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    this.setState({
+      commentCollection: nextProps.commentCollection
+    })
   }
 
   componentWillMount(){
     buildGraderPanel(this.props.dispatch);
   }
 
-  handleCheck() {
-    this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
+  createNewComment(){
+    this.props.dispatch(postComment({}));
   }
 
-  handleStudentShift(direction) {
-    let currentId = String(this.props.student.id);
-    let studentTestArray = Object.keys(this.props.studentTests)
-    let currentIndex = studentTestArray.indexOf(currentId);
-    let newIndex;
-    
-    if (direction === "prev") {
-      if (currentIndex === 0) newIndex = studentTestArray.length - 1;
-      else newIndex = currentIndex - 1;
-    } else {
-      if (currentIndex === studentTestArray.length - 1) newIndex = 0;
-      else newIndex = currentIndex + 1;
+  getComments(){
+    this.props.dispatch(getComments());
+  }
+
+    handleCheck() {
+      this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
     }
 
-    let newId = Number(studentTestArray[newIndex])
-    let studentId = this.props.studentTests[newId].userId
-    this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
-  }
+    handleStudentShift(direction) {
+      let currentId = String(this.props.student.id);
+      let studentTestArray = Object.keys(this.props.studentTests)
+      let currentIndex = studentTestArray.indexOf(currentId);
+      let newIndex;
 
-  renderStudentInfo() {
-    if (this.props.student.user) {
-      return (
-        <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
-          <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
-          {this.props.student.user.name}
-        </div>
-      )
+      if (direction === "prev") {
+        if (currentIndex === 0) newIndex = studentTestArray.length - 1;
+        else newIndex = currentIndex - 1;
+      } else {
+        if (currentIndex === studentTestArray.length - 1) newIndex = 0;
+        else newIndex = currentIndex + 1;
+      }
+
+      let newId = Number(studentTestArray[newIndex])
+      let studentId = this.props.studentTests[newId].userId
+      this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
     }
-  }
+
+    renderStudentInfo() {
+      if (this.props.student.user) {
+        return (
+          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
+            <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
+            {this.props.student.user.name}
+          </div>
+        )
+      }
+    }
 
   render () {
     return (
@@ -92,14 +112,23 @@ export default class GraderPanel extends Component {
             primary={true}
             icon={<FontIcon className='fa fa-plus' />}
             style={styles.skinny}
+            onClick={this.createNewComment}
           />
           <List>
-            {this.props.comments.map((contents, index) => {
-                return (
-                  <CommentCard key={index} contents={contents} commentIndex={index}  >
-                  </ CommentCard>
-                )
-            })}
+              {(this.state.commentCollection.length) ? (
+                this.state.commentCollection.map((contents, index) => {
+                    return (
+                      <CommentCard
+                        key={index}
+                        commentIndex={contents.commentIndex}
+                        contents={contents}
+                          >
+                      </ CommentCard>
+                    )
+                  })) : (
+                    <h2>Add a comment!</h2>
+                  )
+              }
           </List>
           <Checkbox
             label='Fully graded'
@@ -113,9 +142,10 @@ export default class GraderPanel extends Component {
 }
 
 const mapStateToProps = state => {
-  const { assessments, studentTestInfo } = state
+  const { assessments, studentTestInfo, comment } = Object.assign({}, state);
   return {
     assessment: assessments.current.base,
+    commentCollection: comment.collection ? comment.collection.map( comment => comment ) : null,
     student: assessments.current.student,
     studentTests: studentTestInfo.byId
   }

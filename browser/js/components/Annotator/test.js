@@ -28,7 +28,6 @@ import {annotation, selection, stopSelection, startSelection} from './actions';
 export class AnnotationHandler extends Component{
   constructor(props){
     super(props);
-    console.log(this.props);
     this.handleMouseUp = this.handleMouseUp.bind(this);
     this.handleMouseDown = this.handleMouseDown.bind(this);
     this.state = {
@@ -43,7 +42,6 @@ export class AnnotationHandler extends Component{
   handleMouseUp (e){
     let _selection = window.getSelection()
     let selectionString = _selection.toString();
-    console.log('this is the selected string:', selectionString);
     if(_selection.type == 'Range'){
       this.setState({
         annotationStyles: {
@@ -111,7 +109,6 @@ export class AnnotateContextMenu extends Component {
 export class TestAnnotate extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props)
   }
   render() {
     return (
@@ -139,12 +136,10 @@ export class AnnotationWrapperTest extends Component {
 }
 
 function getStyle(state) {
-  console.log('called from getStyle', state);
   return state;
 }
 
 function getSelectionString(state) {
-  console.log('called get selection string');
   return state
 }
 

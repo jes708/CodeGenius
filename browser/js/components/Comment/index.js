@@ -142,7 +142,6 @@ const mapStateToProps = (state, props) => {
   let nextProps = {contents: {}};
   let stateToUpdate = Object.assign({}, state);
 
-  console.log('adding next state to COMMENT', state, props);
   let thisComment = stateToUpdate.comment.collection.find( comment => comment.commentIndex === props.commentIndex);
 
   // nextProps.contents = thisComment;

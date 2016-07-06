@@ -29,15 +29,11 @@ export default function commentReducer(state = comment_initialState, action){
 
     return commentCollection
     case 'CREATE_COMMENT_SUCCESS':
-      console.log('adding comment to state', state);
       if( !nextState.collection ) nextState.collection = [];
-      console.log('comment to add: ', action.payload);
       action.payload.commentIndex = action.payload.id;
       nextState.collection.unshift(action.payload);
-      console.log(nextState);
       return nextState;
     case 'CREATE_ANNOTATION_SUCCESS':
-      console.log('annotation to add', action.payload);
       let commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.payload.commentId)
       commentToUpdate.annotation = action.payload;
       return nextState;

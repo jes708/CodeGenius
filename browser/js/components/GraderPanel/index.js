@@ -30,11 +30,9 @@ export default class GraderPanel extends Component {
   }
 
   componentWillReceiveProps(nextProps){
-    console.log('adding props', nextProps)
     this.setState({
       commentCollection: nextProps.commentCollection
     })
-    console.log('updated state', this.state.commentCollection);
   }
 
   componentWillMount(){
@@ -119,7 +117,6 @@ export default class GraderPanel extends Component {
           <List>
               {(this.state.commentCollection.length) ? (
                 this.state.commentCollection.map((contents, index) => {
-                  console.log(contents);
                     return (
                       <CommentCard
                         key={index}

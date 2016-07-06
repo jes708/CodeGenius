@@ -61,7 +61,6 @@ class AssessmentForm extends Component {
   }
 
   checkAndAddPath () {
-    console.log('STATE!', this.state)
     const { path, paths, solutionRepo, errors } = this.state
 
     if (paths.includes(path) || paths.includes(path.substr(1)) || paths.includes(`/${path}`)) {
@@ -418,7 +417,6 @@ AssessmentForm.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   const { github } = state
   const { isFetchingOrgs, byId } = github.orgs
   const { isFetchingTeams, byTeamId } = github.teams

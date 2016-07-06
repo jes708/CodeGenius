@@ -116,7 +116,8 @@ const styles = {
   },
   formPaperStyle: {
     margin: 'auto',
-    padding: 20
+    padding: '0px',
+    paddingBottom: '10px'
   },
   studentCardSelect: {
     cursor: 'pointer',

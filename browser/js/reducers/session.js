@@ -10,7 +10,7 @@ import {
   AUTH_USER_REQUEST,
   AUTH_USER_RECEIVED,
   AUTH_NO_USER
-} from '../actions/authActions'
+} from '../actions/AuthActions'
 
 const initialState = {
   id: null,

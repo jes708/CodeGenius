@@ -5,11 +5,12 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import AssessmentForm from './AssessmentForm'
 import styles from './graderStyles'
-import { CardActions } from 'material-ui/Card'
+import { Card, CardActions } from 'material-ui/Card'
+import FlatButton from 'material-ui/FlatButton'
 
-const AssessmentCard ({assessment, editable, student, prev, next }) => {
+const AssessmentCard = ({assessment, editable, student, prev, next }) => {
 
-  renderEdit () {
+  const renderEdit = () => {
     if (this.props.editable) {
       return(
         <IconButton
@@ -23,8 +24,9 @@ const AssessmentCard ({assessment, editable, student, prev, next }) => {
     }
   }
 
-  renderStudent () {   
+  const renderStudent = () => {   
     return (
+      <div>
       <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
         <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
         {this.props.student.user.name}
@@ -45,10 +47,10 @@ const AssessmentCard ({assessment, editable, student, prev, next }) => {
           style={{color: '#F5F5F5'}}
         />
       </CardActions>
+      </div>
     )
   }
 
-  render () {
     const { assessment, onSelect, onEdit } = this.props
 
     return (
@@ -64,7 +66,7 @@ const AssessmentCard ({assessment, editable, student, prev, next }) => {
         <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>
       </Paper>
     )
-  }
+
 }
 
 AssessmentCard.propTypes = {

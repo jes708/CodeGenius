@@ -89,7 +89,7 @@
     "run-sequence": "^1.0.2",
     "sequelize": "^3.23.3",
     "sequelize-handlers": "^0.1.7",
-    "serve-favicon": "^2.2.0",
+    "serve-favicon": "^2.3.0",
     "socket.io": "^1.3.4",
     "socket.io-client": "^1.3.5",
     "webpack": "^1.13.1",

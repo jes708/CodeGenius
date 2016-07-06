@@ -314,24 +314,24 @@ class AssessmentForm extends Component {
             ? null
             : <div>
                 <AutoComplete
-                floatingLabelText="Repo Url"
-                filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `${repo}`)}
-                maxSearchResults={4}
-                searchText={form.repoUrl}
-                onNewRequest={this.handleRepoUrl}
-                fullWidth={true}
-                errorText={errors && errors.statusText}
+                  floatingLabelText="Repo Url"
+                  filter={AutoComplete.fuzzyFilter}
+                  dataSource={orgrepo.map(repo => `${repo}`)}
+                  maxSearchResults={4}
+                  searchText={form.repoUrl}
+                  onNewRequest={this.handleRepoUrl}
+                  fullWidth={true}
+                  errorText={errors && errors.statusText}
                 />
                 <AutoComplete
-                floatingLabelText="Solution Url"
-                filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `${repo}`)}
-                maxSearchResults={4}
-                searchText={form.solutionRepoUrl}
-                onNewRequest={this.handleSolutionUrl}
-                fullWidth={true}
-                errorText={errors && errors.statusText}
+                  floatingLabelText="Solution Url"
+                  filter={AutoComplete.fuzzyFilter}
+                  dataSource={orgrepo.map(repo => `${repo}`)}
+                  maxSearchResults={4}
+                  searchText={form.solutionRepoUrl}
+                  onNewRequest={this.handleSolutionUrl}
+                  fullWidth={true}
+                  errorText={errors && errors.statusText}
                 />
               </div>
           }
@@ -384,7 +384,7 @@ class AssessmentForm extends Component {
     const { finished, stepIndex } = this.state
     const { isFetchingOrgs, orgs } = this.props
 
-    if (isFetchingOrgs && !orgs.length) return <h1>Is Loading...</h1>
+    if (isFetchingOrgs && !orgs.length) return <div style={styles.center}><CircularProgress size={2} /></div>
     else {
       return (
         <Paper style={styles.formPaperStyle}>

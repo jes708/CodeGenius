@@ -91,6 +91,7 @@ export default class GraderPanel extends Component {
     }
 
   render () {
+    let {studentId, assessmentId} = this.getStudentAndAssessment();
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
@@ -131,6 +132,8 @@ export default class GraderPanel extends Component {
                         key={index}
                         commentIndex={contents.commentIndex}
                         contents={contents}
+                        studentId={studentId}
+                        assessmentId={assessmentId}
                           >
                       </ CommentCard>
                     )

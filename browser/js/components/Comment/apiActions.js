@@ -88,7 +88,7 @@ export const getCommentsByStudentAndAssessment =
       return axios.get(APIROUTES.commentByAssessmentStudent(assessmentId, studentId))
     .then( res => res.data )
       .then( resData => dispatch({
-        type: LOAD_COMMENTS_REQUEST,
+        type: LOAD_COMMENTS_SUCCESS,
         payload: resData
       }))
       .catch( err => dispatch({
@@ -157,7 +157,7 @@ export const updateComment =
           }))}
 
 export const deleteComment =
-  commentId =>
+  (commentId, studentId, assessmentId) =>
     (dispatch, getState) =>{
       dispatch({type: DELETE_COMMENT_REQUEST})
       return axios.delete(APIROUTES.commentById(commentId))
@@ -166,6 +166,7 @@ export const deleteComment =
             type: DELETE_COMMENT_SUCCESS,
             payload: resData
           }))
+          .then( ()=> dispatch(getCommentsByStudentAndAssessment(studentId, assessmentId)) )
           .catch( err => dispatch({
             type: DELETE_COMMENT_FAILURE,
             payload: err

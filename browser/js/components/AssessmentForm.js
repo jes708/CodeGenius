@@ -61,14 +61,11 @@ class AssessmentForm extends Component {
   }
 
   checkAndAddPath () {
-    console.log('STATE!', this.state)
     const { path, paths, solutionRepo, errors } = this.state
+    const newErrors = Object.assign({}, errors)
 
     if (paths.includes(path) || paths.includes(path.substr(1)) || paths.includes(`/${path}`)) {
-      const newErrors = Object.assign({
-        path: { statusText: 'Path already exists' }
-      }, errors)
-
+      newErrors.path = { statusText: 'Path already exists' }
       this.setState({
         path: '',
         errors: newErrors
@@ -76,17 +73,15 @@ class AssessmentForm extends Component {
     } else {
       axios.get(`/api/v1/github/${solutionRepo}/contents?path=${path}`)
       .then(() => {
-          this.setState({
-            paths: paths.concat(path),
-            path: '',
-            error: null
-          })
+        newErrors.path = {}
+        this.setState({
+          paths: paths.concat(path),
+          path: '',
+          errors: newErrors
+        })
       })
       .catch(() => {
-        const newErrors = Object.assign({
-          path: { statusText: 'Enter a valid file path' }
-        }, errors)
-
+        newErrors.path = { statusText: 'Enter a valid file path' }
         this.setState({ errors: newErrors })
       })
     }
@@ -311,6 +306,7 @@ class AssessmentForm extends Component {
                 maxSearchResults={4}
                 searchText={form.repoUrl}
                 onNewRequest={this.handleRepoUrl}
+                fullWidth={true}
                 errorText={errors && errors.statusText}
                 />
                 <AutoComplete
@@ -320,6 +316,7 @@ class AssessmentForm extends Component {
                 maxSearchResults={4}
                 searchText={form.solutionRepoUrl}
                 onNewRequest={this.handleSolutionUrl}
+                fullWidth={true}
                 errorText={errors && errors.statusText}
                 />
               </div>
@@ -418,7 +415,6 @@ AssessmentForm.propTypes = {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state)
   const { github } = state
   const { isFetchingOrgs, byId } = github.orgs
   const { isFetchingTeams, byTeamId } = github.teams

@@ -14,31 +14,9 @@ import Toggle from 'material-ui/Toggle'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
 import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
-import { getAllStudentTests, getStudentTestFor } from '../reducers/studentTestInfo'
-
-const SAMPLE_SPEC = {
-  "Fake Library App": [
-    "static files (from the static folder in the public folder) on /files route",
-    "handles internal server errors",
-    "handles custom errors",
-  ],
-  "Fake Library App /api/books": [
-    "GET all",
-    "POST one"
-  ]
-}
+import { getAssessmentStudentTests } from '../reducers/studentTestInfo'
 
 class GraderStudents extends Component {
-
-  // componentWillMount () {
-  //   this.props.dispatch(getAssessmentTeam(1))
-  // }
-
-  //TODO do not hard-code assessmentId 
-  componentWillMount () {
-    const { dispatch, assessment } = this.props
-    dispatch(getStudentTestsInfo(assessment.id))
-  }
 
   handleSelectStudent (studentId) {
     const { dispatch, assessment, switchTabs } = this.props
@@ -46,31 +24,38 @@ class GraderStudents extends Component {
     switchTabs('Panel')
   }
 
+  handleToggleStudent (studentId, status) {
+    const { dispatch, assessment } = this.props
+    dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}))
+  }
+
   renderStudents () {
-    // if (!this.props.teamFetching && this.props.team) {
-      let studentTests = this.props.studentTestInfo;
-      studentTests = studentTests.sort(function(a,b) {
-        if (a.user.name < b.user.name) return -1;
-        else if (a.user.name > b.user.name) return 1;
-        else return 0;
-      })
-      return studentTests.map((studentTest, i) => {
-        return (
-          <StudentCard
-            key={i}
-            studentTest={studentTest}
-            onSelect={this.handleSelectStudent.bind(this)}
-          />
-        )
-      })
-    // }
+    const { isFetching, dispatch, studentTests } = this.props
+
+    if (isFetching) {
+      return (<h1 style={{textAlign: 'center'}}>Loading...</h1>)
+    } else {
+      return (
+        studentTests.sort(function(a,b) {
+          if (a.user.name < b.user.name) return -1;
+          else if (a.user.name > b.user.name) return 1;
+          else return 0;
+        }).map((studentTest, i) => {
+          return (
+            <StudentCard
+              key={i}
+              studentTest={studentTest}
+              dispatch={dispatch}
+              onSelect={this.handleSelectStudent.bind(this)}
+              onToggle={this.handleToggleStudent.bind(this)}
+            />
+          )
+        })
+      )
+    }
   }
 
   render () {
-    // if (this.props.teamFetching && !this.props.team) {
-    //   return <h1>Loading...</h1>
-    // } else {
-
       return (
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
@@ -78,27 +63,18 @@ class GraderStudents extends Component {
           </div>
         </div>
       )
-    // }
   }
 }
 
-// const mapStateToProps = state => {
-//   const { assessmentTeam } = state
-//   const { teamFetching, team } = assessmentTeam
-//   return {
-//     teamFetching,
-//     team
-//   }
-// }
-
 const mapStateToProps = state => {
   const { studentTestInfo, assessments } = state
-  const { isFetching } = studentTestInfo
+  const { isFetching, byId } = studentTestInfo
+  const currentAssessment = assessments.current.base
+
   return {
     isFetching,
-    studentTestInfo: getAllStudentTests(studentTestInfo.byId),
-    assessment: assessments.current.base
-
+    studentTests: getAssessmentStudentTests(byId, currentAssessment.id),
+    assessment: currentAssessment
   }
 }
 

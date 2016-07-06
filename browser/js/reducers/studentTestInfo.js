@@ -34,6 +34,11 @@ export const byId = (state = {}, action) => {
 
 export const isFetching = (state = false, action) => {
   switch (action.type) {
+    case LOAD_STUDENTTESTS_REQUEST:
+      return true
+    case LOAD_STUDENTTESTS_SUCCESS:
+    case LOAD_STUDENTTESTS_FAILURE:
+      return false
     default:
       return state
   }
@@ -44,5 +49,10 @@ export default combineReducers({
   isFetching
 })
 
+export const getAssessmentStudentTests = (state, assessmentId) => {
+  return Object.keys(state)
+    .map(id => state[id])
+    .filter(studentTest => studentTest.assessmentId === assessmentId)
+}
 export const getAllStudentTests = (state) => Object.keys(state).map(id => state[id])
 export const getStudentTestFor = (state, userId) => Object.keys(state).map(userId => state[userId])

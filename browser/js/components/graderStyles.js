@@ -75,7 +75,7 @@ const styles = {
   },
   skinny: {
     margin: 0,
-    marginBottom: 15
+    marginBottom: '15px'
   },
   stepLabel: {
     fontSize: 20

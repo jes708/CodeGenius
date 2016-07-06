@@ -52,7 +52,6 @@ export default class GraderPanel extends Component {
     }
 
     handleStudentShift(direction) {
-      const { dispatch, assessment, student, studentTests } = this.props
       let currentId = String(this.props.student.id);
       let studentTestArray = Object.keys(this.props.studentTests)
       let currentIndex = studentTestArray.indexOf(currentId);
@@ -82,40 +81,32 @@ export default class GraderPanel extends Component {
       }
     }
 
-          //     <Card style={Object.assign(styles.infoCard, styles.skinny)}>
-          //   <div style={styles.gradingInfo}>
-          //     <div style={styles.gradingTitle}>{this.props.assessment.name}</div>
-          //     {this.renderStudentInfo()}
-          //   </div>
-          //   <CardActions>
-          //     <FlatButton
-          //       label='Previous Student'
-          //       onClick={this.handleStudentShift.bind(this, "prev")}
-          //       hoverColor={'#2196F3'}
-          //       rippleColor={'#90CAF9'}
-          //       style={{color: '#F5F5F5'}}
-          //     />
-          //     <FlatButton
-          //       label='Next Student'
-          //       onClick={this.handleStudentShift.bind(this, "next")}
-          //       hoverColor={'#2196F3'}
-          //       rippleColor={'#90CAF9'}
-          //       style={{color: '#F5F5F5'}}
-          //     />
-          //   </CardActions>
-          // </Card>
-
   render () {
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
-          <AssessmentCard
-            assessment={this.props.assessment}
-            editable={false}
-            student={true}
-            prev={this.handleStudentShift.bind(this, "prev")}
-            next={this.handleStudentShift.bind(this, "next")}
-          />
+          <Card style={Object.assign(styles.infoCard, styles.skinny)}>
+            <div style={styles.gradingInfo}>
+              <div style={styles.gradingTitle}>{this.props.assessment.name}</div>
+              {this.renderStudentInfo()}
+            </div>
+            <CardActions>
+              <FlatButton
+                label='Previous Student'
+                onClick={this.handleStudentShift.bind(this, "prev")}
+                hoverColor={'#2196F3'}
+                rippleColor={'#90CAF9'}
+                style={{color: '#F5F5F5'}}
+              />
+              <FlatButton
+                label='Next Student'
+                onClick={this.handleStudentShift.bind(this, "next")}
+                hoverColor={'#2196F3'}
+                rippleColor={'#90CAF9'}
+                style={{color: '#F5F5F5'}}
+              />
+            </CardActions>
+          </Card>
           <RaisedButton
             label='Add Comment'
             primary={true}

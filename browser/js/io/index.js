@@ -11,7 +11,6 @@ export default class Socket extends Component{
   render(){
     let that = this;
     client.on('success', function(data){
-        console.log('successful socket connection', this.id);
         that.setState({socketId: this.id})
     });
     return(

@@ -11,7 +11,7 @@ const SubGradeView = ({ open, files, onSelect }) => {
       open={open}
       openSecondary={true}>
       <List>
-        <ListItem primaryText='Files' />
+        <ListItem primaryText='Files' style={{fontWeight: 'bold'}} />
         { files.map((file, i) => {
           return (
             <ListItem

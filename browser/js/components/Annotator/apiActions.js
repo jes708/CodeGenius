@@ -66,8 +66,8 @@ export const getAnnotationsByUserTest =
       }))}
 
 export const postAnnotation =
-  annotation =>
-    (dispatch, getState) =>{
+  (annotation, commentId) =>
+    (dispatch, getState) => {
       let selection = annotation.selection;
       let payload = {
         route: APIROUTES.annotation,
@@ -84,7 +84,7 @@ export const postAnnotation =
         type: CREATE_ANNOTATION_REQUEST,
         payload
       })
-      return axios.post(APIROUTES.annotation, payload)
+      return axios.post(APIROUTES.annotationByCommentId(commentId), payload)
         .then(res => res.data)
           .then(resData => {
             dispatch({

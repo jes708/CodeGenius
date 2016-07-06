@@ -21,10 +21,10 @@ export class Tags extends Component{
     this.state = {
       isEditing: this.props.isEditing
     }
-    this.state.tags = this.props.tags.map( tag => {
+    this.state.tags ? this.state.tags = this.props.tags.map( tag => {
       tag.id = tagId++
       return tag;
-    })
+    }) : null
     this.addTag = this.addTag.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.submitNewTag = this.submitNewTag.bind(this);

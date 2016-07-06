@@ -13,7 +13,6 @@ const styles = {
 }
 
 const CheckLoading = ({ children, isFetching }) => {
-  console.log(isFetching)
   if (isFetching) {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>

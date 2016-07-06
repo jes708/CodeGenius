@@ -25,9 +25,7 @@ export default function annotationReducer(state = annotator_initialState, action
     case 'ANNOTATION_CLEAR':
       return Object.assign({}, state, action.payload)
     case 'ANNOTATION_ADDED':
-      return Object.assign({}, state, {
-        added: action.payload.added
-      })
+      return Object.assign({}, state, action.payload)
     default:
       return state
   }

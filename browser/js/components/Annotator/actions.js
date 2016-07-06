@@ -17,9 +17,9 @@ export function selection(_selection){
   }
 }
 
-export function annotation(_annotation){
+export function annotation(_annotation, commentId){
   let {selection, annotation, location} = _annotation;
-  return api.postAnnotation({selection, annotation, location})
+  return api.postAnnotation({selection, annotation, location}, commentId)
 }
 
 export function finishAnnotation(payload){
@@ -27,7 +27,7 @@ export function finishAnnotation(payload){
   finisher.added = false;
   return {
     type: ANNOTATION,
-    payload: payload
+    payload: finisher
   }
 }
 
@@ -47,7 +47,7 @@ export function annotationAdded( added = true, clear = false ){
     return {
       type: ANNOTATION_ADDED,
       payload: {
-        added
+        added: true
       }
     }
 }

@@ -2,12 +2,15 @@
 
 export const BASE = '/api'
 export const VERSION = '/v1'
-function api(routes){
-  return `${BASE}${VERSION}${routes}`
+function api(routes, id){
+  return `${BASE}${VERSION}${routes}${ (typeof id === 'number' ? ('/' + id) : ('')) }`
 }
 
 const APIROUTES = {
-  annotation: api('/annotations')
+  annotation: api('/annotations'),
+  annotationByCommentId: (commentId) => api(`/comments/${commentId}/annotation`),
+  comments: api('/comments'),
+  commentById: (id) => api('/comments', id)
 }
 
 export default APIROUTES;

@@ -38,7 +38,6 @@ const styles = {
     padding: 20
   },
   gradingInfo: {
-    color: '#FFF',
     padding: 16
   },
   gradingPane: {
@@ -50,6 +49,7 @@ const styles = {
     fontWeight: '300'
   },
   gradingTitle: {
+    color: '#FFF',
     fontSize: 24,
     fontWeight: '400'
   },

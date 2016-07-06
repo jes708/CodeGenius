@@ -5,8 +5,48 @@ import Paper from 'material-ui/Paper'
 import IconButton from 'material-ui/IconButton'
 import AssessmentForm from './AssessmentForm'
 import styles from './graderStyles'
+import { CardActions } from 'material-ui/Card'
 
-class AssessmentCard extends Component {
+const AssessmentCard ({assessment, editable, student, prev, next }) => {
+
+  renderEdit () {
+    if (this.props.editable) {
+      return(
+        <IconButton
+          style={{ float: 'right' }}
+          iconStyle={{ color: '#fff' }}
+          iconClassName={'fa fa-pencil'}
+          tooltip='Edit Assessment'
+          onTouchTap={() => onEdit(assessment)}
+        />
+      )
+    }
+  }
+
+  renderStudent () {   
+    return (
+      <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
+        <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
+        {this.props.student.user.name}
+      </div>
+      <CardActions>
+        <FlatButton
+          label='Previous Student'
+          onClick={this.handleStudentShift.bind(this, "prev")}
+          hoverColor={'#2196F3'}
+          rippleColor={'#90CAF9'}
+          style={{color: '#F5F5F5'}}
+        />
+        <FlatButton
+          label='Next Student'
+          onClick={this.handleStudentShift.bind(this, "next")}
+          hoverColor={'#2196F3'}
+          rippleColor={'#90CAF9'}
+          style={{color: '#F5F5F5'}}
+        />
+      </CardActions>
+    )
+  }
 
   render () {
     const { assessment, onSelect, onEdit } = this.props
@@ -18,13 +58,7 @@ class AssessmentCard extends Component {
             style={Object.assign({}, styles.editAssessment, styles.gradingTitle)}>
             {assessment.name}
           </div>
-          <IconButton
-            style={{ float: 'right' }}
-            iconStyle={{ color: '#fff' }}
-            iconClassName={'fa fa-pencil'}
-            tooltip='Edit Assessment'
-            onTouchTap={() => onEdit(assessment)}
-          />
+          {this.renderEdit()}
         </div>
         <div style={styles.gradingSubtitle}>{`Team: ${assessment.team.name}`}</div>
         <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>

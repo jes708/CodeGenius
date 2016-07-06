@@ -34,10 +34,10 @@ export function getStudentTestInfo (assessmentId, studentId) {
 
 }
 
-export function putStudentTestInfo (assessmentId, studentId, isStudent) {
+export function putStudentTestInfo (assessmentId, studentId, data) {
   return dispatch => {
     // dispatch({ type: UPDATE_STUDENTTEST_REQUEST })
-    return axios.put(`/api/v1/assessments/${assessmentId}/students/${studentId}`, {isStudent: isStudent})
+    return axios.put(`/api/v1/assessments/${assessmentId}/students/${studentId}`, data)
     .then(res => res.data)
     .then(resData => dispatch({ type: UPDATE_STUDENTTEST_SUCCESS, studentTest: resData }))
     .catch(err => dispatch({ type: UPDATE_STUDENTTEST_FAILURE, err }))

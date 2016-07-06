@@ -6,7 +6,10 @@ import {
   SWITCH_ASSESSMENT_SUCCESS,
   SWITCH_ASSESSMENT_FAILURE,
 } from '../../actions/assessmentActions'
-import { LOAD_STUDENTTEST_SUCCESS } from '../../actions/studentTestInfoActions'
+import {
+  LOAD_STUDENTTEST_SUCCESS,
+  UPDATE_STUDENTTEST_SUCCESS
+} from '../../actions/studentTestInfoActions'
 
 const isSwitching = (state = false, action) => {
   switch (action.type) {
@@ -32,6 +35,7 @@ const base = (state = {}, action) => {
 const student = (state = {}, action) => {
   switch (action.type) {
     case LOAD_STUDENTTEST_SUCCESS:
+    case UPDATE_STUDENTTEST_SUCCESS:
       return action.studentTest
     default:
       return state

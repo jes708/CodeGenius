@@ -10,7 +10,8 @@ import CommentCard from '../Comment';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import styles from '../graderStyles'
-
+import Checkbox from 'material-ui/Checkbox'
+import { putStudentTestInfo } from '../../actions/studentTestInfoActions'
 
 function buildGraderPanel(dispatch){
   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
@@ -26,16 +27,29 @@ export default class GraderPanel extends Component {
     buildGraderPanel(this.props.dispatch);
   }
 
+  handleCheck() {
+    this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
+  }
+
+  renderStudentInfo() {
+    if (this.props.student.user) {
+      return (
+        <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
+          <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
+          {this.props.student.user.name}
+        </div>
+      )
+    }
+  }
+
   render () {
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
           <Card style={Object.assign(styles.infoCard, styles.skinny)}>
             <div style={styles.gradingInfo}>
-              <div style={styles.gradingTitle}>Assessment 3 - Express/Sequelize</div>
-              <a style={styles.gradingSubtitle} href='https://github.com/FullstackAcademy/checkpoint-express-sequelize'>
-                GitHub Repo
-              </a>
+              <div style={styles.gradingTitle}>{this.props.assessment.name}</div>
+              {this.renderStudentInfo()}
             </div>
             <CardActions>
               <FlatButton
@@ -66,10 +80,24 @@ export default class GraderPanel extends Component {
                 )
             })}
           </List>
+          <Checkbox
+            label='Fully graded'
+            checked={this.props.student.isGraded}
+            onCheck={this.handleCheck.bind(this)}
+          />
         </div>
       </div>
     )
   }
 }
 
-export default connect()(GraderPanel)
+const mapStateToProps = state => {
+  const { assessments } = state
+  return {
+    assessment: assessments.current.base,
+    student: assessments.current.student
+  }
+}
+
+
+export default connect(mapStateToProps)(GraderPanel)

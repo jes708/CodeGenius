@@ -31,7 +31,7 @@ class StudentCard extends Component {
   // }
 
   handleToggle () {
-    this.props.dispatch(putStudentTestInfo(this.props.studentTest.assessmentId, this.props.studentTest.userId, !this.props.studentTest.isStudent));
+    this.props.dispatch(putStudentTestInfo(this.props.studentTest.assessmentId, this.props.studentTest.userId, {isStudent: !this.props.studentTest.isStudent}));
   }
 
 // change iconSwitcher to have status done no-repo or score

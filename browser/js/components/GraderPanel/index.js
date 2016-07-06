@@ -10,7 +10,7 @@ import CommentCard from '../Comment';
 import {List, ListItem} from 'material-ui/List';
 import { connect } from 'react-redux';
 import styles from '../graderStyles';
-import {getComments, postComment} from '../Comment/apiActions';
+import {getComments, postComment, getCommentsByStudentAndAssessment, postCommentByStudentAndAssessment} from '../Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
 
@@ -40,11 +40,14 @@ export default class GraderPanel extends Component {
   }
 
   createNewComment(){
-    this.props.dispatch(postComment({}));
+    let {studentId, assessmentId} = this.getStudentAndAssessment()
+    this.props.dispatch(postCommentByStudentAndAssessment(studentId, assessmentId, {}));
   }
 
   getComments(){
-    this.props.dispatch(getComments());
+    let {studentId, assessmentId} = this.getStudentAndAssessment()
+    // this.props.dispatch(getComments());
+    this.props.dispatch(getCommentsByStudentAndAssessment(assessmentId, studentId))
   }
 
     handleCheck() {
@@ -70,6 +73,12 @@ export default class GraderPanel extends Component {
       this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
     }
 
+    getStudentAndAssessment(){
+      let assessmentId = this.props.assessment.id;
+      let studentId = this.props.student.userId;
+      return {studentId, assessmentId}
+    }
+
     renderStudentInfo() {
       if (this.props.student.user) {
         return (
@@ -82,6 +91,7 @@ export default class GraderPanel extends Component {
     }
 
   render () {
+    let {studentId, assessmentId} = this.getStudentAndAssessment();
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
@@ -122,6 +132,8 @@ export default class GraderPanel extends Component {
                         key={index}
                         commentIndex={contents.commentIndex}
                         contents={contents}
+                        studentId={studentId}
+                        assessmentId={assessmentId}
                           >
                       </ CommentCard>
                     )

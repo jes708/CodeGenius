@@ -5,6 +5,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Tags} from '../../containers/Tag';
 import MarkdownWrapper from '../../containers/Markdown';
 import FlatButton from 'material-ui/FlatButton'
+import Dialog from 'material-ui/Dialog';
 
 
 
@@ -56,12 +57,32 @@ export default function renderComment () {
       { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }
         </span>
         <span key={id++}>
-      { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" /> : (
+      { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" onClick={openDialog}  /> : (
         <div>
           <MarkdownWrapper markdown={contents.markdown} editable={isEditing}  />
         </div>
       ) }
         </span>
+        <span>
+
+        </span>
       </div>)
 
   }
+
+function openDialog(element, nestedItems="<p>hmm... something isn't right</>", actions, onRequestClose){
+  return (
+    <Dialog
+    actions={actions}
+    modal={false}
+    open={true}
+    onRequestClose={onRequestClose}
+    >
+      {nestedItems}
+    </Dialog>
+  )
+}
+
+function closeDialog(){
+
+}

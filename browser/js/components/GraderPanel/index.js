@@ -59,7 +59,7 @@ class GraderPanel extends Component {
       
       let actualStudentsTests = [];
       for (let testId in this.props.studentTests) {
-        if (this.props.studentTests[testId].isStudent) actualStudentsTests.push(testId)
+        if (this.props.studentTests[testId].isStudent && this.props.studentTests[testId].repoUrl) actualStudentsTests.push(testId)
       }
 
       if (actualStudentsTests.length < 2) return;

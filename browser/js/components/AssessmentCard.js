@@ -9,6 +9,8 @@ import styles from './graderStyles'
 class AssessmentCard extends Component {
 
   renderEdit () {
+    const { assessment, onEdit } = this.props
+
     if (this.props.editable) {
       return(
         <IconButton

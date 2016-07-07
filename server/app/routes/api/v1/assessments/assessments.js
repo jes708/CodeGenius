@@ -20,10 +20,11 @@ const User = db().models.user
 const StudentTest = db().models.studentTest
 const Resource = Assessment;
 const GitHub = require('../../../../configure/github');
+const GMAIL_ID = process.env.GMAIL_ID;
+const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD;
 const nodemailer = Promise.promisifyAll(require("nodemailer"));
-const transport = nodemailer.createTransport('direct', {
-  debug: true
-})
+const smtpTransport = require("nodemailer-smtp-transport")
+const transport = nodemailer.createTransport(smtpTransport(`smtps://${GMAIL_ID}:${GMAIL_PASSWORD}@smtp.gmail.com`));
 
 import omit from 'lodash/object/omit'
 
@@ -145,10 +146,10 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
     }).then(test => {
       if (req.body.isGraded && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({
-          from: '"Code Genius" <CodeGenius@codegenius.io>',
+          from: '"Code Genius" <CodeGenius@codegenius.us>',
           to: test.user.email,
           subject: `${test.assessment.name} graded!`,
-          text: `Visit codegenius.io to check your assessment`,
+          text: `Visit codegenius.us to check your assessment!`,
         })
         return Promise.all([sendEmail, test.update(req.body)])
       } else {
@@ -162,6 +163,32 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
         res.json(updatedTest)
     })
     .catch(next)
+})
+
+router.post('/:id/students/:studentId/comments', (req, res, next) => {
+  StudentTest.findOne({
+      where: {
+        assessmentId: req.params.id,
+        userId: req.params.studentId
+      },
+      include:  [Assessment]
+    }).then( studentTest => {
+      if(!studentTest) throw 'no student test'
+      return studentTest.createComment(req.body)} )
+      .then( comment => res.status(201).send(comment) )
+      .catch(next);
+})
+
+router.get('/:id/students/:studentId/comments', (req, res, next) => {
+  StudentTest.findOne({
+      where: {
+        assessmentId: req.params.id,
+        userId: req.params.studentId
+      },
+      include:  [Assessment]
+    }).then( studentTest => studentTest.getComments() )
+      .then( comments => res.status(200).send( comments ) )
+      .catch(next);
 })
 
 respondWith404(router);

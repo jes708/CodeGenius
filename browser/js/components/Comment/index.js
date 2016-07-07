@@ -88,7 +88,9 @@ class Comment extends Component {
   }
 
   deleteComment(){
-    this.props.dispatch(deleteComment(this.props.commentIndex))
+    let studentId = this.props.studentId;
+    let assessmentId = this.props.assessmentId;
+    this.props.dispatch(deleteComment(this.props.commentIndex, studentId, assessmentId));
   }
 
   editMode(){

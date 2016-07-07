@@ -9,11 +9,14 @@ import {
   LOAD_STUDENTTEST_FAILURE,
   LOAD_STUDENTTESTS_FAILURE,
   UPDATE_STUDENTTEST_SUCCESS,
-  UPDATE_STUDENTTEST_FAILURE
+  UPDATE_STUDENTTEST_FAILURE,
+  LOAD_SINGLESTUDENTTEST_REQUEST,
+  LOAD_SINGLESTUDENTTEST_SUCCESS,
+  LOAD_SINGLESTUDENTTEST_FAILURE
 } from '../actions/studentTestInfoActions'
 import styles from '../components/graderStyles'
 
-let style, status, prevState; 
+let style, status, prevState;
 
 export const byId = (state = {}, action) => {
   const nextState = Object.assign({}, state)
@@ -44,9 +47,23 @@ export const isFetching = (state = false, action) => {
   }
 }
 
+export const studentTest = (state=[], action) => {
+  const nextState = [...state]
+  switch(action.type){
+    case LOAD_SINGLESTUDENTTEST_SUCCESS:
+      action.studentTest.forEach(test => {
+        nextState.push(test)
+      })
+      return nextState
+    default:
+      return state
+  }
+}
+
 export default combineReducers({
   byId,
-  isFetching
+  isFetching,
+  studentTest
 })
 
 export const getAssessmentStudentTests = (state, assessmentId) => {

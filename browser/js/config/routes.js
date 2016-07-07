@@ -7,7 +7,7 @@ import Home from '../containers/Home'
 // import Grade from '../containers/Grade'
 import {AnnotatedGrade as Grade} from '../containers/Grade'
 import TestAnnotate from '../components/Annotator/test.js'
-import TestComponent from '../components/test/TestComponent'
+import StudentView from '../components/StudentView'
 import NotFound from '../shared/NotFound'
 
 const routes = (
@@ -15,10 +15,9 @@ const routes = (
     <IndexRoute component={Home} />
     <Route path='grade' component={Grade} />
     <Route path='/test/annotate' component={TestAnnotate} />
-    <Route path='/test/component' component={TestComponent} />
+    <Route path='/studenttest/:assessmentId/:studentTestId/:userId' component={StudentView} />
     <Route path='*' component={NotFound} />
   </Route>
 );
 
 export default routes;
-

@@ -65,9 +65,27 @@ export const switchAssessment = (id) => (dispatch, getState) => {
     dispatch(getStudentTestsInfo(assessment.id))
   } else {
     return axios.get(`${ASSESSMENT_URL}/${id}`)
-    .then(resData => {
-      dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: resData })
-      dispatch(getStudentTestsInfo(resData.id))
+    .then(res => {
+      dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: res.data })
+      dispatch(getStudentTestsInfo(res.data.id))
+    })
+    .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error }))
+  }
+
+}
+
+export const switchAssessmentSingle = (id) => (dispatch, getState) => {
+  dispatch({ type: SWITCH_ASSESSMENT_REQUEST })
+
+  const assessment = getAssessment(getState().assessments, id)
+
+  if (assessment) {
+    dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment })
+  } else {
+    return axios.get(`${ASSESSMENT_URL}/${id}`)
+    .then(res => {
+      dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: res.data })
+      dispatch(getStudentTestsInfo(res.data.id))
     })
     .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error }))
   }

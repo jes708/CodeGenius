@@ -17,6 +17,9 @@ export const CHECK_REPO_PATH_FAILURE = 'CHECK_REPO_PATH_FAILURE'
 export const FETCH_ORGREPO_REQUEST = 'FETCH_ORGREPO_REQUEST'
 export const FETCH_ORGREPO_SUCCESS = 'FETCH_ORGREPO_SUCCESS'
 export const FETCH_ORGREPO_FAILURE = 'FETCH_ORGREPO_FAILURE'
+export const FETCH_FILE_DIFF_REQUEST = 'FETCH_FILE_DIFF_REQUEST'
+export const FETCH_FILE_DIFF_SUCCESS = 'FETCH_FILE_DIFF_SUCCESS'
+export const FETCH_FILE_DIFF_FAILURE = 'FETCH_FILE_DIFF_FAILURE'
 
 const API_GITHUB_URL = '/api/v1/github'
 
@@ -34,6 +37,15 @@ export const getRepoContents = (user, repo, path) => (dispatch) => {
     contents: resData
   }))
   .catch(error => dispatch({ type: FETCH_REPO_FAILURE, error }))
+}
+
+export const getSolutionFileDiff = (baseRepo, solutionRepo) => (dispatch) => {
+  dispatch({ type: FETCH_FILE_DIFF_REQUEST })
+
+  return axios.get(`${API_GITHUB_URL}/compare_repo_files?baseRepo=${baseRepo}&solutionRepo=${solutionRepo}`)
+  .then(res => res.data)
+  .then(resData => dispatch({ type: FETCH_FILE_DIFF_SUCCESS, files: resData }))
+  .catch(error => dispatch({ type: FETCH_FILE_DIFF_FAILURE, error }))
 }
 
 export const getUserOrgs = () => (dispatch) => {

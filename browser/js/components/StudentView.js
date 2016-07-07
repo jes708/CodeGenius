@@ -19,10 +19,10 @@ import ActionHome from 'material-ui/svg-icons/action/home';
 import SocialGroup from 'material-ui/svg-icons/social/group';
 import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in';
 import AnnotationHandler from './Annotator';
-import StudentGraderView from './StudentGraderView'
+import GraderView from './GraderView'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
-import { switchAssessmentSingle } from '../actions/assessmentActions'
+import { switchAssessment } from '../actions/assessmentActions'
 import { getOwnStudentTest } from '../actions/studentTestInfoActions'
 
 const styles = {
@@ -130,8 +130,8 @@ class Grade extends Component {
   }
 
   componentDidMount() {
-    const { assessmentId, studentTestId} = this.props.params
-    this.props.dispatch(switchAssessmentSingle(assessmentId))
+    const { assessmentId, studentTestId, userId} = this.props.params
+    this.props.dispatch(switchAssessment(assessmentId, userId, true))
     this.props.dispatch(getOwnStudentTest(studentTestId))
   }
 
@@ -139,7 +139,7 @@ class Grade extends Component {
     return (
       <div>
         <div className='col-lg-8'>
-          <StudentGraderView params={this.props.params}/>
+          <GraderView />
         </div>
         <div className='col-lg-4'>
           <GradeView />

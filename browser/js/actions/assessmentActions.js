@@ -15,7 +15,7 @@ export const SWITCH_ASSESSMENT_REQUEST = 'SWITCH_ASSESSMENT_REQUEST'
 export const SWITCH_ASSESSMENT_SUCCESS = 'SWITCH_ASSESSMENT_SUCCESS'
 export const SWITCH_ASSESSMENT_FAILURE = 'SWITCH_ASSESSMENT_FAILURE'
 import { getAssessment } from '../reducers/assessments'
-import { getStudentTestsInfo } from '../actions/studentTestInfoActions'
+import { getStudentTestsInfo, getStudentTestInfo } from '../actions/studentTestInfoActions'
 
 const API_URL = '/api/v1'
 const USER_URL = `${API_URL}/users`
@@ -55,7 +55,7 @@ export const updateAssessment = (assessment) => (dispatch) => {
   }))
   .catch(error => dispatch({ type: UPDATE_ASSESSMENT_FAILURE, error }))
 }
-export const switchAssessment = (id) => (dispatch, getState) => {
+export const switchAssessment = (id, userId, option) => (dispatch, getState) => {
   dispatch({ type: SWITCH_ASSESSMENT_REQUEST })
 
   const assessment = getAssessment(getState().assessments, id)
@@ -67,27 +67,12 @@ export const switchAssessment = (id) => (dispatch, getState) => {
     return axios.get(`${ASSESSMENT_URL}/${id}`)
     .then(res => {
       dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: res.data })
-      dispatch(getStudentTestsInfo(res.data.id))
+      if (option) {
+        dispatch(getStudentTestInfo(res.data.id, userId))
+      } else {
+        dispatch(getStudentTestsInfo(res.data.id))
+      }
     })
     .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error }))
   }
-
-}
-
-export const switchAssessmentSingle = (id) => (dispatch, getState) => {
-  dispatch({ type: SWITCH_ASSESSMENT_REQUEST })
-
-  const assessment = getAssessment(getState().assessments, id)
-
-  if (assessment) {
-    dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment })
-  } else {
-    return axios.get(`${ASSESSMENT_URL}/${id}`)
-    .then(res => {
-      dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: res.data })
-      dispatch(getStudentTestsInfo(res.data.id))
-    })
-    .catch(error => dispatch({ type: SWITCH_ASSESSMENT_FAILURE, error }))
-  }
-
 }

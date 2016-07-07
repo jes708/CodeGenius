@@ -73,23 +73,6 @@ class Grade extends Component {
     }
   }
 
-  getData () {
-    axios.get('https://raw.githubusercontent.com/christianalfoni/formsy-react/master/examples/login/app.js')
-    .then(res => res.data)
-    .then(content => {
-      this.setState({
-        isLoading: false,
-        content: content,
-        current: this.state.current
-      })
-    })
-    .catch(() => new Error('Error while fetching data'))
-  }
-
-  componentDidMount() {
-    this.getData()
-  }
-
   render(){
     return (
       <div className='col-lg-8'>

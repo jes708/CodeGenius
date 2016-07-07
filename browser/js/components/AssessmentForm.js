@@ -48,7 +48,7 @@ class AssessmentForm extends Component {
       path: '',
       paths: assessment ? assessment.solutionFiles : [],
       isRepoChecking: false,
-      canSubmit: false
+      canSubmit: !!assessment
     }
 
     this.handleNext = this.handleNext.bind(this)
@@ -298,6 +298,40 @@ class AssessmentForm extends Component {
     }
   }
 
+  renderUrlInput () {
+    const { form, errors } = this.state
+    const { orgrepo } = this.props
+
+    if (form.teamId !== '') {
+      return (
+        <div>
+          <AutoComplete
+          floatingLabelText="Repo Url"
+          filter={AutoComplete.fuzzyFilter}
+          dataSource={orgrepo.map(repo => `${repo}`)}
+          maxSearchResults={5}
+          searchText={form.repoUrl}
+          onNewRequest={this.handleRepoUrl}
+          onUpdateInput={this.handleRepoUrl}
+          fullWidth={true}
+          errorText={errors.repoUrl && errors.repoUrl.statusText}
+          />
+          <AutoComplete
+          floatingLabelText="Solution Url"
+          filter={AutoComplete.fuzzyFilter}
+          dataSource={orgrepo.map(repo => `${repo}`)}
+          maxSearchResults={5}
+          searchText={form.solutionRepoUrl}
+          onNewRequest={this.handleSolutionUrl}
+          onUpdateInput={this.handleSolutionUrl}
+          fullWidth={true}
+          errorText={errors.solutionRepoUrl && errors.solutionRepoUrl.statusText}
+          />
+        </div>
+      )
+    }
+  }
+
   renderStepActions(step) {
     const { stepIndex, isRepoChecking, canSubmit } = this.state
     const { assessment, isCreatingAssessment } = this.props
@@ -339,8 +373,7 @@ class AssessmentForm extends Component {
   }
 
   renderInfoForm () {
-    const { orgs, isFetchingTeams, teams, orgrepo } = this.props
-    const { form, errors } = this.state
+    const { form } = this.state
 
     return (
       <Paper zDepth={0} style={styles.formPaperStyle}>
@@ -362,33 +395,7 @@ class AssessmentForm extends Component {
           />
           {this.renderOrgInput()}
           {this.renderTeamInput()}
-          { form.teamId === ''
-            ? null
-            : <div>
-                <AutoComplete
-                floatingLabelText="Repo Url"
-                filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `${repo}`)}
-                maxSearchResults={5}
-                searchText={form.repoUrl}
-                onNewRequest={this.handleRepoUrl}
-                onUpdateInput={this.handleRepoUrl}
-                fullWidth={true}
-                errorText={errors.repoUrl && errors.repoUrl.statusText}
-                />
-                <AutoComplete
-                floatingLabelText="Solution Url"
-                filter={AutoComplete.fuzzyFilter}
-                dataSource={orgrepo.map(repo => `${repo}`)}
-                maxSearchResults={5}
-                searchText={form.solutionRepoUrl}
-                onNewRequest={this.handleSolutionUrl}
-                onUpdateInput={this.handleSolutionUrl}
-                fullWidth={true}
-                errorText={errors.solutionRepoUrl && errors.solutionRepoUrl.statusText}
-                />
-              </div>
-          }
+          {this.renderUrlInput()}
         </form>
       </Paper>
     )
@@ -427,6 +434,7 @@ class AssessmentForm extends Component {
           <ListItem
             key={i}
             primaryText={path}
+            onTouchTap={this.handleFileSelect}
             leftIcon={<FontIcon className="fa fa-file" />}
             rightIconButton={<IconButton
               iconClassName='fa fa-times'

@@ -75,6 +75,17 @@ router.get('/:user/:repo', ensureAuthenticated, (req, res) => {
   .catch(err => res.sendStatus(err.code))
 })
 
+router.get('/:user/:repo/compare_files/', ensureAuthenticated, (req, res, next) => {
+  GitHub.repos.compareCommitsAsync({
+    user: req.params.user,
+    repo: req.params.repo,
+    base: req.query.base || 'master',
+    head: req.query.head
+  })
+  .then(result => res.json(result.files))
+  .catch(next)
+})
+
 router.get('/:user/:repo/contents/', ensureAuthenticated, (req, res) => {
   GitHub.repos.getContentAsync({
     user: req.params.user,

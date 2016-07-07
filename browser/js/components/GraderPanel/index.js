@@ -13,6 +13,7 @@ import styles from '../graderStyles';
 import {getComments, postComment, getCommentsByStudentAndAssessment, postCommentByStudentAndAssessment} from '../Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
+import AssessmentCard from '../AssessmentCard'
 
 //Replace the buttons with these icons.  Use tooltips to clarify what each button does
 
@@ -71,47 +72,10 @@ class GraderPanel extends Component {
       this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
     }
 
-    handleStudentShift(direction) {
-      let currentId = String(this.props.student.id);
-      
-      let actualStudentsTests = [];
-      for (let testId in this.props.studentTests) {
-        if (this.props.studentTests[testId].isStudent && this.props.studentTests[testId].repoUrl) actualStudentsTests.push(testId)
-      }
-
-      if (actualStudentsTests.length < 2) return;
-   
-      let currentIndex = actualStudentsTests.indexOf(currentId);
-      let newIndex;
-
-      if (direction === "prev") {
-        if (currentIndex < 1) newIndex = actualStudentsTests.length - 1;
-        else newIndex = currentIndex - 1;
-      } else {
-        if (currentIndex === actualStudentsTests.length - 1) newIndex = 0;
-        else newIndex = currentIndex + 1;
-      }
-
-      let newId = Number(actualStudentsTests[newIndex])
-      let studentId = this.props.studentTests[newId].userId
-      this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
-    }
-
     getStudentAndAssessment(){
       let assessmentId = this.props.assessment.id;
       let studentId = this.props.student.userId;
       return {studentId, assessmentId}
-    }
-
-    renderStudentInfo() {
-      if (this.props.student.user) {
-        return (
-          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
-            <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
-            {this.props.student.user.name}
-          </div>
-        )
-      }
     }
 
   render () {
@@ -119,28 +83,13 @@ class GraderPanel extends Component {
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
-          <Card style={Object.assign(styles.infoCard, styles.skinny)}>
-            <div style={styles.gradingInfo}>
-              <div style={styles.gradingTitle}>{this.props.assessment.name}</div>
-              {this.renderStudentInfo()}
-            </div>
-            <CardActions>
-              <FlatButton
-                label='Previous Student'
-                onClick={this.handleStudentShift.bind(this, "prev")}
-                hoverColor={'#2196F3'}
-                rippleColor={'#90CAF9'}
-                style={{color: '#F5F5F5'}}
-              />
-              <FlatButton
-                label='Next Student'
-                onClick={this.handleStudentShift.bind(this, "next")}
-                hoverColor={'#2196F3'}
-                rippleColor={'#90CAF9'}
-                style={{color: '#F5F5F5'}}
-              />
-            </CardActions>
-          </Card>
+          <AssessmentCard
+            {...this.props}
+            editable={false}
+            showStudents={true}
+            showTeam={false}
+            showUrl={false}
+          />
           <RaisedButton
             label='Add Comment'
             primary={true}

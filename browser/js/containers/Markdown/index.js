@@ -18,11 +18,11 @@ export default class MarkdownWrapper extends Component {
     this.handleOnBlur = this.handleOnBlur.bind(this);
 
   }
-  handleOnChange(event){
+  handleOnChange(event, setState){
     this.setState({
       markdown: event.target.value
     });
-    if(this.props.handlechange) this.props.handleOnChange(event);
+    if(this.props.handleOnChange) this.props.handleOnChange(event);
   }
   handleOnBlur(event, setState){
     if(this.props.handleOnBlur) this.props.handleOnBlur(event);

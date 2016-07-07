@@ -156,8 +156,6 @@ const mapStateToProps = (state, props) => {
 
   let thisComment = stateToUpdate.comment.collection.find( comment => comment.commentIndex === props.commentIndex);
 
-  // nextProps.contents = thisComment;
-
   nextProps.isEditing = (
     state.comment.isEditing.key === props.commentIndex ?
       true : false

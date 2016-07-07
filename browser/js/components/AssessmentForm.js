@@ -42,6 +42,19 @@ class AssessmentForm extends Component {
       paths: assessment ? assessment.solutionFiles : [],
       isRepoChecking: false
     }
+
+    this.handleNext = this.handleNext.bind(this)
+    this.handlePrev = this.handlePrev.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleRemovePath = this.handleRemovePath.bind(this)
+    this.handleRepoCheck = this.handleRepoCheck.bind(this)
+    this.handlePathChange = this.handlePathChange.bind(this)
+    this.handleOrgSelect = this.handleOrgSelect.bind(this)
+    this.handleTeamSelect = this.handleTeamSelect.bind(this)
+    this.handleRepoUrl = this.handleRepoUrl.bind(this)
+    this.handleSolutionUrl = this.handleSolutionUrl.bind(this)
+    this.checkAndAddPath = this.checkAndAddPath.bind(this)
+
   }
 
   componentDidMount () {
@@ -49,8 +62,9 @@ class AssessmentForm extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    const { paths } = this.state
     const { files } = nextProps
-    if (files) this.setState({ paths: files.map(file => file.filename) })
+    if (files && paths.length === 0) this.setState({ paths: files.map(file => file.filename) })
   }
 
   handleSubmit () {
@@ -187,13 +201,15 @@ class AssessmentForm extends Component {
 
   handleRepoUrl = (repoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.repoUrl = `https://github.com/${repoUrl}`
+    const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
+    nextForm.repoUrl = regexp.test(repoUrl) ? repoUrl : `https://github.com/${repoUrl}`
     this.setState({ form: nextForm })
   }
 
   handleSolutionUrl = (solutionRepoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.solutionRepoUrl = `https://github.com/${solutionRepoUrl}`
+    const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
+    nextForm.solutionRepoUrl = regexp.test(solutionRepoUrl) ? solutionRepoUrl : `https://github.com/${solutionRepoUrl}`
     this.setState({ form: nextForm })
   }
 
@@ -258,7 +274,7 @@ class AssessmentForm extends Component {
     const { stepIndex, isRepoChecking } = this.state
     const { assessment, isCreatingAssessment } = this.props
     let buttonLabel
-    let onTap = this.handleSubmit.bind(this)
+    let onTap = this.handleSubmit
 
     if (stepIndex === 1 && assessment) {
       buttonLabel = 'Save'
@@ -266,7 +282,7 @@ class AssessmentForm extends Component {
       buttonLabel = 'Create'
     } else {
       buttonLabel = 'Next'
-      onTap = this.handleRepoCheck.bind(this)
+      onTap = this.handleRepoCheck
     }
 
     return (
@@ -282,7 +298,7 @@ class AssessmentForm extends Component {
           <FlatButton
             label="Back"
             disabled={stepIndex === 0}
-            onTouchTap={this.handlePrev.bind(this)}
+            onTouchTap={this.handlePrev}
           />
         )}
         { isRepoChecking || isCreatingAssessment
@@ -337,6 +353,7 @@ class AssessmentForm extends Component {
                 maxSearchResults={5}
                 searchText={form.solutionRepoUrl}
                 onNewRequest={this.handleSolutionUrl}
+                onBlur={this.handleSolutionUrl}
                 fullWidth={true}
                 errorText={errors && errors.statusText}
                 />
@@ -355,7 +372,7 @@ class AssessmentForm extends Component {
         <TextField
           floatingLabelText="Solution Path"
           value={path}
-          onChange={this.handlePathChange.bind(this)}
+          onChange={this.handlePathChange}
           errorText={errors.path && errors.path.statusText}
         />
         <IconButton
@@ -364,7 +381,7 @@ class AssessmentForm extends Component {
           type='submit'
           style={styles.addBtn}
           iconStyle={{color: '#fff'}}
-          onTouchTap={this.checkAndAddPath.bind(this)}
+          onTouchTap={this.checkAndAddPath}
         />
       </Paper>
     )
@@ -437,6 +454,7 @@ const mapStateToProps = (state) => {
     isFetchingOrgs,
     isFetchingTeams,
     isFetchingOrgRepo,
+    isFetchingFiles,
     orgs: mapState(byId),
     teams: mapState(byTeamId),
     files: mapState(byName),

@@ -47,7 +47,8 @@ class AssessmentForm extends Component {
       errors: {},
       path: '',
       paths: assessment ? assessment.solutionFiles : [],
-      isRepoChecking: false
+      isRepoChecking: false,
+      canSubmit: false
     }
 
     this.handleNext = this.handleNext.bind(this)
@@ -222,14 +223,22 @@ class AssessmentForm extends Component {
 
   handleRepoUrl = (repoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
+    const newCanSubmit = repoUrl !== '' && nextForm.solutionRepoUrl !== ''
     nextForm.repoUrl = repoUrl
-    this.setState({ form: nextForm })
+    this.setState({
+      form: nextForm,
+      canSubmit: newCanSubmit
+    })
   }
 
   handleSolutionUrl = (solutionRepoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
+    const newCanSubmit = solutionRepoUrl !== '' && nextForm.repoUrl !== ''
     nextForm.solutionRepoUrl = solutionRepoUrl
-    this.setState({ form: nextForm })
+    this.setState({
+      form: nextForm,
+      canSubmit: newCanSubmit
+    })
   }
 
   renderOrgInput () {
@@ -264,7 +273,7 @@ class AssessmentForm extends Component {
     const { form } = this.state
     const { assessment, isFetchingTeams, teams } = this.props
 
-    if (!isFetchingTeams && teams.length && !assessment) {
+    if (form.org !== '' && !isFetchingTeams && teams.length && !assessment) {
       return (
         <AutoComplete
           floatingLabelText='Team'
@@ -290,7 +299,7 @@ class AssessmentForm extends Component {
   }
 
   renderStepActions(step) {
-    const { stepIndex, isRepoChecking } = this.state
+    const { stepIndex, isRepoChecking, canSubmit } = this.state
     const { assessment, isCreatingAssessment } = this.props
     let buttonLabel
     let onTap = this.handleSubmit
@@ -311,6 +320,7 @@ class AssessmentForm extends Component {
           primary={stepIndex !== 1}
           secondary={stepIndex === 1}
           onTouchTap={onTap}
+          disabled={!canSubmit}
           style={{marginRight: 12}}
         />
         {step > 0 && (

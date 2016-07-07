@@ -32,7 +32,7 @@ class GraderView extends Component {
     }
     const user = basePath[0]
     const repo = basePath[1]
-    this.setState({ fileName: filePath })
+    this.setState({ fileName: filePath, open: !this.state.open })
     dispatch(getRepoContents(user, repo, filePath))
   }
 

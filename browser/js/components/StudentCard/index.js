@@ -3,6 +3,7 @@
 import React, { PropTypes } from 'react'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import Toggle from 'material-ui/Toggle'
+import IconButton from 'material-ui/IconButton'
 import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
 import AlertError from 'material-ui/svg-icons/alert/error'
 import ImageLens from 'material-ui/svg-icons/image/lens'
@@ -17,17 +18,29 @@ const StudentCard = ({studentTest, onSelect, onToggle }) => {
   const renderIcon = () => {
     if (studentTest.isGraded) {
       return (
-        <ActionCheckCircle
-          style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
-          color={green500}
-        />
+        <IconButton 
+        tooltip='Fully graded' 
+        tooltipPosition='bottom-left'
+        style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+        >
+          <ActionCheckCircle
+            style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+            color={green500}
+          />
+        </IconButton>
       )
     } else if (!studentTest.repoUrl) {
       return (
-        <AlertError
-          style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
-          color={red500}
-        />
+        <IconButton 
+        tooltip='Repo not found!' 
+        tooltipPosition='bottom-left'
+        style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+        >
+          <AlertError
+            
+            color={red500}
+          />
+        </IconButton>
       )
     } else {
       return (

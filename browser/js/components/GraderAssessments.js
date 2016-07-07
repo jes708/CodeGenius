@@ -110,6 +110,8 @@ class GraderAssessments extends Component {
         return (
           <AssessmentCard
             key={i}
+            editable={true}
+            student={false}
             assessment={assessment}
             onSelect={this.handleSelectAssessment.bind(this)}
             onEdit={this.handleEditAssessment.bind(this)}

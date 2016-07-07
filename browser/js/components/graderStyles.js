@@ -29,6 +29,10 @@ const styles = {
   content: {
     padding: 16
   },
+  customIcon: {
+    width: '24px',
+    height: '24px'
+  },
   editAssessment: {
     display: 'inline-block',
     cursor: 'pointer'

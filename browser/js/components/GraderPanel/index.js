@@ -18,7 +18,7 @@ function buildGraderPanel(dispatch){
   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
 }
 
-export default class GraderPanel extends Component {
+class GraderPanel extends Component {
 
   constructor(props){
     super(props)

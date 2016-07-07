@@ -64,8 +64,7 @@ const styles = {
   },
   paperStyle: {
     height: '100%',
-    minHeight: '84vh',
-    overflow: 'scroll',
+    overflow: 'scroll'
   },
   graderView: {
     height: '89vh',

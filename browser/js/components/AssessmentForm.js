@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import axios from 'axios'
+import Promise from 'bluebird'
 import { connect } from 'react-redux'
 import { blue600 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper'
@@ -23,6 +24,12 @@ class AssessmentForm extends Component {
     super(props)
 
     const { assessment } = props
+
+    if (assessment) {
+      const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
+      assessment.repoUrl = assessment.repoUrl.split(regexp)[4]
+      assessment.solutionRepoUrl = assessment.solutionRepoUrl.split(regexp)[4]
+    }
 
     this.state = {
       finished: false,
@@ -69,6 +76,10 @@ class AssessmentForm extends Component {
 
   handleSubmit () {
     const { form, paths, repo, solutionRepo } = this.state
+    const { repoUrl, solutionRepoUrl } = form
+    const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
+    form.repoUrl = regexp.test(repoUrl) ? repoUrl : `https://github.com/${repoUrl}`
+    form.solutionRepoUrl = regexp.test(solutionRepoUrl) ? solutionRepoUrl : `https://github.com/${solutionRepoUrl}`
     form.solutionFiles = paths
     form.basePath = repo
     form.solutionPath = solutionRepo
@@ -112,45 +123,55 @@ class AssessmentForm extends Component {
     const { stepIndex, form, errors } = this.state
     const { dispatch } = this.props
     const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
-    const repo = form.repoUrl.split(regexp)[4].trim()
-    const solutionRepo = form.solutionRepoUrl.split(regexp)[4].trim()
+    const repo = regexp.test(form.repoUrl) ? form.repoUrl.split(regexp)[4].trim() : form.repoUrl
+    const solutionRepo = regexp.test(form.solutionRepoUrl) ? form.solutionRepoUrl.split(regexp)[4].trim() : form.solutionRepoUrl
     const newErrors = Object.assign({}, errors)
 
     this.setState({
       isRepoChecking: true
     })
 
-    axios.get(`/api/v1/github/${repo}`)
-    .then(() => {
-      newErrors.repo = {}
-      this.setState({
-        stepIndex: stepIndex + 1,
-        errors: newErrors,
-        repo
-      })
-    }, (error) => {
-      newErrors.repo = { statusText: error.statusText }
-      this.setState({ errors: newErrors })
-    })
-    .then(() => {
+    Promise.all([
+      axios.get(`/api/v1/github/${repo}`)
+      .then(() => {
+        delete newErrors.repoUrl
+        this.setState({
+          errors: newErrors,
+          repo
+        })
+      }, (error) => {
+        newErrors.repoUrl = { statusText: error.statusText }
+        this.setState({ errors: newErrors })
+      }),
       axios.get(`/api/v1/github/${solutionRepo}`)
       .then(() => {
-        newErrors.solutionRepo = {}
-        dispatch(getSolutionFileDiff(repo, solutionRepo))
+        delete newErrors.solutionRepoUrl
         this.setState({
-          stepIndex: stepIndex + 1,
           errors: newErrors,
           solutionRepo
         })
       }, (error) => {
-        newErrors.solutionRepo = { statusText: error.statusText }
+        newErrors.solutionRepoUrl = { statusText: error.statusText }
         this.setState({ errors: newErrors })
       })
+    ])
+    .then(() => {
+      if (!this.state.errors.repoUrl && !this.state.errors.solutionRepoUrl) {
+        this.setState({ stepIndex: stepIndex + 1 })
+        dispatch(getSolutionFileDiff(repo, solutionRepo))
+      }
+      this.setState({ isRepoChecking: false })
     })
-    .catch(error => console.error(error))
-
-    this.setState({
-      isRepoChecking: false
+    .catch(error => {
+      if (this.state.errors.repoUrl && !this.state.errors.solutionRepoUrl) {
+        newErrors.solutionRepoUrl = { statusText: error.statusText }
+      } else {
+        newErrors.repoUrl = { statusText: error.statusText }
+      }
+      this.setState({
+        errors: newErrors,
+        isRepoChecking: false
+      })
     })
   }
 
@@ -201,15 +222,13 @@ class AssessmentForm extends Component {
 
   handleRepoUrl = (repoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
-    nextForm.repoUrl = regexp.test(repoUrl) ? repoUrl : `https://github.com/${repoUrl}`
+    nextForm.repoUrl = repoUrl
     this.setState({ form: nextForm })
   }
 
   handleSolutionUrl = (solutionRepoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
-    nextForm.solutionRepoUrl = regexp.test(solutionRepoUrl) ? solutionRepoUrl : `https://github.com/${solutionRepoUrl}`
+    nextForm.solutionRepoUrl = solutionRepoUrl
     this.setState({ form: nextForm })
   }
 
@@ -343,8 +362,9 @@ class AssessmentForm extends Component {
                 maxSearchResults={5}
                 searchText={form.repoUrl}
                 onNewRequest={this.handleRepoUrl}
+                onUpdateInput={this.handleRepoUrl}
                 fullWidth={true}
-                errorText={errors && errors.statusText}
+                errorText={errors.repoUrl && errors.repoUrl.statusText}
                 />
                 <AutoComplete
                 floatingLabelText="Solution Url"
@@ -353,9 +373,9 @@ class AssessmentForm extends Component {
                 maxSearchResults={5}
                 searchText={form.solutionRepoUrl}
                 onNewRequest={this.handleSolutionUrl}
-                onBlur={this.handleSolutionUrl}
+                onUpdateInput={this.handleSolutionUrl}
                 fullWidth={true}
-                errorText={errors && errors.statusText}
+                errorText={errors.solutionRepoUrl && errors.solutionRepoUrl.statusText}
                 />
               </div>
           }

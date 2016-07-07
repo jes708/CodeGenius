@@ -56,19 +56,26 @@ class GraderPanel extends Component {
 
     handleStudentShift(direction) {
       let currentId = String(this.props.student.id);
-      let studentTestArray = Object.keys(this.props.studentTests)
-      let currentIndex = studentTestArray.indexOf(currentId);
+      
+      let actualStudentsTests = [];
+      for (let testId in this.props.studentTests) {
+        if (this.props.studentTests[testId].isStudent) actualStudentsTests.push(testId)
+      }
+
+      if (actualStudentsTests.length < 2) return;
+   
+      let currentIndex = actualStudentsTests.indexOf(currentId);
       let newIndex;
 
       if (direction === "prev") {
-        if (currentIndex === 0) newIndex = studentTestArray.length - 1;
+        if (currentIndex === 0) newIndex = actualStudentsTests.length - 1;
         else newIndex = currentIndex - 1;
       } else {
-        if (currentIndex === studentTestArray.length - 1) newIndex = 0;
+        if (currentIndex === actualStudentsTests.length - 1) newIndex = 0;
         else newIndex = currentIndex + 1;
       }
 
-      let newId = Number(studentTestArray[newIndex])
+      let newId = Number(actualStudentsTests[newIndex])
       let studentId = this.props.studentTests[newId].userId
       this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
     }

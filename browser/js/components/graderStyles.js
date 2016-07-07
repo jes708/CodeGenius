@@ -112,7 +112,8 @@ const styles = {
     width: 'auto',
     float: 'right',
     top: 8,
-    position: 'relative'
+    position: 'relative',
+    padding: '0px'
   },
   formPaperStyle: {
     margin: 'auto',

@@ -104,10 +104,6 @@ class AnnotatedGrade extends Component {
     super(props)
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   console.log('next props', nextProps)
-  // }
-
   render(){
     console.log("check it out", this.props.assessment)
     return (

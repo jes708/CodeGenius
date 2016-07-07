@@ -10,7 +10,7 @@ import ImageLens from 'material-ui/svg-icons/image/lens'
 import styles from '../graderStyles'
 import { green500, red500 } from 'material-ui/styles/colors'
 
-const StudentCard = ({studentTest, onSelect, onToggle }) => {
+const StudentCard = ({studentTest, onSelect, onToggle, onRefresh }) => {
 
   const { user, userId, isStudent } = studentTest
   let style = isStudent ? styles.infoCard : styles.inactiveCard;
@@ -18,10 +18,10 @@ const StudentCard = ({studentTest, onSelect, onToggle }) => {
   const renderIcon = () => {
     if (studentTest.isGraded) {
       return (
-        <IconButton 
-        tooltip='Fully graded' 
-        tooltipPosition='bottom-left'
-        style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+        <IconButton
+          tooltip='Fully graded'
+          tooltipPosition='bottom-left'
+          style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
         >
           <ActionCheckCircle
             style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
@@ -31,15 +31,13 @@ const StudentCard = ({studentTest, onSelect, onToggle }) => {
       )
     } else if (!studentTest.repoUrl) {
       return (
-        <IconButton 
-        tooltip='Repo not found!' 
-        tooltipPosition='bottom-left'
-        style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+        <IconButton
+          tooltip='Repo not found! Click to Refresh.'
+          tooltipPosition='bottom-left'
+          onTouchTap={() => onRefresh(studentTest)}
+          style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
         >
-          <AlertError
-            
-            color={red500}
-          />
+          <AlertError color={red500} />
         </IconButton>
       )
     } else {

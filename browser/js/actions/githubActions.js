@@ -17,8 +17,16 @@ export const CHECK_REPO_PATH_FAILURE = 'CHECK_REPO_PATH_FAILURE'
 export const FETCH_ORGREPO_REQUEST = 'FETCH_ORGREPO_REQUEST'
 export const FETCH_ORGREPO_SUCCESS = 'FETCH_ORGREPO_SUCCESS'
 export const FETCH_ORGREPO_FAILURE = 'FETCH_ORGREPO_FAILURE'
+export const FETCH_FORK_REQUEST = 'FETCH_FORK_REQUEST'
+export const FETCH_FORK_SUCCESS = 'FETCH_FORK_SUCCESS'
+export const FETCH_FORK_FAILURE = 'FETCH_FORK_FAILURE'
 
 const API_GITHUB_URL = '/api/v1/github'
+
+export const checkForFork = (studentForkPath) => {
+  return axios.get(`https://api.github.com/repos/${studentForkPath}`)
+  .then(res => res.data, error => error)
+}
 
 export const getRepoContents = (user, repo, path) => (dispatch) => {
   const formattedPath = path.charAt(0) === '/' ? path.substr(1) : path

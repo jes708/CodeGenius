@@ -13,11 +13,21 @@ import { getAssessmentTeam } from '../actions/assessmentTeamActions'
 import Toggle from 'material-ui/Toggle'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
+import { checkForFork } from '../actions/githubActions'
 import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 import { getAssessmentStudentTests } from '../reducers/studentTestInfo'
 import AssessmentCard from './AssessmentCard'
 
 class GraderStudents extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      isRefreshing: false
+    }
+
+    this.handleRefreshStudent = this.handleRefreshStudent.bind(this)
+  }
 
   handleSelectStudent (studentId) {
     const { dispatch, assessment, switchTabs } = this.props
@@ -28,6 +38,17 @@ class GraderStudents extends Component {
   handleToggleStudent (studentId, status) {
     const { dispatch, assessment } = this.props
     dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}))
+  }
+
+  handleRefreshStudent (studentTest) {
+    const { dispatch } = this.props
+    const { assessmentId, studentId } = studentTest
+    this.setState({ isRefreshing: true })
+    checkForFork(studentTest.basePath).then(result => {
+      console.log(result)
+      this.setState({ isRefreshing: false })
+      // dispatch(putStudentTestInfo(assessmentId, studentId, { repoUrl: `https://github.com/${studentTest.basePath}` }))
+    })
   }
 
   renderStudents () {
@@ -49,6 +70,7 @@ class GraderStudents extends Component {
               dispatch={dispatch}
               onSelect={this.handleSelectStudent.bind(this)}
               onToggle={this.handleToggleStudent.bind(this)}
+              onRefresh={this.handleRefreshStudent}
             />
           )
         })

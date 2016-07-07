@@ -1,5 +1,5 @@
 'use strict';
-import React from 'react';
+import React, {Component} from 'react';
 import styles from '../graderStyles';
 import RaisedButton from 'material-ui/RaisedButton';
 import {Tags} from '../../containers/Tag';
@@ -7,7 +7,69 @@ import MarkdownWrapper from '../../containers/Markdown';
 import FlatButton from 'material-ui/FlatButton'
 import Dialog from 'material-ui/Dialog';
 
-
+export default class RenderComment extends Component {
+  constructor(props){
+    super(props);
+    let {contents, isEditing} = props;
+    this.state = {
+      contents,
+      isEditing,
+      dialog: {
+        title: "",
+        actions: [],
+        open: false
+      }
+    }
+    this.updateContents = this.updateContents.bind(this);
+    this.toggleDialog = this.toggleDialog.bind(this);
+    this.renderDialog = this.renderDialog.bind(this);
+    this.renderComment = this.renderComment.bind(this);
+    this.handleSubmitDialog = this.handleSubmitDialog.bind(this);
+  }
+  componentWillReceiveProps(nextProps){
+    let {contents, isEditing} = nextProps;
+    this.setState({
+      contents,
+      isEditing
+    })
+  }
+  renderComment = renderComment;
+  toggleDialog(){
+    let nextDialog = Object.assign({}, this.state.dialog, {open: !this.state.dialog.open})
+    this.setState({
+      dialog: nextDialog
+    })
+  }
+  renderDialog({title, actions, nested, handles}){
+    let nextDialog = Object.assign({}, this.state.dialog, {
+      title,
+      nested,
+      handles,
+      open: !this.state.dialog.open
+    })
+    return ()=> {
+      this.setState({
+        dialog: nextDialog
+      })
+    }
+  }
+  handleSubmitDialog(){
+    this.toggleDialog();
+  }
+  updateContents(contentsToUpdate){
+    let newContents = Object.assign({}, this.state.contents);
+    let updatedContents = Object.assign(newContents, contentsToUpdate);
+    this.state.contents = updatedContents;
+    this.props.handleUpdateComment(this.state.contents);
+  }
+  render(){
+    return (
+      <span>
+        {this.renderComment()}
+      </span>
+    )
+  }
+}
 
 export default function renderComment () {
     let {contents, isEditing} = this.state;
@@ -57,32 +119,42 @@ export default function renderComment () {
       { (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria }
         </span>
         <span key={id++}>
-      { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" onClick={openDialog}  /> : (
+      { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" onClick={
+        this.renderDialog(
+          {
+            title: "Add Markdown",
+            nested: (
+              <div>
+                <MarkdownWrapper
+                  handleOnBlur={(event, updateContents = this.updateContents) => {
+                    console.log('calling handler', event.target.value);
+                    updateContents({markdown: event.target.value})
+                  }}
+                  markdown={"#Add Markdown here"}
+                  editable={true}
+                  />
+              </div>
+            )
+          }
+        )
+      }  /> : (
         <div>
           <MarkdownWrapper markdown={contents.markdown} editable={isEditing}  />
         </div>
       ) }
         </span>
         <span>
-
+          <Dialog
+            modal={false}
+            open={this.state.dialog.open}
+            actions={[
+              <RaisedButton onClick={this.handleSubmitDialog}>Done</RaisedButton>
+            ]}
+            title={this.state.dialog.title}
+          >
+            {this.state.dialog.nested}
+          </Dialog>
         </span>
       </div>)
 
   }
-
-function openDialog(element, nestedItems="<p>hmm... something isn't right</>", actions, onRequestClose){
-  return (
-    <Dialog
-    actions={actions}
-    modal={false}
-    open={true}
-    onRequestClose={onRequestClose}
-    >
-      {nestedItems}
-    </Dialog>
-  )
-}
-
-function closeDialog(){
-
-}

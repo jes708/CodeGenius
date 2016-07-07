@@ -7,17 +7,29 @@ import Promise from 'bluebird'
 
 const router = express.Router()
 
-router.get('/all_repos', ensureAuthenticated, (req, res, next) => {
-  GitHub.users.getOrgsAsync({ per_page: 100 })
-  .then(userOrgs => {
-    let gettingOrgRepos = userOrgs.map(org => {
-      GitHub.repos.getForOrgAsync({ org: org.login })
+router.get('compare_repo_files', ensureAuthenticated, (req, res, next) => {
+  const baseRepoSplit = req.query.baseRepo.split('/')
+  const solutionRepoSplit = req.query.solutionRepo.split('/')
+
+  Promise.all([
+    GitHub.repos.getCommitsAsync({
+      user: baseRepoSplit[0],
+      repo: baseRepoSplit[1]
+    }),
+    GitHub.repos.getCommitsAsync({
+      user: solutionRepoSplit[0],
+      repo: solutionRepoSplit[1]
     })
-    let gettingAllRepos = gettingOrgRepos.concat(
-      GitHub.repos.getForUserAsync({user: req.user.username }))
-    return Promise.all(gettingAllRepos)
+  ])
+  .spread((baseCommit, solutionCommit) => {
+    return GitHub.repos.compareCommitsAsync({
+      user: solutionRepoSplit[0],
+      repo: solutionRepoSplit[1],
+      base: baseCommit.sha,
+      head: solutionCommit.sha
+    })
   })
-  .then(allRepos => res.json(allRepos))
+  .then(diff => res.json(diff.files))
   .catch(next)
 })
 

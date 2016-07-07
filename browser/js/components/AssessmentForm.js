@@ -62,6 +62,10 @@ class AssessmentForm extends Component {
     this.setState({ paths: newPaths })
   }
 
+  handleDiffFiles () {
+    const { files } = this.props
+  }
+
   checkAndAddPath () {
     const { path, paths, solutionRepo, errors } = this.state
     const newErrors = Object.assign({}, errors)

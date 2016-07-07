@@ -8,6 +8,22 @@ import styles from './graderStyles'
 
 class AssessmentCard extends Component {
 
+  renderEdit () {
+    const { assessment, onEdit } = this.props
+
+    if (this.props.editable) {
+      return(
+        <IconButton
+          style={{ float: 'right' }}
+          iconStyle={{ color: '#fff' }}
+          iconClassName={'fa fa-pencil'}
+          tooltip='Edit Assessment'
+          onTouchTap={() => onEdit(assessment)}
+        />
+      )
+    }
+  }
+
   render () {
     const { assessment, onSelect, onEdit } = this.props
 
@@ -18,13 +34,7 @@ class AssessmentCard extends Component {
             style={Object.assign({}, styles.editAssessment, styles.gradingTitle)}>
             {assessment.name}
           </div>
-          <IconButton
-            style={{ float: 'right' }}
-            iconStyle={{ color: '#fff' }}
-            iconClassName={'fa fa-pencil'}
-            tooltip='Edit Assessment'
-            onTouchTap={() => onEdit(assessment)}
-          />
+          {this.renderEdit()}
         </div>
         <div style={styles.gradingSubtitle}>{`Team: ${assessment.team.name}`}</div>
         <a href="#" style={styles.gradingSubtitle}>{assessment.repoUrl}</a>

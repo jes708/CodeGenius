@@ -20,6 +20,7 @@ import SocialGroup from 'material-ui/svg-icons/social/group';
 import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in';
 import AnnotationHandler from '../../components/Annotator';
 import GraderView from '../../components/GraderView'
+import { connect } from 'react-redux';
 
 const styles = {
   main: {
@@ -55,11 +56,15 @@ const styles = {
   skinny: {
     margin: 0,
     marginBottom: 15
+  },
+  disabledTab: {
+    background: '#aaa',
+    pointerEvents: 'none'
   }
 }
 
 
-export default class Grade extends Component {
+class Grade extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -94,18 +99,19 @@ export default class Grade extends Component {
   }
 }
 
-export class AnnotatedGrade extends Component {
+class AnnotatedGrade extends Component {
   constructor(props){
     super(props)
   }
 
   render(){
+    console.log("check it out", this.props.assessment)
     return (
       <div style={styles.main}>
-        <AnnotationHandler {...this.props} className='col-lg-8' >
+        <AnnotationHandler {...this.props} className='col-lg-8 col-md-6 col-sm-6' >
           <Grade />
         </AnnotationHandler>
-        <GradeView tab={this.props.location.tab} className='col-lg-4' />
+        <GradeView assessment={this.props.assessment} tab={this.props.location.tab} className='col-lg-4 col-md-6 col-sm-6' />
       </div>
     )
   }
@@ -127,7 +133,6 @@ export class GradeView extends Component {
       content: this.state.content,
       current: tab
     })
-    // this.handleClick = this.handleClick.bind(this);
   }
 
   switcher() {
@@ -135,11 +140,7 @@ export class GradeView extends Component {
       case 'Students':
         return <GraderStudents switchTabs={this.handleClick.bind(this)} />;
       case 'Panel':
-        return (
-          <div>
-            <GraderPanel />
-          </div>
-        );
+        return <GraderPanel />
       case 'Assessments':
       default:
         return <GraderAssessments switchTabs={this.handleClick.bind(this)} />
@@ -147,22 +148,32 @@ export class GradeView extends Component {
   }
 
   render () {
+    let style = {};
+    if (!this.props.assessment || !this.props.assessment.id) {
+      style = styles.disabledTab;
+    }
+
       return (
           <div className={this.props.className}>
             <Paper style={styles.panelStyle}>
               <Tabs zDepth={3} style={styles.menu} value={this.state.current}>
                 <Tab
                   value={'Assessments'}
+                  title={'Assessments'}
                   icon={<EditorInsertDriveFile />}
                   onClick={this.handleClick.bind(this, "Assessments")}
                 />
                 <Tab
+                  style={style}
                   value={'Students'}
+                  title={'Students'}
                   icon={<SocialGroup />}
                   onClick={this.handleClick.bind(this, "Students")}
                 />
                 <Tab
+                  style={style}
                   value={'Panel'}
+                  title={'Grader Panel'}
                   icon={<ActionAssignmentTurnedIn />}
                   onClick={this.handleClick.bind(this, "Panel")}
                 />
@@ -176,3 +187,13 @@ export class GradeView extends Component {
 
   }
 }
+
+const mapStateToProps = state => {
+  const { assessments } = state;
+  return {
+    assessment: assessments.current.base
+  }
+}
+
+
+export default connect(mapStateToProps)(AnnotatedGrade)

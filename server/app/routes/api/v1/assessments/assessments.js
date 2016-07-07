@@ -144,7 +144,6 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
       },
       include:  [Assessment]
     }).then(test => {
-      console.log('body is graded', req.body.isGraded, 'test is graded', !test.isGraded)
       if (req.body.isGraded && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({
           from: '"Code Genius" <CodeGenius@codegenius.us>',

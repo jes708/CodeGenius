@@ -13,8 +13,8 @@ import FlatButton from 'material-ui/FlatButton'
 import IconButton from 'material-ui/IconButton'
 import AutoComplete from 'material-ui/AutoComplete'
 import { Step, Stepper, StepLabel, StepContent } from 'material-ui/Stepper'
-import { getUserOrgs, getOrgTeams, getOrgRepo } from '../actions/githubActions'
-import { getOrgs, getTeams, getOrgRepos } from '../reducers/github'
+import { getUserOrgs, getOrgTeams, getOrgRepo, getSolutionFileDiff } from '../actions/githubActions'
+import { mapState } from '../reducers/github'
 import styles from './graderStyles'
 import CircularProgress from 'material-ui/CircularProgress'
 
@@ -48,6 +48,11 @@ class AssessmentForm extends Component {
     this.props.dispatch(getUserOrgs())
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { files } = nextProps
+    if (files) this.setState({ paths: files.map(file => file.filename) })
+  }
+
   handleSubmit () {
     const { form, paths, repo, solutionRepo } = this.state
     form.solutionFiles = paths
@@ -60,10 +65,6 @@ class AssessmentForm extends Component {
     const { paths } = this.state
     const newPaths = paths.slice(0, i).concat(paths.slice(i + 1))
     this.setState({ paths: newPaths })
-  }
-
-  handleDiffFiles () {
-    const { files } = this.props
   }
 
   checkAndAddPath () {
@@ -95,6 +96,7 @@ class AssessmentForm extends Component {
 
   handleRepoCheck () {
     const { stepIndex, form, errors } = this.state
+    const { dispatch } = this.props
     const regexp = /^(\s*?https?:\/\/)?(www.)?(github.com\/)/i
     const repo = form.repoUrl.split(regexp)[4].trim()
     const solutionRepo = form.solutionRepoUrl.split(regexp)[4].trim()
@@ -120,6 +122,7 @@ class AssessmentForm extends Component {
       axios.get(`/api/v1/github/${solutionRepo}`)
       .then(() => {
         newErrors.solutionRepo = {}
+        dispatch(getSolutionFileDiff(repo, solutionRepo))
         this.setState({
           stepIndex: stepIndex + 1,
           errors: newErrors,
@@ -321,7 +324,7 @@ class AssessmentForm extends Component {
                 floatingLabelText="Repo Url"
                 filter={AutoComplete.fuzzyFilter}
                 dataSource={orgrepo.map(repo => `${repo}`)}
-                maxSearchResults={4}
+                maxSearchResults={5}
                 searchText={form.repoUrl}
                 onNewRequest={this.handleRepoUrl}
                 fullWidth={true}
@@ -331,7 +334,7 @@ class AssessmentForm extends Component {
                 floatingLabelText="Solution Url"
                 filter={AutoComplete.fuzzyFilter}
                 dataSource={orgrepo.map(repo => `${repo}`)}
-                maxSearchResults={4}
+                maxSearchResults={5}
                 searchText={form.solutionRepoUrl}
                 onNewRequest={this.handleSolutionUrl}
                 fullWidth={true}
@@ -369,23 +372,27 @@ class AssessmentForm extends Component {
 
   renderSolutionPaths () {
     const { paths } = this.state
-    const pathComponents = paths.map((path, i) => {
-      return (
-        <ListItem
-          key={i}
-          primaryText={path}
-          leftIcon={<FontIcon className="fa fa-file" />}
-          rightIconButton={<IconButton
-            iconClassName='fa fa-times'
-            onClick={() => this.handleRemovePath(i)}/>}
-        />
-      )
-    })
-    return <List>{pathComponents}</List>
+    const { isFetchingFiles } = this.props
+    if (isFetchingFiles) return (<div style={styles.center}><CircularProgress size={2} /></div>)
+    else {
+      const pathComponents = paths.map((path, i) => {
+        return (
+          <ListItem
+            key={i}
+            primaryText={path}
+            leftIcon={<FontIcon className="fa fa-file" />}
+            rightIconButton={<IconButton
+              iconClassName='fa fa-times'
+              onClick={() => this.handleRemovePath(i)}/>}
+          />
+        )
+      })
+      return <List>{pathComponents}</List>
+    }
   }
 
   render () {
-    const { finished, stepIndex } = this.state
+    const { stepIndex } = this.state
     const { isFetchingOrgs, orgs } = this.props
 
     if (isFetchingOrgs && !orgs.length) return <h1>Is Loading...</h1>
@@ -409,19 +416,6 @@ class AssessmentForm extends Component {
               </StepContent>
             </Step>
           </Stepper>
-          {finished && (
-            <p style={{margin: '20px 0', textAlign: 'center'}}>
-              <a
-                href="#"
-                onClick={(event) => {
-                  event.preventDefault();
-                  this.setState({stepIndex: 0, finished: false});
-                }}
-              >
-                Reset
-              </a>
-            </p>
-          )}
         </Paper>
       )
     }
@@ -437,15 +431,17 @@ const mapStateToProps = (state) => {
   const { isFetchingOrgs, byId } = github.orgs
   const { isFetchingTeams, byTeamId } = github.teams
   const { isFetchingOrgRepo, byRepoId } = github.orgRepos
+  const { isFetchingFiles, byName } = github.files
 
   return {
     isFetchingOrgs,
     isFetchingTeams,
     isFetchingOrgRepo,
-    orgs: getOrgs(byId),
-    teams: getTeams(byTeamId),
-    orgrepo: getOrgRepos(byRepoId),
-    isCreatingAssessment: assessments.isFetching
+    orgs: mapState(byId),
+    teams: mapState(byTeamId),
+    files: mapState(byName),
+    orgrepo: mapState(byRepoId),
+    isCreatingAssessment: assessments.isFetching,
   }
 }
 

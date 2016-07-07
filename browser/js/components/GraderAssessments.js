@@ -101,7 +101,12 @@ class GraderAssessments extends Component {
       assessments = filteredAssessments
     }
     if (!isFetching && assessments.length) {
-      return assessments.map((assessment, i) => {
+      return assessments.sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1
+        else if (a.createdAt < b.createdAt) return 1
+        else return 0
+      })
+      .map((assessment, i) => {
         return (
           <AssessmentCard
             key={i}

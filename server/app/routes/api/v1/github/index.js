@@ -7,7 +7,7 @@ import Promise from 'bluebird'
 
 const router = express.Router()
 
-router.get('compare_repo_files', ensureAuthenticated, (req, res, next) => {
+router.get('/compare_repo_files', ensureAuthenticated, (req, res, next) => {
   const baseRepoSplit = req.query.baseRepo.split('/')
   const solutionRepoSplit = req.query.solutionRepo.split('/')
 
@@ -21,12 +21,12 @@ router.get('compare_repo_files', ensureAuthenticated, (req, res, next) => {
       repo: solutionRepoSplit[1]
     })
   ])
-  .spread((baseCommit, solutionCommit) => {
+  .spread((baseCommits, solutionCommits) => {
     return GitHub.repos.compareCommitsAsync({
       user: solutionRepoSplit[0],
       repo: solutionRepoSplit[1],
-      base: baseCommit.sha,
-      head: solutionCommit.sha
+      base: baseCommits[0].sha,
+      head: solutionCommits[0].sha
     })
   })
   .then(diff => res.json(diff.files))

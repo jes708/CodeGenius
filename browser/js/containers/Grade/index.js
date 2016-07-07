@@ -154,7 +154,6 @@ export class GradeView extends Component {
   render () {
     let style = {};
     if (!this.props.assessment || !this.props.assessment.id) {
-      console.log("you are close", this.props.assessment);
       style = styles.disabledTab;
     }
 
@@ -164,18 +163,21 @@ export class GradeView extends Component {
               <Tabs zDepth={3} style={styles.menu} value={this.state.current}>
                 <Tab
                   value={'Assessments'}
+                  title={'Assessments'}
                   icon={<EditorInsertDriveFile />}
                   onClick={this.handleClick.bind(this, "Assessments")}
                 />
                 <Tab
                   style={style}
                   value={'Students'}
+                  title={'Students'}
                   icon={<SocialGroup />}
                   onClick={this.handleClick.bind(this, "Students")}
                 />
                 <Tab
                   style={style}
                   value={'Panel'}
+                  title={'Grader Panel'}
                   icon={<ActionAssignmentTurnedIn />}
                   onClick={this.handleClick.bind(this, "Panel")}
                 />

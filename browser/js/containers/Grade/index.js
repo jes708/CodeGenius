@@ -111,7 +111,7 @@ class AnnotatedGrade extends Component {
         <AnnotationHandler {...this.props} className='col-lg-8 col-md-6 col-sm-6' >
           <Grade />
         </AnnotationHandler>
-        <GradeView assessment={this.props.assessment} tab={this.props.location.tab} className='col-lg-4 col-md-6 col-sm-6' />
+        <GradeView assessment={this.props.assessment} student={this.props.student} tab={this.props.location.tab} className='col-lg-4 col-md-6 col-sm-6' />
       </div>
     )
   }
@@ -148,9 +148,16 @@ export class GradeView extends Component {
   }
 
   render () {
-    let style = {};
+    let step1 = {};
+    let step2 = {};
+
     if (!this.props.assessment || !this.props.assessment.id) {
-      style = styles.disabledTab;
+      step1 = styles.disabledTab;
+    }
+
+    if (!this.props.student || !this.props.student.id) {
+      console.log(this.props.student)
+      step2 = styles.disabledTab;
     }
 
       return (
@@ -164,14 +171,14 @@ export class GradeView extends Component {
                   onClick={this.handleClick.bind(this, "Assessments")}
                 />
                 <Tab
-                  style={style}
+                  style={step1}
                   value={'Students'}
                   title={'Students'}
                   icon={<SocialGroup />}
                   onClick={this.handleClick.bind(this, "Students")}
                 />
                 <Tab
-                  style={style}
+                  style={step2}
                   value={'Panel'}
                   title={'Grader Panel'}
                   icon={<ActionAssignmentTurnedIn />}
@@ -191,7 +198,8 @@ export class GradeView extends Component {
 const mapStateToProps = state => {
   const { assessments } = state;
   return {
-    assessment: assessments.current.base
+    assessment: assessments.current.base,
+    student: assessments.current.student
   }
 }
 

@@ -85,7 +85,7 @@ class GraderPanel extends Component {
       let newIndex;
 
       if (direction === "prev") {
-        if (currentIndex === 0) newIndex = actualStudentsTests.length - 1;
+        if (currentIndex < 1) newIndex = actualStudentsTests.length - 1;
         else newIndex = currentIndex - 1;
       } else {
         if (currentIndex === actualStudentsTests.length - 1) newIndex = 0;

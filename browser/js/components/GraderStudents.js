@@ -11,6 +11,7 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import { getAssessmentTeam } from '../actions/assessmentTeamActions'
 import Toggle from 'material-ui/Toggle'
+import Snackbar from 'material-ui/Snackbar'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
 import { checkForFork } from '../actions/githubActions'
@@ -23,7 +24,8 @@ class GraderStudents extends Component {
     super(props)
 
     this.state = {
-      isRefreshing: false
+      open: false,
+      message: ''
     }
 
     this.handleRefreshStudent = this.handleRefreshStudent.bind(this)
@@ -37,18 +39,36 @@ class GraderStudents extends Component {
 
   handleToggleStudent (studentId, status) {
     const { dispatch, assessment } = this.props
-    dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}))
+    dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}, false))
   }
 
   handleRefreshStudent (studentTest) {
     const { dispatch } = this.props
-    const { assessmentId, studentId } = studentTest
-    this.setState({ isRefreshing: true })
+    const { assessmentId, userId } = studentTest
     checkForFork(studentTest.basePath).then(result => {
-      console.log(result)
-      this.setState({ isRefreshing: false })
-      // dispatch(putStudentTestInfo(assessmentId, studentId, { repoUrl: `https://github.com/${studentTest.basePath}` }))
+      if (result.status !== 404) {
+        this.setState({
+          open: true,
+          message: 'Fork was Found!'
+        })
+        dispatch(putStudentTestInfo(assessmentId, userId, { repoUrl: `https://github.com/${studentTest.basePath}` }, false))
+      } else {
+        this.setState({
+          open: true,
+          message: 'Fork was Not Found!'
+        })
+      }
     })
+  }
+
+  renderMessage () {
+    return (
+      <Snackbar
+        open={this.state.open}
+        message={this.state.message}
+        autoHideDuration={4000}
+      />
+    )
   }
 
   renderStudents () {
@@ -88,6 +108,7 @@ class GraderStudents extends Component {
             student={true}
             />
             {this.renderStudents()}
+            {this.renderMessage()}
           </div>
         </div>
       )

@@ -4,13 +4,14 @@ import React, { PropTypes } from 'react'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import Toggle from 'material-ui/Toggle'
 import IconButton from 'material-ui/IconButton'
+import RefreshIndicator from 'material-ui/RefreshIndicator'
 import ActionCheckCircle from 'material-ui/svg-icons/action/check-circle'
 import AlertError from 'material-ui/svg-icons/alert/error'
 import ImageLens from 'material-ui/svg-icons/image/lens'
 import styles from '../graderStyles'
 import { green500, red500 } from 'material-ui/styles/colors'
 
-const StudentCard = ({studentTest, onSelect, onToggle, onRefresh }) => {
+const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
 
   const { user, userId, isStudent } = studentTest
   let style = isStudent ? styles.infoCard : styles.inactiveCard;

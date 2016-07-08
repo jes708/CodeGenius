@@ -4,7 +4,6 @@ import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import App from '../containers/App'
 import Home from '../containers/Home'
-import {AnnotatedGrade as Grade} from '../containers/Grade'
 import StudentView from '../components/StudentView'
 import Grade from '../containers/Grade'
 import NotFound from '../shared/NotFound'
@@ -19,3 +18,4 @@ const routes = (
 );
 
 export default routes;
+

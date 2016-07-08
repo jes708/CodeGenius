@@ -1,7 +1,10 @@
+
 'use strict'
 
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const WatchIgnorePlugin = require('watch-ignore-webpack-plugin')
+const path = require('path')
 
 module.exports = {
   devtool: 'eval-source-map',
@@ -25,10 +28,17 @@ module.exports = {
       }
     ]
   },
+  watchOptions: {
+    ignored: /node_modules/,
+    poll: false
+  },
   plugins: [
     new ExtractTextPlugin("style.css", {allChunks: true}),
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-    })
+    }),
+    new WatchIgnorePlugin([
+            path.resolve(__dirname, './node_modules/'),
+    ])
   ]
 }

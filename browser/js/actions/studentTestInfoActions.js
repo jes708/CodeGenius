@@ -32,7 +32,6 @@ export function getStudentTestInfo (assessmentId, studentId) {
     .then(resData => dispatch({ type: LOAD_STUDENTTEST_SUCCESS, studentTest: resData }))
     .catch(err => dispatch({ type: LOAD_STUDENTTEST_FAILURE, err }))
   }
-
 }
 
 export function putStudentTestInfo (assessmentId, studentId, data, addToCurrent = true) {

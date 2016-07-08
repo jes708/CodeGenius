@@ -38,7 +38,7 @@ module.exports = {
     //     }).then(function(scores) {
     //       return scores.reduce(function(sum, score) {
     //         return sum + score;
-    //       }, 0) 
+    //       }, 0)
     //     })
     //   }
     // }
@@ -49,14 +49,16 @@ function addAssociations(db){
   const StudentTest = db.models['studentTest'];
   const Assessment = db.models['assessment'];
   const User = db.models['user'];
+  const Comment = db.models['comment'];
 
   StudentTest.belongsTo(Assessment);
   StudentTest.belongsTo(User, {constraints: false});
-
+  StudentTest.hasMany(Comment);
   StudentTest.addScope('defaultScope', {
     include: [
       { model: Assessment },
-      { model: User }
+      { model: User },
+      { model: Comment }
     ]
   }, { override: true })
 }

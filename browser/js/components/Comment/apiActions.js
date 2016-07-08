@@ -81,6 +81,21 @@ export const getCommentsByUserTest =
         payload: err
       }))}
 
+export const getCommentsByStudentAndAssessment =
+  (studentId, assessmentId) =>
+    dispatch => {
+      dispatch({type: LOAD_COMMENTS_REQUEST})
+      return axios.get(APIROUTES.commentByAssessmentStudent(assessmentId, studentId))
+    .then( res => res.data )
+      .then( resData => dispatch({
+        type: LOAD_COMMENTS_SUCCESS,
+        payload: resData
+      }))
+      .catch( err => dispatch({
+        type: LOAD_COMMENTS_FAILURE,
+        payload: err
+      }))}
+
 export const postComment =
   comment =>
     (dispatch, getState) =>{
@@ -96,6 +111,20 @@ export const postComment =
             payload: err
           }))}
 
+export const postCommentByStudentAndAssessment =
+  (studentId, assessmentId, comment) =>
+  (dispatch, getState) =>{
+    dispatch({type: CREATE_COMMENT_REQUEST})
+    return axios.post(APIROUTES.commentByAssessmentStudent(assessmentId, studentId), comment)
+      .then(res => res.data)
+        .then(resData => dispatch({
+          type: CREATE_COMMENT_SUCCESS,
+          payload: resData
+        }))
+        .catch( err => dispatch({
+          type: CREATE_COMMENT_FAILURE,
+          payload: err
+        }))}
 
 export const postCommentByUserTest =
   (comment, userTestId) =>
@@ -125,10 +154,21 @@ export const updateComment =
           .catch( err => dispatch({
             type: UPDATE_COMMENT_FAILURE,
             payload: err
-          }))}
+          })).then(
+            ()=> dispatch(
+              {
+                type: 'COMMENT_EDIT_DONE',
+                payload: {
+                  key: null,
+                  contents: comment
+                }
+              }
+            )
+          )
+        }
 
 export const deleteComment =
-  commentId =>
+  (commentId, studentId, assessmentId) =>
     (dispatch, getState) =>{
       dispatch({type: DELETE_COMMENT_REQUEST})
       return axios.delete(APIROUTES.commentById(commentId))
@@ -137,6 +177,7 @@ export const deleteComment =
             type: DELETE_COMMENT_SUCCESS,
             payload: resData
           }))
+          .then( ()=> dispatch(getCommentsByStudentAndAssessment(studentId, assessmentId)) )
           .catch( err => dispatch({
             type: DELETE_COMMENT_FAILURE,
             payload: err

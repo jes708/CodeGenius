@@ -16,6 +16,7 @@ import StudentCard from './StudentCard'
 import styles from './graderStyles'
 import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 import { getAssessmentStudentTests } from '../reducers/studentTestInfo'
+import AssessmentCard from './AssessmentCard'
 
 class GraderStudents extends Component {
 
@@ -60,6 +61,11 @@ class GraderStudents extends Component {
       return (
         <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
+          <AssessmentCard
+            assessment={this.props.assessment}
+            editable={false}
+            student={true}
+            />
             {this.renderStudents()}
           </div>
         </div>

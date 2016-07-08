@@ -12,12 +12,10 @@ import styles from './graderStyles';
 import {getComments, postComment, getCommentsByStudentAndAssessment, postCommentByStudentAndAssessment} from './Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
+import AssessmentCard from './AssessmentCard'
 
-function buildGraderPanel(dispatch){
-  return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
-}
 
-export default class GraderPanel extends Component {
+class StudentViewComments extends Component {
 
   constructor(props){
     super(props)
@@ -27,6 +25,15 @@ export default class GraderPanel extends Component {
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
+        {this.props.assessment.basePath
+        ?
+        <AssessmentCard
+          assessment={this.props.assessment}
+          editable={false}
+          student={true}
+        />
+        : null
+        }
           <List>
               {(this.props.comments.length) ? (
                 this.props.comments.map((contents, index) => {
@@ -48,10 +55,16 @@ export default class GraderPanel extends Component {
 }
 
 const mapStateToProps = state => {
+  const { assessments } = state
+  let assessment = {}
+  if (assessments.current.base.basePath) {
+    assessment = assessments.current.base
+  }
   return {
+    assessment: assessment,
     comments: state.studentTestInfo.studentTest
   }
 }
 
 
-export default connect(mapStateToProps)(GraderPanel)
+export default connect(mapStateToProps)(StudentViewComments)

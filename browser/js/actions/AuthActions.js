@@ -58,7 +58,7 @@ export const getLoggedInUser = () => (dispatch, getState) => {
     .then(res => res.data)
     .then(resData => {
       dispatch(userReceived(resData.user))
-      dispatch(getUserAssessments())
+      // dispatch(getUserAssessments())
     })
     .catch(() => {
       dispatch({ type: AUTH_NO_USER })

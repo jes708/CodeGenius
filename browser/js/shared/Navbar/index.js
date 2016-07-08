@@ -37,10 +37,12 @@ const NAV_ITEMS = [
 
 class Navbar extends Component {
   componentWillMount () {
-    const { user, dispatch } = this.props
+    const { user, dispatch, pathname } = this.props
+
+    console.log(pathname)
 
     if (!user) {
-      dispatch(getLoggedInUser())
+      dispatch(getLoggedInUser(pathname))
     }
   }
 

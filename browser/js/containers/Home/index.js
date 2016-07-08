@@ -74,13 +74,14 @@ class Home extends Component {
             <p style={styles.p}>CodeGenius optimizes the process of evaluating student code assessments<br />so you can get all of your grading done in one sitting.</p>
             <GitHubInvert style={styles.button} href='/auth/github' />
           </div>
-          <div>
-            <Snackbar
-              open={!this.props.error}
+          {this.props.pathName
+            ? <Snackbar
+              open={this.props.pathName}
               message="You must be logged in."
               autoHideDuration={4000}
               />
-          </div>
+            : null
+          }
         </div>
       )
     } else {
@@ -94,6 +95,7 @@ const mapStateToProps = (state) => {
 
   return {
     isFetching: session.isFetching,
+    pathName: session.path
   }
 }
 

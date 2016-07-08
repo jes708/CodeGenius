@@ -10,6 +10,7 @@ import {
   LOAD_STUDENTTESTS_FAILURE,
   UPDATE_STUDENTTEST_SUCCESS,
   UPDATE_STUDENTTEST_FAILURE,
+  UPDATE_STUDENTTESTINFO_SUCCESS,
   LOAD_SINGLESTUDENTTEST_REQUEST,
   LOAD_SINGLESTUDENTTEST_SUCCESS,
   LOAD_SINGLESTUDENTTEST_FAILURE
@@ -28,6 +29,7 @@ export const byId = (state = {}, action) => {
       return nextState
     case LOAD_STUDENTTEST_SUCCESS:
     case UPDATE_STUDENTTEST_SUCCESS:
+    case UPDATE_STUDENTTESTINFO_SUCCESS:
       nextState[action.studentTest.id] = action.studentTest
       return nextState
     default:

@@ -47,7 +47,7 @@ export const signup = (credentials) => (dispatch) => {
   //signuperror not exist
 }
 
-export const getLoggedInUser = () => (dispatch, getState) => {
+export const getLoggedInUser = (pathname) => (dispatch, getState) => {
   dispatch({ type: AUTH_USER_REQUEST })
   let user = getState().session.user
 
@@ -61,7 +61,7 @@ export const getLoggedInUser = () => (dispatch, getState) => {
       dispatch(getUserAssessments())
     })
     .catch(() => {
-      dispatch({ type: AUTH_NO_USER })
+      dispatch({ type: AUTH_NO_USER, pathname: pathname})
       dispatch(replace('/'))
     })
   }

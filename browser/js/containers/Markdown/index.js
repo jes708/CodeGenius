@@ -14,6 +14,18 @@ export default class MarkdownWrapper extends Component {
       rendered: this.props.markdown ? markdown.toHTML(this.props.markdown) : null,
       editable: this.props.editable
     }
+    this.handleOnChange = this.handleOnChange.bind(this);
+    this.handleOnBlur = this.handleOnBlur.bind(this);
+
+  }
+  handleOnChange(event, setState){
+    this.setState({
+      markdown: event.target.value
+    });
+    if(this.props.handleOnChange) this.props.handleOnChange(event);
+  }
+  handleOnBlur(event, setState){
+    if(this.props.handleOnBlur) this.props.handleOnBlur(event);
   }
   componentWillReceiveProps(nextProps){
       this.setState({
@@ -25,7 +37,7 @@ export default class MarkdownWrapper extends Component {
   render(){
     if(this.state.editable){
       return (
-          <TextField multiLine={true} floatingLabelText="Leave comments in Markdown." defaultValue={this.state.markdown} />
+          <TextField multiLine={true} floatingLabelText="Leave comments in Markdown." defaultValue={this.state.markdown} onBlur={this.handleOnBlur} onChange={this.handleOnChange} rows={3} />
         )
     } else {
       return (

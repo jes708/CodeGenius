@@ -11,13 +11,26 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import { getAssessmentTeam } from '../actions/assessmentTeamActions'
 import Toggle from 'material-ui/Toggle'
+import CircularProgress from 'material-ui/CircularProgress'
+import Snackbar from 'material-ui/Snackbar'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
+import { checkForFork } from '../actions/githubActions'
 import { getStudentTestInfo, getStudentTestsInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 import { getAssessmentStudentTests } from '../reducers/studentTestInfo'
 import AssessmentCard from './AssessmentCard'
 
 class GraderStudents extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      open: false,
+      message: ''
+    }
+
+    this.handleRefreshStudent = this.handleRefreshStudent.bind(this)
+  }
 
   handleSelectStudent (studentId) {
     const { dispatch, assessment, switchTabs } = this.props
@@ -27,14 +40,44 @@ class GraderStudents extends Component {
 
   handleToggleStudent (studentId, status) {
     const { dispatch, assessment } = this.props
-    dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}))
+    this.setState({ open: false })
+    dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}, false))
+  }
+
+  handleRefreshStudent (studentTest) {
+    const { dispatch } = this.props
+    const { assessmentId, userId } = studentTest
+    checkForFork(studentTest.basePath).then(result => {
+      if (result.status !== 404) {
+        this.setState({
+          open: true,
+          message: 'Fork was Found!'
+        })
+        dispatch(putStudentTestInfo(assessmentId, userId, { repoUrl: `https://github.com/${studentTest.basePath}` }, false))
+      } else {
+        this.setState({
+          open: true,
+          message: 'Fork was Not Found!'
+        })
+      }
+    })
+  }
+
+  renderMessage () {
+    return (
+      <Snackbar
+        open={this.state.open}
+        message={this.state.message}
+        autoHideDuration={4000}
+      />
+    )
   }
 
   renderStudents () {
     const { isFetching, dispatch, studentTests } = this.props
 
     if (isFetching) {
-      return (<h1 style={{textAlign: 'center'}}>Loading...</h1>)
+      return (<div style={styles.center}><CircularProgress size={2} /></div>)
     } else {
       return (
         studentTests.sort(function(a,b) {
@@ -49,6 +92,7 @@ class GraderStudents extends Component {
               dispatch={dispatch}
               onSelect={this.handleSelectStudent.bind(this)}
               onToggle={this.handleToggleStudent.bind(this)}
+              onRefresh={this.handleRefreshStudent}
             />
           )
         })
@@ -66,6 +110,7 @@ class GraderStudents extends Component {
             student={true}
             />
             {this.renderStudents()}
+            {this.renderMessage()}
           </div>
         </div>
       )

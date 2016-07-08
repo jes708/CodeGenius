@@ -50,12 +50,26 @@ export default class CommentToolbar extends Component{
     }
     this.AddButtonWithBadge.bind(this);
   }
+  componentWillReceiveProps(nextProps){
+    let {contents} = nextProps;
+    this.setState({
+      buttons: {
+        Markdown: {exists: contents.markdown },
+        Score: {exists: contents.score},
+        Annotation: {exists: contents.annotation},
+        Tag: {exists: contents.tags},
+        "Solution Code": {exists: contents.solutionCodeLink}
+      }
+    })
+  }
   AddButtonWithBadge(Child, name){
     const {buttonAdded, badgeStyle, badgeIconStyle} = commentStyles;
     const {exists} = this.state.buttons[name];
     const {badge} = commentStyles;
     const removeItem = this.props.removeItem(name);
     const editMode = this.props.editMode;
+    let clickHandler = editMode;
+    if(name === 'Markdown') clickHandler = this.props.addMarkdownHandler;
     return (
       <span>
       {exists ? (
@@ -79,7 +93,7 @@ export default class CommentToolbar extends Component{
               iconStyle={badge.IconStyle}
               tooltip={`Add ${name}`}
               children={<AddCircleOutline color={badge.notExists.color} />}
-              onMouseDown={editMode}
+              onMouseDown={clickHandler}
             />}
           children={Child}
         />

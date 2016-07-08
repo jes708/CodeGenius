@@ -179,13 +179,16 @@ router.post('/:id/students/:studentId/comments', (req, res, next) => {
 })
 
 router.get('/:id/students/:studentId/comments', (req, res, next) => {
+  console.log(req.params.id, req.params.studentId);
   StudentTest.findOne({
       where: {
         assessmentId: req.params.id,
         userId: req.params.studentId
       },
       include:  [Assessment]
-    }).then( studentTest => studentTest.getComments() )
+    }).then( studentTest => {
+      console.log(studentTest);
+      return studentTest.getComments()} )
       .then( comments => res.status(200).send( comments ) )
       .catch(next);
 })

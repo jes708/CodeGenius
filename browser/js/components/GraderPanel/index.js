@@ -13,6 +13,7 @@ import styles from '../graderStyles';
 import {getComments, postComment, getCommentsByStudentAndAssessment, postCommentByStudentAndAssessment} from '../Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
+import CommentsList from './CommentsList';
 
 function buildGraderPanel(dispatch){
   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
@@ -22,21 +23,30 @@ export default class GraderPanel extends Component {
 
   constructor(props){
     super(props)
-    this.getComments();
     this.createNewComment = this.createNewComment.bind(this);
     this.state = {
-      commentCollection: []
+      commentCollection: [],
+      loaded: false
     }
+    this.getComments = this.getComments.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
+    if( nextProps.current && nextProps.current.studentId && nextProps.current.assessmentId) this.setState({loaded: true});
     this.setState({
       commentCollection: nextProps.commentCollection
     })
+    if(nextProps.current && nextProps.current.studentId && nextProps.current.assessmentId && this.state.loaded === false ){
+      this.getComments();
+    }
+  }
+
+  componentDidMount(){
+    // this.getComments();
   }
 
   componentWillMount(){
-    buildGraderPanel(this.props.dispatch);
+    // buildGraderPanel(this.props.dispatch);
   }
 
   createNewComment(){
@@ -47,37 +57,39 @@ export default class GraderPanel extends Component {
   getComments(){
     let {studentId, assessmentId} = this.getStudentAndAssessment()
     // this.props.dispatch(getComments());
-    this.props.dispatch(getCommentsByStudentAndAssessment(assessmentId, studentId))
+    if(studentId && assessmentId) {
+      this.props.dispatch(getCommentsByStudentAndAssessment(studentId, assessmentId))
+    }
   }
 
-    handleCheck() {
-      this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
+  getStudentAndAssessment(){
+    let assessmentId = this.props.assessment.id;
+    let studentId = this.props.student.userId;
+    return {studentId, assessmentId}
+  }
+
+  handleCheck() {
+    this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
+  }
+
+  handleStudentShift(direction) {
+    let currentId = String(this.props.student.id);
+    let studentTestArray = Object.keys(this.props.studentTests)
+    let currentIndex = studentTestArray.indexOf(currentId);
+    let newIndex;
+
+    if (direction === "prev") {
+      if (currentIndex === 0) newIndex = studentTestArray.length - 1;
+      else newIndex = currentIndex - 1;
+    } else {
+      if (currentIndex === studentTestArray.length - 1) newIndex = 0;
+      else newIndex = currentIndex + 1;
     }
 
-    handleStudentShift(direction) {
-      let currentId = String(this.props.student.id);
-      let studentTestArray = Object.keys(this.props.studentTests)
-      let currentIndex = studentTestArray.indexOf(currentId);
-      let newIndex;
-
-      if (direction === "prev") {
-        if (currentIndex === 0) newIndex = studentTestArray.length - 1;
-        else newIndex = currentIndex - 1;
-      } else {
-        if (currentIndex === studentTestArray.length - 1) newIndex = 0;
-        else newIndex = currentIndex + 1;
-      }
-
-      let newId = Number(studentTestArray[newIndex])
-      let studentId = this.props.studentTests[newId].userId
-      this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
-    }
-
-    getStudentAndAssessment(){
-      let assessmentId = this.props.assessment.id;
-      let studentId = this.props.student.userId;
-      return {studentId, assessmentId}
-    }
+    let newId = Number(studentTestArray[newIndex])
+    let studentId = this.props.studentTests[newId].userId;
+    this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
+  }
 
     renderStudentInfo() {
       if (this.props.student.user) {
@@ -91,7 +103,7 @@ export default class GraderPanel extends Component {
     }
 
   render () {
-    let {studentId, assessmentId} = this.getStudentAndAssessment();
+    // let {studentId, assessmentId} = this.getStudentAndAssessment();
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
@@ -124,7 +136,12 @@ export default class GraderPanel extends Component {
             style={styles.skinny}
             onClick={this.createNewComment}
           />
-          <List>
+          <div>
+            <CommentsList
+              {...this.props}
+            />
+          </div>
+          {/*<List>
               {(this.state.commentCollection.length) ? (
                 this.state.commentCollection.map((contents, index) => {
                     return (
@@ -141,7 +158,7 @@ export default class GraderPanel extends Component {
                     <h2>Add a comment!</h2>
                   )
               }
-          </List>
+          </List>*/}
           <Checkbox
             label='Fully graded'
             checked={this.props.student.isGraded}
@@ -155,12 +172,21 @@ export default class GraderPanel extends Component {
 
 const mapStateToProps = state => {
   const { assessments, studentTestInfo, comment } = Object.assign({}, state);
-  return {
+  let nextState = {
     assessment: assessments.current.base,
     commentCollection: comment.collection ? comment.collection.map( comment => comment ) : null,
     student: assessments.current.student,
-    studentTests: studentTestInfo.byId
+    studentTests: studentTestInfo.byId,
+    commentsList: {
+      isFetching: comment.isFetching,
+      failed: comment.failed
+    }
   }
+  if(comment.current){
+    nextState.studentId = comment.current.userId;
+    nextState.assessmentId = comment.current.assessmentId;
+  }
+  return nextState;
 }
 
 

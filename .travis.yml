@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+  "6"
+deploy:
+  provider: heroku
+  api_key:
+    secure: process.env.HEROKU_API_KEY
+  app: code-genius
+  on:
+    repo: jes708/CodeGenius
+    branch: master

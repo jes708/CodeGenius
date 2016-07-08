@@ -11,8 +11,6 @@ import ErrorIcon from 'material-ui/svg-icons/alert/error';
 import IconButton from 'material-ui/IconButton';
 
 
-
-
 export default class CommentsList extends Component {
   constructor(props){
     super(props);
@@ -37,7 +35,6 @@ export default class CommentsList extends Component {
       <List>
       {(this.state.commentCollection.length) ? (
         this.state.commentCollection.map((contents, index) => {
-          console.log(contents);
           return (
             <CommentCard
             key={index}
@@ -86,24 +83,6 @@ export default class CommentsList extends Component {
     } else if (this.state.studentId && this.state.assessmentId) {
       return (
         <div>
-                  {/*<List>
-                    {(this.props.commentCollection.length) ? (
-                    this.props.commentCollection.map((contents, index) => {
-                    return (
-                    <CommentCard
-                    key={index}
-                    commentIndex={contents.commentIndex}
-                    contents={contents}
-                    studentId={this.state.studentId}
-                    assessmentId={this.state.assessmentId}
-                    >
-                    </ CommentCard>
-                  )
-                })) : (
-                <h2>Add a comment!</h2>
-              )
-            }
-            </List>*/}
           {this.renderCommentsList()}
         </div>
       )

@@ -34,6 +34,8 @@ const base = (state = {}, action) => {
 
 const student = (state = {}, action) => {
   switch (action.type) {
+    case SWITCH_ASSESSMENT_SUCCESS:
+      return {}
     case LOAD_STUDENTTEST_SUCCESS:
     case UPDATE_STUDENTTEST_SUCCESS:
       return action.studentTest

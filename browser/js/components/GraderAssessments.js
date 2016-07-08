@@ -10,6 +10,7 @@ import IconButton from 'material-ui/IconButton'
 import Chip from 'material-ui/Chip'
 import TextField from 'material-ui/TextField'
 import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card';
+import CircularProgress from 'material-ui/CircularProgress'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton';
 import {
   getUserAssessments,
@@ -70,7 +71,7 @@ class GraderAssessments extends Component {
   handleFilter (e) {
     const { assessments } = this.props
     let searchText = e.target.value.toLowerCase()
-    let filtered =assessments.filter(assessment => {
+    let filtered = assessments.filter(assessment => {
       return (assessment.name.toLowerCase().includes(searchText) || assessment.org.toLowerCase().includes(searchText) || assessment.team.name.toLowerCase().includes(searchText))
     })
 
@@ -101,10 +102,17 @@ class GraderAssessments extends Component {
       assessments = filteredAssessments
     }
     if (!isFetching && assessments.length) {
-      return assessments.map((assessment, i) => {
+      return assessments.sort((a, b) => {
+        if (a.createdAt > b.createdAt) return -1
+        else if (a.createdAt < b.createdAt) return 1
+        else return 0
+      })
+      .map((assessment, i) => {
         return (
           <AssessmentCard
             key={i}
+            editable={true}
+            student={false}
             assessment={assessment}
             onSelect={this.handleSelectAssessment.bind(this)}
             onEdit={this.handleEditAssessment.bind(this)}
@@ -114,29 +122,32 @@ class GraderAssessments extends Component {
     } else if (!isFetching && !assessments.length) {
       return <h1 style={{textAlign: 'center'}}>No Assessments</h1>
     } else {
-      return <h1 style={{textAlign: 'center'}}>Loading...</h1>
+      return <CircularProgress style={styles.center} size={2} />
     }
   }
 
   renderToggleFormButton () {
+    const { isFetchingOrgs } = this.props
     const { isCreating, isEditting } = this.state
 
-    return (
-      <RaisedButton
-        primary={true}
-        label={isCreating || isEditting ? 'Cancel' : 'Create Assessment'}
-        icon={
-          isCreating || isEditting
-            ? <FontIcon className='fa fa-times' />
-            : <FontIcon className='fa fa-plus' /> }
-        style={styles.skinny}
-        onClick={
-          !isCreating && !isEditting
-          ? this.toggleForm.bind(this)
-          : this.cancelEdit.bind(this)
-        }
-      />
-    )
+    if (!isFetchingOrgs) {
+      return (
+        <RaisedButton
+          primary={true}
+          label={isCreating || isEditting ? 'Cancel' : 'Create Assessment'}
+          icon={
+            isCreating || isEditting
+              ? <FontIcon className='fa fa-times' />
+              : <FontIcon className='fa fa-plus' /> }
+          style={styles.skinny}
+          onClick={
+            !isCreating && !isEditting
+            ? this.toggleForm.bind(this)
+            : this.cancelEdit.bind(this)
+          }
+        />
+      )
+    }
   }
 
   renderSearchBar() {
@@ -197,10 +208,12 @@ GraderAssessments.contextTypes = {
 }
 
 const mapStateToProps = state => {
-  const { session, assessments } = state
+  const { session, assessments, github } = state
+  const { isFetchingOrgs } = github.orgs
   const { isFetching } = assessments
   const { user } = session
   return {
+    isFetchingOrgs,
     isFetchingUser: session.isFetching,
     isFetching,
     assessments: getAllAssessments(assessments.byId),

@@ -7,63 +7,75 @@ import Promise from 'bluebird'
 
 const router = express.Router()
 
-router.get('/all_repos', ensureAuthenticated, (req, res, next) => {
-  GitHub.users.getOrgsAsync({ per_page: 100 })
-  .then(userOrgs => {
-    let gettingOrgRepos = userOrgs.map(org => {
-      GitHub.repos.getForOrgAsync({ org: org.login })
+router.get('/compare_repo_files', ensureAuthenticated, (req, res, next) => {
+  const baseRepoSplit = req.query.baseRepo.split('/')
+  const solutionRepoSplit = req.query.solutionRepo.split('/')
+
+  Promise.all([
+    GitHub.repos.getCommitsAsync({
+      user: baseRepoSplit[0],
+      repo: baseRepoSplit[1]
+    }),
+    GitHub.repos.getCommitsAsync({
+      user: solutionRepoSplit[0],
+      repo: solutionRepoSplit[1]
     })
-    let gettingAllRepos = gettingOrgRepos.concat(
-      GitHub.repos.getForUserAsync({user: req.user.username }))
-    return Promise.all(gettingAllRepos)
+  ])
+  .spread((baseCommits, solutionCommits) => {
+    return GitHub.repos.compareCommitsAsync({
+      user: solutionRepoSplit[0],
+      repo: solutionRepoSplit[1],
+      base: baseCommits[0].sha,
+      head: solutionCommits[0].sha
+    })
   })
-  .then(allRepos => res.json(allRepos))
-  .catch(next)
+  .then(diff => res.json(diff.files))
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/rate_limit', ensureAuthenticated, (req, res, next) => {
+router.get('/rate_limit', ensureAuthenticated, (req, res) => {
   GitHub.misc.getRateLimitAsync()
   .then(limit => res.json(limit))
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/orgs', ensureAuthenticated, (req, res, next) => {
+router.get('/orgs', ensureAuthenticated, (req, res) => {
   GitHub.users.getOrgsAsync({ per_page: 100 })
   .then(userOrgs => res.json(userOrgs))
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/adminOrgs', ensureAuthenticated, (req, res, next) => {
+router.get('/adminOrgs', ensureAuthenticated, (req, res) => {
   GitHub.orgs.getOrganizationMembershipsAsync({ state: 'active' })
   .then(userOrgs => {
     const adminOrgs = userOrgs.filter(userOrg => userOrg.role === 'admin')
     res.json(adminOrgs.map(adminOrg => adminOrg.organization))
   })
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/:org', ensureAuthenticated, (req, res, next) => {
+router.get('/:org', ensureAuthenticated, (req, res) => {
   GitHub.orgs.getAsync({ org: req.params.org })
   .then(org => res.json(org))
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/:org/teams', ensureAuthenticated, (req, res, next) => {
+router.get('/:org/teams', ensureAuthenticated, (req, res) => {
   GitHub.orgs.getTeamsAsync({ org: req.params.org })
   .then(teams => res.json(teams))
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/:org/repos', ensureAuthenticated, (req, res, next) => {
+router.get('/:org/repos', ensureAuthenticated, (req, res) => {
   GitHub.repos.getForOrgAsync({ org: req.params.org})
   .then(repos => res.json(repos))
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
-router.get('/:teamId/members', ensureAuthenticated, (req, res, next) => {
+router.get('/:teamId/members', ensureAuthenticated, (req, res) => {
   GitHub.orgs.getTeamMembersAsync({ id: req.params.teamId })
   .then(members => res.json(members))
-  .catch(next)
+  .catch(err => res.sendStatus(err.code))
 })
 
 router.get('/:user/:repo', ensureAuthenticated, (req, res) => {
@@ -73,6 +85,17 @@ router.get('/:user/:repo', ensureAuthenticated, (req, res) => {
   })
   .then(resData => res.json(resData))
   .catch(err => res.sendStatus(err.code))
+})
+
+router.get('/:user/:repo/compare_files/', ensureAuthenticated, (req, res, next) => {
+  GitHub.repos.compareCommitsAsync({
+    user: req.params.user,
+    repo: req.params.repo,
+    base: req.query.base || 'master',
+    head: req.query.head
+  })
+  .then(result => res.json(result.files))
+  .catch(next)
 })
 
 router.get('/:user/:repo/contents/', ensureAuthenticated, (req, res) => {
@@ -105,7 +128,5 @@ router.get('/:user/:repo/:teamId/forks', ensureAuthenticated, (req, res, next) =
   })
   .catch(next)
 })
-
-
 
 module.exports = router

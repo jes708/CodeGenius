@@ -29,7 +29,6 @@ export default function commentReducer(state = comment_initialState, action){
         isEditing: action.payload
       })
     case 'COMMENT_EDIT_DONE':
-      console.log('comment edit done', action.payload)
       if(!!nextState.isEditing.key){
         nextState
           .collection = nextState.collection.map( comment => comment.commentIndex === nextState.isEditing.key ? comment = action.payload.contents : comment)

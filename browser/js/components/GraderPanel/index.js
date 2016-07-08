@@ -14,12 +14,14 @@ import {getComments, postComment, getCommentsByStudentAndAssessment, postComment
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
 import CommentsList from './CommentsList';
+import AssessmentCard from '../AssessmentCard'
+
 
 function buildGraderPanel(dispatch){
   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
 }
 
-export default class GraderPanel extends Component {
+class GraderPanel extends Component {
 
   constructor(props){
     super(props)
@@ -91,44 +93,18 @@ export default class GraderPanel extends Component {
     this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
   }
 
-    renderStudentInfo() {
-      if (this.props.student.user) {
-        return (
-          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
-            <img src={this.props.student.user.photo} alt={this.props.student.user.name} style={styles.student} />
-            {this.props.student.user.name}
-          </div>
-        )
-      }
-    }
-
   render () {
     // let {studentId, assessmentId} = this.getStudentAndAssessment();
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
-          <Card style={Object.assign(styles.infoCard, styles.skinny)}>
-            <div style={styles.gradingInfo}>
-              <div style={styles.gradingTitle}>{this.props.assessment.name}</div>
-              {this.renderStudentInfo()}
-            </div>
-            <CardActions>
-              <FlatButton
-                label='Previous Student'
-                onClick={this.handleStudentShift.bind(this, "prev")}
-                hoverColor={'#2196F3'}
-                rippleColor={'#90CAF9'}
-                style={{color: '#F5F5F5'}}
-              />
-              <FlatButton
-                label='Next Student'
-                onClick={this.handleStudentShift.bind(this, "next")}
-                hoverColor={'#2196F3'}
-                rippleColor={'#90CAF9'}
-                style={{color: '#F5F5F5'}}
-              />
-            </CardActions>
-          </Card>
+          <AssessmentCard
+            {...this.props}
+            editable={false}
+            showStudents={true}
+            showTeam={false}
+            showUrl={false}
+          />
           <RaisedButton
             label='Add Comment'
             primary={true}
@@ -141,24 +117,6 @@ export default class GraderPanel extends Component {
               {...this.props}
             />
           </div>
-          {/*<List>
-              {(this.state.commentCollection.length) ? (
-                this.state.commentCollection.map((contents, index) => {
-                    return (
-                      <CommentCard
-                        key={index}
-                        commentIndex={contents.commentIndex}
-                        contents={contents}
-                        studentId={studentId}
-                        assessmentId={assessmentId}
-                          >
-                      </ CommentCard>
-                    )
-                  })) : (
-                    <h2>Add a comment!</h2>
-                  )
-              }
-          </List>*/}
           <Checkbox
             label='Fully graded'
             checked={this.props.student.isGraded}

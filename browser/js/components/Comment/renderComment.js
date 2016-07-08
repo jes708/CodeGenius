@@ -121,7 +121,6 @@ export default class RenderComment extends Component {
     )
   }
   renderDialogHandler(){
-    console.log('render dialog handler');
     let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
     return this.renderDialog(
@@ -166,21 +165,6 @@ export default class RenderComment extends Component {
   handleSubmitDialog(){
     this.toggleDialog();
   }
-  // removeItem(itemName){
-  //   return () => {
-  //     let contentsToUpdate = {};
-  //     contentsToUpdate[itemName.toLowerCase()] = null;
-  //     this.updateContents(contentsToUpdate);
-  //   }
-  // }
-  // updateContents(contentsToUpdate){
-  //   console.log('before contents update', this.state);
-  //   let newContents = Object.assign({}, this.state.contents);
-  //   let updatedContents = Object.assign(newContents, contentsToUpdate);
-  //   this.state.contents = updatedContents; // should this be this.setState?
-  //   console.log('after contents update', this.state);
-  //   this.props.handleUpdateComment(this.state.contents);
-  // }
   render(){
     return (
       <span>

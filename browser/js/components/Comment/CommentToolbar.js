@@ -117,21 +117,6 @@ export default class CommentToolbar extends Component{
       <Toolbar {...this.props}
         children={buttons}
       >
-        {/*<ToolbarGroup >
-            {this.AddButtonWithBadge(<AddMarkdown />, "Markdown")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-            {this.AddButtonWithBadge(<AddScore />, "Score")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-          {this.AddButtonWithBadge(<AddAnnotation />, "Annotation")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-          {this.AddButtonWithBadge(<AddTag />, "Tag")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-          {this.AddButtonWithBadge(<AddSolutionCode />, "Solution Code")}
-        </ToolbarGroup>*/}
       </Toolbar>
     )
   }

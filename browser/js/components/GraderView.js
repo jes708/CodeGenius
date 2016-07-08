@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { PrismCode } from 'react-prism';
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
+import CircularProgress from 'material-ui/CircularProgress'
 import SubGradeView from './SubGradeView'
 import styles from './graderStyles'
 import { getRepoContents } from '../actions/githubActions'
@@ -18,6 +19,15 @@ class GraderView extends Component {
     }
   }
 
+  componentWillReceiveProps (nextProps) {
+    const { fileName } = this.state
+    const { dispatch } = nextProps
+    if (nextProps.studentTest.basePath && fileName !== '' && (this.props.studentTest.userId !== nextProps.studentTest.userId)) {
+      const basePath = nextProps.studentTest.basePath.split('/')
+      dispatch(getRepoContents(basePath[0], basePath[1], fileName))
+    }
+  }
+
   handleToggle () {
     this.setState({ open: !this.state.open })
   }
@@ -26,7 +36,6 @@ class GraderView extends Component {
     const { dispatch, assessment, studentTest } = this.props
     let basePath
     if (studentTest.basePath) {
-      console.log('STUDENT', studentTest)
       basePath = studentTest.basePath.split('/')
     } else {
       basePath = assessment.solutionPath.split('/')
@@ -38,9 +47,11 @@ class GraderView extends Component {
   }
 
   renderCodeView () {
-    const { contents, contentError } = this.props
+    const { isFetchingRepoContent, contents, contentError } = this.props
 
-    if (contents || contentError.statusText) {
+    if (isFetchingRepoContent) {
+      return (<div style={styles.center}><CircularProgress size={2} /></div>)
+    }else if (contents || contentError.statusText) {
       return (
         <pre className='line-numbers language-javascript'>
           <PrismCode className='language-javascript'>
@@ -50,7 +61,7 @@ class GraderView extends Component {
       )
     } else {
       return (
-        <div style={styles.gradingTitle}>No File Selected</div>
+        <div style={Object.assign({}, styles.gradingTitle, { color: 'black' })}>No File Selected.</div>
       )
     }
   }
@@ -85,6 +96,7 @@ const mapStateToProps = (state) => {
   const { github, assessments } = state
   const { current } = assessments
   return {
+    isFetchingRepoContent: github.reposContent,
     contents: github.contents,
     contentError: github.error,
     assessment: current.base,

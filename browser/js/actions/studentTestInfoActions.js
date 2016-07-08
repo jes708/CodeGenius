@@ -11,7 +11,7 @@ export const LOAD_STUDENTTESTS_FAILURE = 'LOAD_STUDENTTEST_FAILURE'
 export const UPDATE_STUDENTTEST_REQUEST = 'UPDATE_STUDENTTEST_REQUEST'
 export const UPDATE_STUDENTTEST_SUCCESS = 'UPDATE_STUDENTTEST_SUCCESS'
 export const UPDATE_STUDENTTEST_FAILURE = 'UPDATE_STUDENTTEST_FAILURE'
-export const UPDATE_STUDENTFORK_SUCCESS = 'UPDATE_STUDENTFORK_SUCCESS'
+export const UPDATE_STUDENTTESTINFO_SUCCESS = 'UPDATE_STUDENTTESTINFO_SUCCESS'
 
 export function getStudentTestsInfo (assessmentId) {
   return dispatch => {
@@ -43,7 +43,7 @@ export function putStudentTestInfo (assessmentId, studentId, data, addToCurrent 
       if (addToCurrent) {
         dispatch({ type: UPDATE_STUDENTTEST_SUCCESS, studentTest: resData })
       } else {
-        dispatch({ type: UPDATE_STUDENTFORK_SUCCESS, studentTest: resData })
+        dispatch({ type: UPDATE_STUDENTTESTINFO_SUCCESS, studentTest: resData })
       }
     })
     .catch(err => dispatch({ type: UPDATE_STUDENTTEST_FAILURE, err }))

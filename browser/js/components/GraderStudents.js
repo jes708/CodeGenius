@@ -39,6 +39,7 @@ class GraderStudents extends Component {
 
   handleToggleStudent (studentId, status) {
     const { dispatch, assessment } = this.props
+    this.setState({ open: false })
     dispatch(putStudentTestInfo(assessment.id, studentId, {isStudent: status}, false))
   }
 

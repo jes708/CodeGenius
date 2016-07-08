@@ -52,15 +52,11 @@ class GraderPanel extends Component {
     this.props.dispatch(getCommentsByStudentAndAssessment(assessmentId, studentId))
   }
 
-    // handleCheck() {
-    //   this.props.dispatch(putStudentTestInfo(this.props.assessment.id, this.props.student.userId, {isGraded: !this.props.student.isGraded}))
-    // }
-
-    getStudentAndAssessment(){
-      let assessmentId = this.props.assessment.id;
-      let studentId = this.props.student.userId;
-      return {studentId, assessmentId}
-    }
+  getStudentAndAssessment(){
+    let assessmentId = this.props.assessment.id;
+    let studentId = this.props.student.userId;
+    return {studentId, assessmentId}
+  }
 
   render () {
     let {studentId, assessmentId} = this.getStudentAndAssessment();

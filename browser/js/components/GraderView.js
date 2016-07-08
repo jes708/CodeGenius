@@ -26,6 +26,7 @@ class GraderView extends Component {
     const { dispatch, assessment, studentTest } = this.props
     let basePath
     if (studentTest.basePath) {
+      console.log('STUDENT', studentTest)
       basePath = studentTest.basePath.split('/')
     } else {
       basePath = assessment.solutionPath.split('/')

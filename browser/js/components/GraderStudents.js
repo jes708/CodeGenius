@@ -29,7 +29,10 @@ class GraderStudents extends Component {
       message: ''
     }
 
+    this.handleSelectStudent = this.handleSelectStudent.bind(this)
+    this.handleToggleStudent = this.handleToggleStudent.bind(this)
     this.handleRefreshStudent = this.handleRefreshStudent.bind(this)
+    this.handleRefreshAllStudents = this.handleRefreshAllStudents.bind(this)
   }
 
   handleSelectStudent (studentId) {
@@ -63,6 +66,12 @@ class GraderStudents extends Component {
     })
   }
 
+  handleRefreshAllStudents () {
+    const { studentTests } = this.props
+    const studentTestNoForks = studentTests.filter(studentTest => !studentTest.repoUrl)
+    studentTestNoForks.forEach(studentTest => this.handleRefreshStudent(studentTest))
+  }
+
   renderMessage () {
     return (
       <Snackbar
@@ -90,8 +99,8 @@ class GraderStudents extends Component {
               key={i}
               studentTest={studentTest}
               dispatch={dispatch}
-              onSelect={this.handleSelectStudent.bind(this)}
-              onToggle={this.handleToggleStudent.bind(this)}
+              onSelect={this.handleSelectStudent}
+              onToggle={this.handleToggleStudent}
               onRefresh={this.handleRefreshStudent}
             />
           )
@@ -102,15 +111,21 @@ class GraderStudents extends Component {
 
   render () {
       return (
-        <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
+        <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
           <AssessmentCard
             assessment={this.props.assessment}
             editable={false}
             student={true}
-            />
-            {this.renderStudents()}
-            {this.renderMessage()}
+          />
+          <RaisedButton
+            label='Refresh Students'
+            primary={true}
+            onTouchTap={this.handleRefreshAllStudents}
+            style={styles.skinny}
+          />
+          {this.renderStudents()}
+          {this.renderMessage()}
           </div>
         </div>
       )

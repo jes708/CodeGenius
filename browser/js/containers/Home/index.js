@@ -56,11 +56,6 @@ const styles = {
 }
 
 class Home extends Component {
-  // componentWillMount() {
-  //   this.setState({
-  //       path: this.props.location
-  //   })
-  // }
 
   render () {
 

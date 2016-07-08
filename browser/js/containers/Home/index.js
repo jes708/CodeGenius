@@ -5,6 +5,8 @@ import { connect } from 'react-redux'
 import GitHubInvert from '../../shared/GitHubInvert'
 import Paper from 'material-ui/Paper'
 import { blue300, blue600 } from 'material-ui/styles/colors'
+import Snackbar from 'material-ui/Snackbar';
+import { Router } from 'react-router'
 
 const styles = {
   header: {
@@ -54,16 +56,32 @@ const styles = {
 }
 
 class Home extends Component {
+  // componentWillMount() {
+  //   this.setState({
+  //       path: this.props.location
+  //   })
+  // }
+
   render () {
     const { isFetching } = this.props
 
     if (!isFetching) {
       return (
-        <div style={styles.paperStyle}>
-          <div style={styles.header}>CodeGenius</div>
-          <hr style={styles.hr} />
-          <p style={styles.p}>CodeGenius optimizes the process of evaluating student code assessments<br />so you can get all of your grading done in one sitting.</p>
-          <GitHubInvert style={styles.button} href='/auth/github' />
+        <div>
+          <div style={styles.paperStyle}>
+            <div style={styles.header}>CodeGenius</div>
+            <hr style={styles.hr} />
+            <p style={styles.p}>CodeGenius optimizes the process of evaluating student code assessments<br />so you can get all of your grading done in one sitting.</p>
+            <GitHubInvert style={styles.button} href='/auth/github' />
+          </div>
+          {this.props.pathName
+            ? <Snackbar
+              open={this.props.pathName}
+              message="You must be logged in."
+              autoHideDuration={4000}
+              />
+            : null
+          }
         </div>
       )
     } else {
@@ -76,9 +94,9 @@ const mapStateToProps = (state) => {
   const { session } = state
 
   return {
-    isFetching: session.isFetching
+    isFetching: session.isFetching,
+    pathName: session.path
   }
 }
 
 export default connect(mapStateToProps)(Home)
-

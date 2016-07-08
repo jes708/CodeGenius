@@ -78,7 +78,6 @@ class GraderPanel extends Component {
             onClick={this.createNewComment}
           />
           <List>
-              {console.log("look", this.props.commentCollection)}
               {(this.state.commentCollection.length) ? (
                 this.state.commentCollection.map((contents, index) => {
                     return (

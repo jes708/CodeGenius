@@ -139,7 +139,6 @@ export class GradeView extends Component {
     }
 
     if (!this.props.student || !this.props.student.id) {
-      console.log(this.props.student)
       step2 = styles.disabledTab;
     }
 

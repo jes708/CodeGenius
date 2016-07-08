@@ -104,7 +104,6 @@ class Comment extends Component {
   }
   editModeDone(){
     this.props.dispatch(updateComment(this.state.contents, this.props.commentIndex));
-    console.log(this.props)
     if (this.props.allComments.length) {
       const totalScore = this.props.allComments.reduce((sum, comment) => {
         if (comment.commentIndex != this.props.commentIndex) return sum + comment.score;

@@ -47,19 +47,6 @@ class AssessmentCard extends Component {
     dispatch(putStudentTestInfo(assessment.id, student.userId, {isGraded: !student.isGraded}))
   }
 
-  // renderScore() {
-  //   if (this.props.showStudents) {
-  //     const { assessment, commentCollection, dispatch, student } = this.props
-  //     if (commentCollection.length) {
-        // const totalScore = commentCollection.reduce((sum, comment) => {
-        //   return sum + comment.score
-        // }, 0)
-
-  //       return <p>{`Total Score: ${totalScore}`}</p>
-  //     }
-  //   }
-  // }
-  
   renderStudentInfo() {
     if (this.props.showStudents) {
       const { student } = this.props
@@ -68,7 +55,7 @@ class AssessmentCard extends Component {
           <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect, styles.fullWidth)}>
             <img src={student.user.photo} alt={student.user.name} style={styles.student} />
             {student.user.name}
-            <p>{`Total Score: ${student.score}`}</p>
+            <p style={{marginTop: '15px'}}>Total Score: <span style={{fontWeight: 600}}>{student.score}</span></p>
           <Checkbox
             label='Fully graded'
             inputStyle={{color: 'green', background: 'green'}}
@@ -92,7 +79,7 @@ class AssessmentCard extends Component {
       return(
         <div>
           {this.renderStudentInfo()}
-          <CardActions>
+          <CardActions style={{padding: 0}}>
             <FlatButton
               label='Previous Student'
               onClick={this.handleStudentShift.bind(this, "prev")}

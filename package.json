@@ -8,7 +8,8 @@
     "postinstall": "webpack -p --config webpack.prod.config.js"
   },
   "engines": {
-    "node": "6.3.0"
+    "node": "6.3.0",
+    "npm": "3.10.3"
   },
   "dependencies": {
     "axios": "^0.12.0",

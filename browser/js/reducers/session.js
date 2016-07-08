@@ -35,7 +35,7 @@ export default function session (state = initialState, action) {
       })
     case AUTH_NO_USER:
       console.log(action.pathname)
-      return action.pathname === '/' ? state : {...state, path: action.pathname}
+      return action.pathname === '/' ? {...state, isFetching: false} : {...state, path: action.pathname, isFetching: false}
     case AUTH_LOGOUT_SUCCESS:
     case AUTH_SESSION_TIMEOUT:
       return Object.assign({}, state, {

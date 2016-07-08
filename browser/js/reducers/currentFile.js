@@ -12,10 +12,12 @@ const currentFile = (state = {}, action) => {
       nextState.repo = splitPath[1]
       nextState.basePath = `${splitPath[0]}/${splitPath[1]}`
       nextState.filePath = `${splitPath.slice(2).join('/')}`
+      nextState.contents = action.contents
       return nextState
     default:
       return state
   }
 }
+
 
 export default currentFile

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { PrismCode } from 'react-prism';
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
+import Toggle from 'material-ui/Toggle'
 import CircularProgress from 'material-ui/CircularProgress'
 import SubGradeView from './SubGradeView'
 import styles from './graderStyles'
@@ -15,14 +16,22 @@ class GraderView extends Component {
     super(props)
     this.state = {
       open: false,
+      showSolution: false,
       fileName: ''
     }
+
+    this.handleToggle = this.handleToggle.bind(this)
+    this.handleToggleSolutionCode = this.handleToggleSolutionCode.bind(this)
+    this.handleFileSelect = this.handleFileSelect.bind(this)
   }
 
   componentWillReceiveProps (nextProps) {
-    const { fileName } = this.state
+    const { fileName, showSolution } = this.state
     const { dispatch } = nextProps
-    if (nextProps.studentTest.basePath && fileName !== '' && (this.props.studentTest.userId !== nextProps.studentTest.userId)) {
+    if (!showSolution
+      && nextProps.studentTest.basePath
+      && fileName !== ''
+      && (this.props.studentTest.userId !== nextProps.studentTest.userId)) {
       const basePath = nextProps.studentTest.basePath.split('/')
       dispatch(getRepoContents(basePath[0], basePath[1], fileName))
     }
@@ -30,6 +39,19 @@ class GraderView extends Component {
 
   handleToggle () {
     this.setState({ open: !this.state.open })
+  }
+
+  handleToggleSolutionCode () {
+    const { fileName } = this.state
+    const { dispatch, assessment, studentTest } = this.props
+    const solutionPath = assessment.solutionPath.split('/')
+    this.setState({ showSolution: !this.state.showSolution })
+    if (!this.state.showSolution) {
+      dispatch(getRepoContents(solutionPath[0], solutionPath[1], fileName))
+    } else if (studentTest.basePath) {
+      const studentPath = studentTest.basePath.split('/')
+      dispatch(getRepoContents(studentPath[0], studentPath[1], fileName))
+    }
   }
 
   handleFileSelect (filePath) {
@@ -67,7 +89,7 @@ class GraderView extends Component {
   }
 
   render () {
-    const { fileName, open } = this.state
+    const { fileName, open, showSolution } = this.state
     const { assessment } = this.props
 
     return (
@@ -76,13 +98,21 @@ class GraderView extends Component {
           <RaisedButton
             label={open ? 'Hide Files' : 'Show Files'}
             style={{marginBottom: '10'}}
-            onTouchTap={this.handleToggle.bind(this)}
+            onTouchTap={this.handleToggle}
             primary={true}
+          />
+          <Toggle
+            toggled={showSolution}
+            onToggle={this.handleToggleSolutionCode}
+            label={showSolution ? 'Hide Solution Code' : 'Show Solution Code'}
+            labelPosition={'right'}
+            disabled={fileName === ''}
+            style={{display: 'inline-block'}}
           />
           <SubGradeView
             open={this.state.open}
             files={assessment.solutionFiles || []}
-            onSelect={this.handleFileSelect.bind(this)}
+            onSelect={this.handleFileSelect}
           />
           <h2 style={styles.skinny}>{fileName}</h2>
           {this.renderCodeView()}

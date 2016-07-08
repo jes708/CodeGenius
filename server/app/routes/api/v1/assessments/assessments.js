@@ -32,7 +32,7 @@ import omit from 'lodash/object/omit'
 
 router.get('/', sequelizeHandlers.query(Resource));
 router.get('/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
-router.post(  '/',  ensureAuthenticated, (req, res, next) => {
+router.post('/', ensureAuthenticated, (req, res, next) => {
   let newAssessment
   Promise.all([
     Team.findOrCreate({
@@ -74,7 +74,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
           }})
         })
         .then(user => {
-          let repo = ''
+          let repo = null
           let userFork = forkByOwner[user[0].username]
           if (userFork) {
             repo = userFork.html_url
@@ -90,7 +90,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
               }
             })
           }
-        }),
+        })
       ])
     })
     return Promise.all(creatingUsersAndTests)

@@ -131,7 +131,6 @@ export default class RenderComment extends Component {
             <div>
               <MarkdownWrapper
                 handleOnBlur={(event, updateContents = this.updateContents) => {
-                  console.log('calling handler', event.target.value);
                   updateContents({markdown: event.target.value})
                 }}
                 markdown={"#Add Markdown here"}
@@ -161,7 +160,6 @@ export default class RenderComment extends Component {
   }
   removeItem(itemName){
     return () => {
-      console.log('remove item', itemName);
       let contentsToUpdate = {};
       contentsToUpdate[itemName.toLowerCase()] = null;
       this.updateContents(contentsToUpdate);

@@ -96,7 +96,6 @@ class Comment extends Component {
   }
 
   editMode(){
-    console.log('badoop');
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
   }
   editModeDone(){

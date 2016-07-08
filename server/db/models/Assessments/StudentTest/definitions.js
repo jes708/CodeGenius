@@ -21,7 +21,7 @@ module.exports = function(db){
         defaultValue: false
       },
       score: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         defaultValue: 0
       }
     }

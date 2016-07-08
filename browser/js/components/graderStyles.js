@@ -41,6 +41,9 @@ const styles = {
     margin: 'auto',
     padding: 20
   },
+  fullWidth: {
+    width: '100%'
+  },
   gradingInfo: {
     padding: 16
   },

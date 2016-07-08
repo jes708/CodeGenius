@@ -6,8 +6,10 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import AssessmentForm from './AssessmentForm'
 import styles from './graderStyles'
-import { getStudentTestInfo } from '../actions/studentTestInfoActions'
+import { getStudentTestInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 import { CardActions } from 'material-ui/Card'
+import Checkbox from 'material-ui/Checkbox'
+import { green500 } from 'material-ui/styles/colors'
 
 
 class AssessmentCard extends Component {
@@ -39,16 +41,43 @@ class AssessmentCard extends Component {
     let studentId = studentTests[newId].userId
     dispatch(getStudentTestInfo(assessment.id, studentId))
   }
+
+  handleCheck() {
+    const { assessment, dispatch, student, studentTests } = this.props
+    dispatch(putStudentTestInfo(assessment.id, student.userId, {isGraded: !student.isGraded}))
+  }
+
+  // renderScore() {
+  //   if (this.props.showStudents) {
+  //     const { assessment, commentCollection, dispatch, student } = this.props
+  //     if (commentCollection.length) {
+        // const totalScore = commentCollection.reduce((sum, comment) => {
+        //   return sum + comment.score
+        // }, 0)
+
+  //       return <p>{`Total Score: ${totalScore}`}</p>
+  //     }
+  //   }
+  // }
   
   renderStudentInfo() {
     if (this.props.showStudents) {
       const { student } = this.props
-
       if (student.user) {
         return (
-          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
+          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect, styles.fullWidth)}>
             <img src={student.user.photo} alt={student.user.name} style={styles.student} />
             {student.user.name}
+            <p>{`Total Score: ${student.score}`}</p>
+          <Checkbox
+            label='Fully graded'
+            inputStyle={{color: 'green', background: 'green'}}
+            labelStyle={{color: 'white', fontWeight: 300}}
+            iconStyle={{fill: 'white'}}
+            // style={{fill: 'green'}}
+            checked={student.isGraded}
+            onCheck={this.handleCheck.bind(this)}
+          />
           </div>
         )
       }

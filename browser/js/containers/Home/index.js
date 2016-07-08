@@ -63,9 +63,7 @@ class Home extends Component {
   // }
 
   render () {
-    const { isFetching } = this.props
 
-    if (!isFetching) {
       return (
         <div>
           <div style={styles.paperStyle}>
@@ -84,9 +82,7 @@ class Home extends Component {
           }
         </div>
       )
-    } else {
-      return (<div style={{textAlign: 'center'}}></div>)
-    }
+
   }
 }
 

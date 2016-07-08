@@ -88,7 +88,6 @@ class AnnotatedGrade extends Component {
   }
 
   render(){
-    console.log("check it out", this.props.assessment)
     return (
       <div style={styles.main}>
         <AnnotationHandler {...this.props} className='col-lg-8 col-md-6 col-sm-6' >

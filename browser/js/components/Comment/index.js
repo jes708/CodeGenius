@@ -72,6 +72,9 @@ class Comment extends Component {
     }
     this.renderComment = renderComment.bind(this);
     this.editMode = this.editMode.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+    this.updateContents = this.updateContents.bind(this);
+    this.handleUpdateComment = this.handleUpdateComment.bind(this);
   }
   componentWillReceiveProps(nextProps){
     this.setState({isEditing: nextProps.isEditing});
@@ -99,10 +102,26 @@ class Comment extends Component {
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
   }
   editModeDone(){
-    this.props.dispatch(updateComment(this.state.contents, this.props.commentIndex));
+    this.handleUpdateComment(this.state.contents)
   }
+
+  removeItem(itemName){
+    return () => {
+      let contentsToUpdate = {};
+      contentsToUpdate[itemName.toLowerCase()] = null;
+      this.updateContents(contentsToUpdate);
+    }
+  }
+  updateContents(contentsToUpdate){
+    let newContents = Object.assign({}, this.state.contents);
+    let updatedContents = Object.assign(newContents, contentsToUpdate);
+    this.state.contents = updatedContents; // should this be this.setState?
+    this.handleUpdateComment(this.state.contents);
+  }
+
   handleUpdateComment(commentState){
     this.setState({contents: commentState});
+    this.props.dispatch(updateComment(commentState, this.props.commentIndex));
   }
 
   render(){
@@ -129,13 +148,14 @@ class Comment extends Component {
         <ListItem primaryText={this.props.contents.title} initiallyOpen={true} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
           <CardText key={0} expandable={true} style={styles.noTopPadding}>
             <hr style={styles.skinny} />
-            {/*this.renderComment()*/}
             <RenderComment
               contents={this.state.contents}
               isEditing={this.state.isEditing}
-              handleUpdateComment={this.handleUpdateComment.bind(this)}
+              handleUpdateComment={this.handleUpdateComment}
               editMode={this.editMode}
               editModeDone={this.editModeDone}
+              removeItem={this.removeItem}
+              updateContents={this.updateContents}
             />
           </CardText>
         ]}>

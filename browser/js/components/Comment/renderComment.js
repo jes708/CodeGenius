@@ -47,14 +47,16 @@ export default class RenderComment extends Component {
         open: false
       }
     }
-    this.updateContents = this.updateContents.bind(this);
+    // this.updateContents = this.updateContents.bind(this);
     this.toggleDialog = this.toggleDialog.bind(this);
     this.renderDialog = this.renderDialog.bind(this);
     this.renderComment = this.renderComment.bind(this);
     this.handleSubmitDialog = this.handleSubmitDialog.bind(this);
     this.renderMarkdown = this.renderMarkdown.bind(this);
     this.renderScore = this.renderScore.bind(this);
-    this.removeItem = this.removeItem.bind(this);
+    this.removeItem = this.props.removeItem;
+    this.updateContents = this.props.updateContents;
+    this.renderDialogHandler = this.renderDialogHandler.bind(this);
   }
   componentWillReceiveProps(nextProps){
     let {contents, isEditing} = nextProps;
@@ -118,29 +120,34 @@ export default class RenderComment extends Component {
       </div>
     )
   }
+  renderDialogHandler(){
+    let {contents, isEditing} = this.state;
+    let buttonStyle = styles.assessmentButtons;
+    return this.renderDialog(
+        {
+          title: "Add Markdown",
+          nested: (
+            <div>
+            <MarkdownWrapper
+            handleOnBlur={(event, updateContents = this.updateContents) => {
+              updateContents({markdown: event.target.value})
+            }}
+            markdown={"#Add Markdown here"}
+            editable={true}
+            />
+            </div>
+          )
+        }
+      )()
+  }
   renderMarkdown(){
     let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
     return (
       <span>
     { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" onClick={
-      this.renderDialog(
-        {
-          title: "Add Markdown",
-          nested: (
-            <div>
-              <MarkdownWrapper
-                handleOnBlur={(event, updateContents = this.updateContents) => {
-                  updateContents({markdown: event.target.value})
-                }}
-                markdown={"#Add Markdown here"}
-                editable={true}
-                />
-            </div>
-          )
-        }
-      )
-    }  /> : (
+      this.renderDialogHandler}
+        /> : (
       <div>
         <MarkdownWrapper
           markdown={contents.markdown}
@@ -157,19 +164,6 @@ export default class RenderComment extends Component {
   }
   handleSubmitDialog(){
     this.toggleDialog();
-  }
-  removeItem(itemName){
-    return () => {
-      let contentsToUpdate = {};
-      contentsToUpdate[itemName.toLowerCase()] = null;
-      this.updateContents(contentsToUpdate);
-    }
-  }
-  updateContents(contentsToUpdate){
-    let newContents = Object.assign({}, this.state.contents);
-    let updatedContents = Object.assign(newContents, contentsToUpdate);
-    this.state.contents = updatedContents;
-    this.props.handleUpdateComment(this.state.contents);
   }
   render(){
     return (
@@ -190,9 +184,10 @@ function renderComment () {
           <CommentToolbar
             style={commentStyles.CommentToolbar}
             {...this.props}
-            removeItem={this.removeItem}
+            removeItem={this.props.removeItem}
             editMode={this.props.editMode}
             contents={this.state.contents}
+            addMarkdownHandler={this.renderDialogHandler}
           />
         </ span>
         <span key={id++} >
@@ -244,3 +239,25 @@ function renderComment () {
         </span>
       </div>)
   }
+
+
+
+
+
+  /*this.renderDialog(
+    {
+      title: "Add Markdown",
+      nested: (
+        <div>
+          <MarkdownWrapper
+            handleOnBlur={(event, updateContents = this.updateContents) => {
+              updateContents({markdown: event.target.value})
+            }}
+            markdown={"#Add Markdown here"}
+            editable={true}
+            />
+        </div>
+      )
+    }
+  )
+*/

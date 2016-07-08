@@ -154,7 +154,18 @@ export const updateComment =
           .catch( err => dispatch({
             type: UPDATE_COMMENT_FAILURE,
             payload: err
-          }))}
+          })).then(
+            ()=> dispatch(
+              {
+                type: 'COMMENT_EDIT_DONE',
+                payload: {
+                  key: null,
+                  contents: comment
+                }
+              }
+            )
+          )
+        }
 
 export const deleteComment =
   (commentId, studentId, assessmentId) =>

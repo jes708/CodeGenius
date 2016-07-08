@@ -5,8 +5,34 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {Tags} from '../../containers/Tag';
 import MarkdownWrapper from '../../containers/Markdown';
 import Slider from 'material-ui/Slider';
-import FlatButton from 'material-ui/FlatButton'
+import FlatButton from 'material-ui/FlatButton';
+import IconButton from 'material-ui/IconButton';
 import Dialog from 'material-ui/Dialog';
+
+//Replace the buttons with these icons.  Use tooltips to clarify what each button does
+
+import SvgIcon from 'material-ui/SvgIcon';
+import EditorAttachFile from 'material-ui/svg-icons/editor/attach-file'; //Add Attachment
+import ActionLabel from 'material-ui/svg-icons/action/label'; //Add Tag
+import ImageExposurePlus1 from 'material-ui/svg-icons/image/exposure-plus-1'; //Add Score
+import EditorInsertComment from 'material-ui/svg-icons/editor/insert-comment'; //Add Description (Maybe change to Add Comment)
+import ActionList from 'material-ui/svg-icons/action/list'; //Add Criteria
+import AVPlaylistAdd from 'material-ui/svg-icons/av/playlist-add'; //Add Solution Code
+import CommentToolbar from './CommentToolbar';
+import commentStyles from './styles';
+
+class MarkdownIcon extends Component{
+  constructor(props){
+    super(props)
+  }
+  render(){
+    return(
+      < SvgIcon viewBox="0 0 1024 1024" {...this.props} >
+        <path d="M950.154 192H73.846C33.127 192 0 225.12699999999995 0 265.846v492.308C0 798.875 33.127 832 73.846 832h876.308c40.721 0 73.846-33.125 73.846-73.846V265.846C1024 225.12699999999995 990.875 192 950.154 192zM576 703.875L448 704V512l-96 123.077L256 512v192H128V320h128l96 128 96-128 128-0.125V703.875zM767.091 735.875L608 512h96V320h128v192h96L767.091 735.875z"/>
+      </SvgIcon>
+    )
+  }
+}
 
 export default class RenderComment extends Component {
   constructor(props){
@@ -28,6 +54,7 @@ export default class RenderComment extends Component {
     this.handleSubmitDialog = this.handleSubmitDialog.bind(this);
     this.renderMarkdown = this.renderMarkdown.bind(this);
     this.renderScore = this.renderScore.bind(this);
+    this.removeItem = this.removeItem.bind(this);
   }
   componentWillReceiveProps(nextProps){
     let {contents, isEditing} = nextProps;
@@ -132,6 +159,14 @@ export default class RenderComment extends Component {
   handleSubmitDialog(){
     this.toggleDialog();
   }
+  removeItem(itemName){
+    return () => {
+      console.log('remove item', itemName);
+      let contentsToUpdate = {};
+      contentsToUpdate[itemName.toLowerCase()] = null;
+      this.updateContents(contentsToUpdate);
+    }
+  }
   updateContents(contentsToUpdate){
     let newContents = Object.assign({}, this.state.contents);
     let updatedContents = Object.assign(newContents, contentsToUpdate);
@@ -147,12 +182,21 @@ export default class RenderComment extends Component {
   }
 }
 
-export default function renderComment () {
+function renderComment () {
     let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
     let id = 0;
     return (
       <div>
+        <span key={id++} >
+          <CommentToolbar
+            style={commentStyles.CommentToolbar}
+            {...this.props}
+            removeItem={this.removeItem}
+            editMode={this.props.editMode}
+            contents={this.state.contents}
+          />
+        </ span>
         <span key={id++} >
           {this.renderMarkdown()}
         </span>
@@ -163,7 +207,7 @@ export default function renderComment () {
           {/* (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : "" */}
         </span>
         <span key={id++}>
-          { (!contents.tags && isEditing) ? <RaisedButton style={buttonStyle} label="Add Tag" /> : (
+          { (!contents.tags && isEditing) ? <span>< ActionLabel /><FlatButton style={buttonStyle} label="Add Tag" /></span> : (
         <div>
           <Tags tags={contents.tags} isEditing={isEditing} />
         </div>
@@ -201,5 +245,4 @@ export default function renderComment () {
           </Dialog>
         </span>
       </div>)
-
   }

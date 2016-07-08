@@ -96,6 +96,7 @@ class Comment extends Component {
   }
 
   editMode(){
+    console.log('badoop');
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
   }
   editModeDone(){
@@ -134,6 +135,8 @@ class Comment extends Component {
               contents={this.state.contents}
               isEditing={this.state.isEditing}
               handleUpdateComment={this.handleUpdateComment.bind(this)}
+              editMode={this.editMode}
+              editModeDone={this.editModeDone}
             />
           </CardText>
         ]}>

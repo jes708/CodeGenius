@@ -3,25 +3,23 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import Drawer from 'material-ui/Drawer'
-import { List, ListItem } from 'material-ui/List'
+import MenuItem from 'material-ui/MenuItem';
 
 const SubGradeView = ({ open, files, onSelect }) => {
   return (
     <Drawer
       open={open}
       openSecondary={true}>
-      <List>
-        <ListItem primaryText='Files' />
+      <h4 style={{margin: '15px'}}>Files</h4>
         { files.map((file, i) => {
           return (
-            <ListItem
+            <MenuItem
               key={i}
               primaryText={file}
               onTouchTap={() => { onSelect(file) }}
             />
           )
         })}
-      </List>
     </Drawer>
   )
 }

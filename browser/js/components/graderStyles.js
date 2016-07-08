@@ -29,6 +29,10 @@ const styles = {
   content: {
     padding: 16
   },
+  customIcon: {
+    width: '24px',
+    height: '24px'
+  },
   editAssessment: {
     display: 'inline-block',
     cursor: 'pointer'
@@ -38,7 +42,6 @@ const styles = {
     padding: 20
   },
   gradingInfo: {
-    color: '#FFF',
     padding: 16
   },
   gradingPane: {
@@ -50,6 +53,7 @@ const styles = {
     fontWeight: '300'
   },
   gradingTitle: {
+    color: '#FFF',
     fontSize: 24,
     fontWeight: '400'
   },
@@ -64,7 +68,7 @@ const styles = {
   },
   paperStyle: {
     height: '100%',
-    overflow: 'scroll',
+    overflow: 'scroll'
   },
   graderView: {
     height: '89vh',
@@ -112,7 +116,8 @@ const styles = {
     width: 'auto',
     float: 'right',
     top: 8,
-    position: 'relative'
+    position: 'relative',
+    padding: '0px'
   },
   formPaperStyle: {
     margin: 'auto',

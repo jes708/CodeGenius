@@ -26,7 +26,8 @@ import {Tags} from '../../containers/Tag';
 import FlipMove from 'react-flip-move';
 import renderComment from './renderComment';
 import { annotationAdded } from '../Annotator/actions';
-import { deleteComment } from './apiActions';
+import { deleteComment, updateComment } from './apiActions';
+import RenderComment from './renderComment';
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -69,7 +70,8 @@ class Comment extends Component {
     this.state = {
       contents: this.props.contents
     }
-    this.renderComment = renderComment.bind(this)
+    this.renderComment = renderComment.bind(this);
+    this.editMode = this.editMode.bind(this);
   }
   componentWillReceiveProps(nextProps){
     this.setState({isEditing: nextProps.isEditing});
@@ -97,7 +99,10 @@ class Comment extends Component {
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
   }
   editModeDone(){
-    this.props.dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null}})
+    this.props.dispatch(updateComment(this.state.contents, this.props.commentIndex));
+  }
+  handleUpdateComment(commentState){
+    this.setState({contents: commentState});
   }
 
   render(){
@@ -124,7 +129,14 @@ class Comment extends Component {
         <ListItem primaryText={this.props.contents.title} initiallyOpen={true} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
           <CardText key={0} expandable={true} style={styles.noTopPadding}>
             <hr style={styles.skinny} />
-            {this.renderComment()}
+            {/*this.renderComment()*/}
+            <RenderComment
+              contents={this.state.contents}
+              isEditing={this.state.isEditing}
+              handleUpdateComment={this.handleUpdateComment.bind(this)}
+              editMode={this.editMode}
+              editModeDone={this.editModeDone}
+            />
           </CardText>
         ]}>
         </ListItem>
@@ -145,8 +157,6 @@ const mapStateToProps = (state, props) => {
   let stateToUpdate = Object.assign({}, state);
 
   let thisComment = stateToUpdate.comment.collection.find( comment => comment.commentIndex === props.commentIndex);
-
-  // nextProps.contents = thisComment;
 
   nextProps.isEditing = (
     state.comment.isEditing.key === props.commentIndex ?

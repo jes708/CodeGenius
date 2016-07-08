@@ -10,9 +10,9 @@ import {
   LOAD_STUDENTTESTS_FAILURE,
   UPDATE_STUDENTTEST_SUCCESS,
   UPDATE_STUDENTTEST_FAILURE,
-  LOAD_SINGLESTUDENTTEST_REQUEST,
-  LOAD_SINGLESTUDENTTEST_SUCCESS,
-  LOAD_SINGLESTUDENTTEST_FAILURE
+  LOAD_STUDENTTESTCOMMENT_REQUEST,
+  LOAD_STUDENTTESTCOMMENT_SUCCESS,
+  LOAD_STUDENTTESTCOMMENT_FAILURE
 } from '../actions/studentTestInfoActions'
 import styles from '../components/graderStyles'
 
@@ -48,13 +48,9 @@ export const isFetching = (state = false, action) => {
 }
 
 export const studentTest = (state=[], action) => {
-  const nextState = [...state]
   switch(action.type){
-    case LOAD_SINGLESTUDENTTEST_SUCCESS:
-      action.studentTest.forEach(test => {
-        nextState.push(test)
-      })
-      return nextState
+    case LOAD_STUDENTTESTCOMMENT_SUCCESS:
+      return [...state, ...action.studentTest]
     default:
       return state
   }

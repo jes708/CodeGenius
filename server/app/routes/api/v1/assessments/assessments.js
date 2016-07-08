@@ -149,7 +149,7 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
           from: '"Code Genius" <CodeGenius@codegenius.us>',
           to: test.user.email,
           subject: `${test.assessment.name} graded!`,
-          text: `Visit http://codegenius.us/studenttest/${req.params.id}/${test.id}/${req.params.studentId} to check your assessment!`,
+          text: `Visit http://codegenius.us/studenttest/${test.id}/${req.params.studentId} to check your assessment!`,
         })
         return Promise.all([sendEmail, test.update(req.body)])
       } else {

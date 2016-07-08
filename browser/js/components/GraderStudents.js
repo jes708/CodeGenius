@@ -11,6 +11,7 @@ import { Card, CardActions, CardHeader, CardText } from 'material-ui/Card'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import { getAssessmentTeam } from '../actions/assessmentTeamActions'
 import Toggle from 'material-ui/Toggle'
+import CircularProgress from 'material-ui/CircularProgress'
 import Snackbar from 'material-ui/Snackbar'
 import StudentCard from './StudentCard'
 import styles from './graderStyles'
@@ -76,7 +77,7 @@ class GraderStudents extends Component {
     const { isFetching, dispatch, studentTests } = this.props
 
     if (isFetching) {
-      return (<h1 style={{textAlign: 'center'}}>Loading...</h1>)
+      return (<div style={styles.center}><CircularProgress size={2} /></div>)
     } else {
       return (
         studentTests.sort(function(a,b) {

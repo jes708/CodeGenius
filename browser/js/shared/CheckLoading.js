@@ -1,6 +1,7 @@
 'use strict'
 
-import React, { Component } from 'react'
+import React, { PropTypes } from 'react'
+import CircularProgress from 'material-ui/CircularProgress'
 
 const styles = {
   paperStyle: {
@@ -16,10 +17,14 @@ const CheckLoading = ({ children, isFetching }) => {
   if (isFetching) {
     return (
       <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
-        <h1 style={{textAlign: 'center'}}>Loading...</h1>
+        <CircularProgress size={2} />
       </div>
     )
   } else return children
+}
+
+CheckLoading.propTypes = {
+  isFetching: PropTypes.bool.isRequired
 }
 
 export default CheckLoading

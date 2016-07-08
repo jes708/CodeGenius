@@ -450,7 +450,7 @@ class AssessmentForm extends Component {
     const { stepIndex } = this.state
     const { isFetchingOrgs, orgs } = this.props
 
-    if (isFetchingOrgs && !orgs.length) return <h1>Is Loading...</h1>
+    if (isFetchingOrgs && !orgs.length) return <div style={styles.center}><CircularProgress size={2} /></div>
     else {
       return (
         <Paper style={styles.formPaperStyle}>

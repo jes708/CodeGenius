@@ -60,8 +60,7 @@ function addAssociations(db){
     include: [
       { model: Assessment },
       { model: User },
-      { model: Comment },
-      { model: Tag }
+      { model: Comment }
     ]
   }, { override: true })
 }

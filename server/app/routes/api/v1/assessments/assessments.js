@@ -194,35 +194,7 @@ router.get('/:id/students/:studentId/comments', (req, res, next) => {
       .catch(next);
 })
 
-router.get('/:id/students/:studentId/tags', (req, res, next) => {
-  console.log(req.params.id, req.params.studentId);
-  StudentTest.findOne({
-      where: {
-        assessmentId: req.params.id,
-        userId: req.params.studentId
-      },
-      include:  [Assessment]
-    }).then( studentTest => {
-      console.log(studentTest);
-      return studentTest.getTags()} )
-      .then( tags => res.status(200).send( tags ) )
-      .catch(next);
-})
 
-router.post('/:id/students/:studentId/tags', (req, res, next) => {
-  console.log(req.params.id, req.params.studentId);
-  StudentTest.findOne({
-      where: {
-        assessmentId: req.params.id,
-        userId: req.params.studentId
-      },
-      include:  [Assessment]
-    }).then( studentTest => {
-      if(!studentTest) throw 'no student test'
-      return studentTest.createTag(req.body)} )
-      .then( tag => res.status(201).send( tag ) )
-      .catch(next);
-})
 
 respondWith404(router);
 

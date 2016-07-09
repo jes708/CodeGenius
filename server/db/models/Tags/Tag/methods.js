@@ -21,17 +21,16 @@ function addAssociations( db ) {
   const StudentTest = db.models['studentTest'];
   const Tag = db.models[ 'tag' ];
   const ItemTag = db.models['itemTag'];
+  const Comment = db.models['comment'];
 
-  // Assessment.hasMany(ItemTag, {as: 'tag'});
-
-  StudentTest.belongsToMany(Tag, {
+  Comment.belongsToMany(Tag, {
     through: {model: ItemTag, unique: false},
     otherKey: 'tagId'
   });
 
-  Tag.belongsToMany(StudentTest, {
+  Tag.belongsToMany(Comment, {
     through: {model: ItemTag, unique: false},
-    otherKey: 'studentTestId'
+    otherKey: 'commentId'
   });
 
   // ItemTag.addScope('defaultScope', {

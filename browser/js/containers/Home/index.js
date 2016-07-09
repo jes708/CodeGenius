@@ -10,6 +10,7 @@ import { Router } from 'react-router'
 
 const styles = {
   header: {
+    marginTop: '56px',
     textAlign: 'center',
     fontSize: '100px',
     color: '#fdfdfd',
@@ -20,7 +21,7 @@ const styles = {
   paperHeader: {
     backgroundColor: blue600,
     padding: '20px',
-    marginBottom:'60px'
+    marginBottom:'60px',
   },
   paperStyle: {
     background: 'url("http://i.imgur.com/3GPNYHn.jpg") no-repeat center center fixed',

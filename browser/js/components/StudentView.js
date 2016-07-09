@@ -33,7 +33,7 @@ const ManageStudentTest = ({comments}) => {
     })
     return (
       <div style={{...styles.gradingPane, ...styles.paperStyle}}>
-        Your score: {score}
+        <span style={styles.gradingSubtitle}>Your score: {score}</span>
       </div>
     )
   } else {
@@ -59,9 +59,11 @@ class GradeView extends Component {
             {this.props.studentTest.assessment
               ? <AssessmentCard
                 assessment= {this.props.studentTest.assessment}
+                student={this.props.studentTest.user}
                 editable={false}
                 showTeam={false}
                 showUrl={false}
+                showStudents={true}
                 />
               :null
             }

@@ -256,7 +256,7 @@ class AssessmentCard extends Component {
           {this.renderTeamName()}
           {this.renderUrl()}
           {this.renderStudent()}
-        <CardActions>
+        <CardActions style={{padding: '8px 0 0 0'}}>
           {this.renderRefresh()}
           {this.renderSubmit(buttonTitle, dialogMessage)}
         </CardActions>

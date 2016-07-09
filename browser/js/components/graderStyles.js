@@ -3,6 +3,14 @@
 import { blue600 } from 'material-ui/styles/colors'
 
 const styles = {
+  absoluteLeft: {
+    position: 'absolute',
+    left: 0
+  },
+  absoluteRight: {
+    position: 'absolute',
+    right: 0
+  },
   addBtn: {
     marginLeft: 20,
     backgroundColor: '#000',
@@ -18,7 +26,8 @@ const styles = {
   },
   assessmentInfo: {
     padding: '20px',
-    backgroundColor: '#1E88E5'
+    backgroundColor: '#1E88E5',
+    overflow: 'hidden'
   },
   blueBg: {
     backgroundColor: blue600
@@ -37,6 +46,11 @@ const styles = {
     display: 'inline-block',
     cursor: 'pointer'
   },
+  fullyGraded: {
+    width: '120px',
+    float: 'left',
+    paddingTop: '7px'
+  },
   formPaperStyle: {
     margin: 'auto',
     padding: 20
@@ -53,12 +67,23 @@ const styles = {
   gradingSubtitle: {
     fontSize: 16,
     color: '#F5F5F5',
-    fontWeight: '300'
+    fontWeight: '300',
+    minWidth: '220px'
   },
   gradingTitle: {
     color: '#FFF',
     fontSize: 24,
     fontWeight: '400'
+  },
+  iconButtonLarge: {
+    height: '60px',
+    width: '60px',
+    color: '#F5F5F5'
+  },
+  iconLarge: {
+    height: '30px',
+    width: '30px',
+    fill: 'white'
   },
   inactiveCard: {
     backgroundColor: '#aaa'
@@ -78,7 +103,14 @@ const styles = {
     overflow: 'scroll'
   },
   roundedCard: {
-    borderRadius: 50
+    borderRadius: 50,
+    height: '75px'
+  },
+  score: {
+    color: 'white',
+    textAlign: 'center',
+    position: 'relative',
+    right: '5px'
   },
   skinny: {
     margin: 0,
@@ -90,7 +122,8 @@ const styles = {
   student: {
     borderRadius: '50%',
     height: 40,
-    marginRight: 10
+    marginRight: 10,
+    float: 'left'
   },
   studentIcon: {
     top: 7,
@@ -102,6 +135,20 @@ const styles = {
     color: 'black',
     fontWeight: 600,
     fontSize: '11px'
+  },
+  studentLarge: {
+    borderRadius: '50%',
+    height: '45px',
+    marginTop: '10px'
+  },
+  studentName: {
+    textAlign: 'center',
+    color: 'white',
+    position: 'relative',
+    right: '5px'
+  },
+  studentNameAndScore: {
+    float: 'left'
   },
   svgOutline: {
     background: 'white',

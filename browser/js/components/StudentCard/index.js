@@ -13,7 +13,7 @@ import { green500, red500 } from 'material-ui/styles/colors'
 
 const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
 
-  const { user, userId, isStudent } = studentTest
+  const { user, userId, isStudent, score } = studentTest
   let style = isStudent ? styles.infoCard : styles.inactiveCard;
 
   const renderIcon = () => {
@@ -54,6 +54,13 @@ const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
           <AlertError color={red500} />
         </IconButton>
       )
+    } else {
+      return (
+        <ImageLens
+          style={Object.assign({}, styles.toggle, styles.studentIcon)}
+          color='transparent'
+        />
+      )
     }
   }
 
@@ -63,7 +70,7 @@ const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
         <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}
           onClick={() => { onSelect(user.id) }}>
           <img src={user.photo} alt={user.name} style={styles.student}/>
-          {user.name}
+          <span style={styles.studentNameAndScore}>{user.name}<br/><span style={{fontSize: '15px'}}>Score: <span style={{fontWeight: 500}}>{score}</span></span></span>
         </div>
         {renderIcon()}
         <Toggle toggled={isStudent} onToggle={() => onToggle(userId, !isStudent)} style={styles.toggle}/>

@@ -13,37 +13,32 @@ import {getComments, postComment, getCommentsByStudentAndAssessment, postComment
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 
-function buildGraderPanel(dispatch){
-  return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
-}
+// function buildGraderPanel(dispatch){
+//   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
+// }
 
-export default class GraderPanel extends Component {
-
-  constructor(props){
-    super(props)
-  }
-
-  render ()
-  {
+const StudentViewComments = ({ comments }) => {
+  if (comments) {
     return (
       <div style={{...styles.gradingPane, ...styles.paperStyle}}>
         <div style={styles.content}>
           <List>
-              {(this.props.comments.length) ? (
-                this.props.comments.map((contents, index) => {
-                    return (
-                      <Card key={index}>
-                        <CardText>
-                          <pre>{contents.selectionString}</pre>
-                          {contents.description}
-                        </CardText>
-                      </Card>
-                    )
-                  })) : null
-              }
+            {comments.map((contents, index) => {
+              return (
+                <Card key={index}>
+                  <CardText>
+                    <pre>{contents.selectionString}</pre>
+                    {contents.description}
+                  </CardText>
+                </Card>
+              )
+            })}
           </List>
         </div>
       </div>
     )
-  }
+  } else return <div></div>
 }
+
+export default StudentViewComments
+

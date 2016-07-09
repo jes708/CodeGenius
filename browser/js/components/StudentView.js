@@ -70,6 +70,7 @@ class GradeView extends Component {
   }
 
   switcher() {
+    console.log('GRADE TEST:', this.props.studentTest)
     switch (this.state.current) {
       case 'Panel':
         return (
@@ -87,7 +88,6 @@ class GradeView extends Component {
   //   showUrl={false}
   //   />
   render () {
-    console.log(this.props)
       return (
           <div className={this.props.className}>
             <Paper style={styles.panelStyle}>
@@ -122,6 +122,7 @@ class Grade extends Component {
   }
 
   render(){
+    console.log('THE TESTTT:', this.props.studentTest)
     return (
       <div style={styles.main}>
         <div className='col-lg-8'>
@@ -137,7 +138,6 @@ class Grade extends Component {
 
 const mapStateToProps = (state, { params }) => {
   const { studentTest } = state.studentTestInfo
-  console.log('current assessment', studentTest.assessment)
   return {
     params,
     studentTest

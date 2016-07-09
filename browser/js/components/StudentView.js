@@ -140,12 +140,11 @@ class Grade extends Component {
   componentDidMount() {
     const { assessmentId, studentTestId, userId} = this.props.params
     this.props.dispatch(switchAssessment(assessmentId, userId, true))
-    this.props.dispatch(getOwnStudentTest(studentTestId))
   }
 
   render(){
     return (
-      <div>
+      <div style={styles.main}>
         <div className='col-lg-8'>
           <GraderView />
         </div>

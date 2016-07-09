@@ -37,9 +37,10 @@ export function getStudentTestInfo (assessmentId, studentId) {
   }
 }
 
-export const getOwnStudentTest = (studentTestId) => (dispatch) => {
+export const getOwnStudentTest = (assessmentId, studentId) => (dispatch) => {
   dispatch({ type: LOAD_SINGLESTUDENTTEST_REQUEST })
-  return axios.get(`/api/v1/assessments/studentTest/${studentTestId}`)
+  // getOwnStudentTest(res.data.id, userId)
+  return axios.get(`/api/v1/assessments/${assessmentId}/students/${studentId}/comments`)
   .then(res => dispatch({ type: LOAD_SINGLESTUDENTTEST_SUCCESS, studentTest: res.data }))
   .catch(err => dispatch({ type: LOAD_SINGLESTUDENTTEST_FAILURE, err }))
 

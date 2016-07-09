@@ -15,7 +15,7 @@ export const SWITCH_ASSESSMENT_REQUEST = 'SWITCH_ASSESSMENT_REQUEST'
 export const SWITCH_ASSESSMENT_SUCCESS = 'SWITCH_ASSESSMENT_SUCCESS'
 export const SWITCH_ASSESSMENT_FAILURE = 'SWITCH_ASSESSMENT_FAILURE'
 import { getAssessment } from '../reducers/assessments'
-import { getStudentTestsInfo, getStudentTestInfo } from '../actions/studentTestInfoActions'
+import { getStudentTestsInfo, getOwnStudentTest } from '../actions/studentTestInfoActions'
 
 const API_URL = '/api/v1'
 const USER_URL = `${API_URL}/users`
@@ -68,7 +68,7 @@ export const switchAssessment = (id, userId, option) => (dispatch, getState) => 
     .then(res => {
       dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: res.data })
       if (option) {
-        dispatch(getStudentTestInfo(res.data.id, userId))
+        dispatch(getOwnStudentTest(res.data.id, userId))
       } else {
         dispatch(getStudentTestsInfo(res.data.id))
       }

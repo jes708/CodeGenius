@@ -13,7 +13,10 @@ import {
   UPDATE_STUDENTTESTINFO_SUCCESS,
   LOAD_SINGLESTUDENTTEST_REQUEST,
   LOAD_SINGLESTUDENTTEST_SUCCESS,
-  LOAD_SINGLESTUDENTTEST_FAILURE
+  LOAD_SINGLESTUDENTTEST_FAILURE,
+  LOAD_ALLSTUDENTTESTSBYSTUDENTID_REQUEST,
+  LOAD_ALLSTUDENTTESTSBYSTUDENTID_SUCCESS,
+  LOAD_ALLSTUDENTTESTSBYSTUDENTID_FAILURE
 } from '../actions/studentTestInfoActions'
 import styles from '../components/graderStyles'
 
@@ -37,6 +40,23 @@ export const byId = (state = {}, action) => {
   }
 }
 
+export const studentTestsById = (state={}, action) => {
+  switch(action.type) {
+    case LOAD_ALLSTUDENTTESTSBYSTUDENTID_REQUEST:
+      return {...state, isFetching: true}
+    case LOAD_ALLSTUDENTTESTSBYSTUDENTID_SUCCESS:
+      const nextState = {...state}
+      action.studentTests.forEach(studentTest => {
+        nextState[studentTest.id] = studentTest
+      })
+      return {...nextState, isFetching: false}
+    case LOAD_ALLSTUDENTTESTSBYSTUDENTID_FAILURE:
+      return {...state, isFetching: false}
+    default:
+      return state
+  }
+}
+
 export const isFetching = (state = false, action) => {
   switch (action.type) {
     case LOAD_STUDENTTESTS_REQUEST:
@@ -49,14 +69,10 @@ export const isFetching = (state = false, action) => {
   }
 }
 
-export const studentTest = (state=[], action) => {
-  const nextState = [...state]
+export const studentTest = (state={}, action) => {
   switch(action.type){
     case LOAD_SINGLESTUDENTTEST_SUCCESS:
-      action.studentTest.forEach(test => {
-        nextState.push(test)
-      })
-      return nextState
+      return {...state, ...action.studentTest}
     default:
       return state
   }
@@ -65,7 +81,8 @@ export const studentTest = (state=[], action) => {
 export default combineReducers({
   byId,
   isFetching,
-  studentTest
+  studentTest,
+  studentTestsById
 })
 
 export const getAssessmentStudentTests = (state, assessmentId) => {
@@ -75,3 +92,10 @@ export const getAssessmentStudentTests = (state, assessmentId) => {
 }
 export const getAllStudentTests = (state) => Object.keys(state).map(id => state[id])
 export const getStudentTestFor = (state, userId) => Object.keys(state).map(userId => state[userId])
+
+export const getStudentTestById = (state, testId) => {
+  let studentTests = Object.keys(state)
+  .map(id => state[id])
+  .filter(test => test.id === Number(testId))
+  if(studentTests.length) return studentTests[0]
+}

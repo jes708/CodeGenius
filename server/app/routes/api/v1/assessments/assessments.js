@@ -191,6 +191,17 @@ router.get('/:id/students/:studentId/comments', (req, res, next) => {
       .catch(next);
 })
 
+router.get('/studentTest/all', ensureAuthenticated, (req, res, next) => {
+  StudentTest.findAll({
+    where: {
+      userId: req.user.id
+    },
+    include: [Assessment]
+  })
+  .then(studentTests => res.send(studentTests))
+  .catch(next)
+})
+
 router.get('/studentTest/:studentTestId', ensureAuthenticated, (req, res, next) => {
   StudentTest.findOne({
     where: {
@@ -199,10 +210,10 @@ router.get('/studentTest/:studentTestId', ensureAuthenticated, (req, res, next) 
     },
     include: [Assessment]
   })
-  .then(studentTest => studentTest.getComments())
-  .then(comments => res.send(comments))
+  .then(studentTest => res.send(studentTest))
   .catch(next)
 })
+
 
 respondWith404(router);
 

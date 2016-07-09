@@ -1,8 +1,6 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
-import axios from "axios"
-import { PrismCode } from 'react-prism';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
@@ -14,7 +12,6 @@ import { Toolbar } from 'material-ui/Toolbar';
 import { Tab, Tabs } from 'material-ui/Tabs';
 import GraderAssessments from './GraderAssessments';
 import GraderStudents from './GraderStudents';
-import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import SocialGroup from 'material-ui/svg-icons/social/group';
 import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in';
@@ -24,6 +21,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { switchAssessment } from '../actions/assessmentActions'
 import { getOwnStudentTest } from '../actions/studentTestInfoActions'
+import AssessmentCard from './AssessmentCard'
 
 const styles = {
   main: {
@@ -94,6 +92,13 @@ class GradeView extends Component {
       case 'Panel':
         return (
           <div>
+            <AssessmentCard
+              assessment={this.props.assessment}
+              editable={false}
+              showStudents={true}
+              showTeam={false}
+              showUrl={false}
+              />
             <StudentViewComments />
           </div>
         );
@@ -111,7 +116,10 @@ class GradeView extends Component {
                 />
               </Tabs>
               <div style={styles.panel}>
-                {this.switcher()}
+                {this.props.assessment
+                  ? this.switcher()
+                  : null
+                }
               </div>
             </Paper>
           </div>
@@ -150,8 +158,12 @@ class Grade extends Component {
 }
 
 const mapStateToProps = (state, { params }) => {
+  const { assessments } = state
+  let assessment = (assessments.current.base) ? assessments.current.base : {}
+  console.log('current assessment', assessment)
   return {
-    params
+    params,
+    assessment
   }
 }
 

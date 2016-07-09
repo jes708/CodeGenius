@@ -50,6 +50,8 @@ function addAssociations(db){
   const Assessment = db.models['assessment'];
   const User = db.models['user'];
   const Comment = db.models['comment'];
+  const ItemTag = db.models['itemTag'];
+  const Tag = db.models['tag'];
 
   StudentTest.belongsTo(Assessment);
   StudentTest.belongsTo(User, {constraints: false});
@@ -58,7 +60,8 @@ function addAssociations(db){
     include: [
       { model: Assessment },
       { model: User },
-      { model: Comment }
+      { model: Comment },
+      { model: Tag }
     ]
   }, { override: true })
 }

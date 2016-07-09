@@ -21,7 +21,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { switchAssessment } from '../actions/assessmentActions'
 import { getOwnStudentTest } from '../actions/studentTestInfoActions'
-import AssessmentCard from './AssessmentCard'
 
 const styles = {
   main: {

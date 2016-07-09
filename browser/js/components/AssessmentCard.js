@@ -16,7 +16,7 @@ class AssessmentCard extends Component {
         <IconButton
           style={{ float: 'right' }}
           iconStyle={{ color: '#fff' }}
-          iconClassName={'fa fa-pencil'}
+          iconClassName={'fa npfa-pencil'}
           tooltip='Edit Assessment'
           onTouchTap={() => onEdit(assessment)}
         />

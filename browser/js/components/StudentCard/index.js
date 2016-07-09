@@ -17,15 +17,28 @@ const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
   let style = isStudent ? styles.infoCard : styles.inactiveCard;
 
   const renderIcon = () => {
-    if (studentTest.isGraded) {
+    if (studentTest.isSent) {
+      return (
+        <IconButton
+          tooltip='Sent to Student'
+          tooltipPosition='bottom-left'
+          style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+        >
+          <ActionCheckCircle
+            style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+            color={green500}
+          />
+        </IconButton>
+      )
+    } else if (studentTest.isGraded) {
       return (
         <IconButton
           tooltip='Fully graded'
           tooltipPosition='bottom-left'
           style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
         >
-          <ActionCheckCircle
-            style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+          <ImageLens
+            style={Object.assign({}, styles.toggle, styles.studentIcon)}
             color={green500}
           />
         </IconButton>
@@ -40,13 +53,6 @@ const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
         >
           <AlertError color={red500} />
         </IconButton>
-      )
-    } else {
-      return (
-        <ImageLens
-          style={Object.assign({}, styles.toggle, styles.studentIcon)}
-          color={'transparent'}
-        />
       )
     }
   }

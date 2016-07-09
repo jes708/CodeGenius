@@ -65,6 +65,7 @@ class GraderPanel extends Component {
         <div style={styles.content}>
           <AssessmentCard
             {...this.props}
+            showSubmit={true}
             editable={false}
             showStudents={true}
             showTeam={false}

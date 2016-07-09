@@ -22,24 +22,8 @@ import { withRouter } from 'react-router'
 import { switchAssessment } from '../actions/assessmentActions'
 import { getOwnStudentTest, getStudentTestByStudentId } from '../actions/studentTestInfoActions'
 import { getStudentTestById } from '../reducers/studentTestInfo'
-import AssessmentCard from './AssessmentCard'
+import StudentTestCard from './StudentTestCard'
 import styles from './graderStyles'
-
-const ManageStudentTest = ({comments}) => {
-  if (comments) {
-    let score = 0
-    Object.keys(comments).forEach(key => {
-      score += comments[key].score
-    })
-    return (
-      <div style={{...styles.gradingPane, ...styles.paperStyle}}>
-        <span style={styles.gradingSubtitle}>Your score: {score}</span>
-      </div>
-    )
-  } else {
-    return <div></div>
-  }
-}
 
 class GradeView extends Component {
   constructor(props) {
@@ -52,22 +36,23 @@ class GradeView extends Component {
 
   switcher() {
     const { comments } = this.props.studentTest
+    let score = 0
+    if (comments) {
+      Object.keys(comments).forEach(key => {
+        score += comments[key].score
+      })
+    }
     switch (this.state.current) {
       case 'Panel':
         return (
           <div>
             {this.props.studentTest.assessment
-              ? <AssessmentCard
+              ? <StudentTestCard
                 assessment= {this.props.studentTest.assessment}
-                student={this.props.studentTest.user}
-                editable={false}
-                showTeam={false}
-                showUrl={false}
-                showStudents={true}
+                score={score}
                 />
               :null
             }
-            <ManageStudentTest comments={this.props.studentTest.comments} />
             <StudentViewComments comments={this.props.studentTest.comments} />
           </div>
         );
@@ -105,38 +90,28 @@ class Grade extends Component {
 
   componentWillMount() {
     const {studentTestId} = this.props.params
-    this.props.dispatch(getStudentTestByStudentId())
-  }
-
-  renderMain() {
-    if(this.props.studentTest) {
-      return (
-        <div>
-          <div className='col-lg-8'>
-            <GraderView />
-          </div>
-          <div className='col-lg-4'>
-            <GradeView studentTest={this.props.studentTest} />
-          </div>
-        </div>
-      )
-    }
+    this.props.dispatch(getOwnStudentTest(studentTestId))
   }
 
   render(){
     return (
       <div style={styles.main}>
-        {this.renderMain()}
+        <div className='col-lg-8'>
+          <GraderView />
+        </div>
+        <div className='col-lg-4'>
+          <GradeView studentTest={this.props.studentTest} />
+        </div>
       </div>
     )
   }
 }
 
 const mapStateToProps = (state, { params }) => {
-  // const { studentTest } = state.studentTestInfo
+  const { studentTest } = state.studentTestInfo
   return {
     params,
-    studentTest: getStudentTestById(state.studentTestInfo.studentTestsById, params.studentTestId)
+    studentTest
   }
 }
 

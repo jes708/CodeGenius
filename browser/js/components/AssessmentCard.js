@@ -215,6 +215,21 @@ class AssessmentCard extends Component {
     }
   }
 
+  renderRefresh() {
+    console.log(this.props.refresh)
+    if (this.props.refresh) {
+      return (
+        <FlatButton
+          label='Refresh Repos'
+          onTouchTap={this.props.refresh}
+          hoverColor={'#2196F3'}
+          rippleColor={'#90CAF9'}
+          style={{color: '#F5F5F5', float: 'left'}}
+        />
+      )
+    }
+  }
+
   render () {
     const { assessment, onSelect, student } = this.props
     
@@ -241,7 +256,10 @@ class AssessmentCard extends Component {
           {this.renderTeamName()}
           {this.renderUrl()}
           {this.renderStudent()}
+        <CardActions>
+          {this.renderRefresh()}
           {this.renderSubmit(buttonTitle, dialogMessage)}
+        </CardActions>
       </Paper>
     )
   }
@@ -256,7 +274,8 @@ AssessmentCard.propTypes = {
 AssessmentCard.defaultProps = {
   showTeam: true,
   showUrl: true,
-  showSubmit: false
+  showSubmit: false,
+  refresh: false
 }
 
 export default AssessmentCard

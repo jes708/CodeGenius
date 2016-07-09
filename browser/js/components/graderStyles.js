@@ -49,7 +49,7 @@ const styles = {
   fullyGraded: {
     width: '120px',
     float: 'left',
-    paddingTop: '7px'
+    paddingTop: '15px'
   },
   formPaperStyle: {
     margin: 'auto',

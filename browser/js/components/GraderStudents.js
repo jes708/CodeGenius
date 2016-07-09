@@ -114,9 +114,9 @@ class GraderStudents extends Component {
         <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
           <AssessmentCard
-            assessment={this.props.assessment}
+            {...this.props}
+            showSubmit={true}
             editable={false}
-            student={true}
           />
           <RaisedButton
             label='Refresh Students'

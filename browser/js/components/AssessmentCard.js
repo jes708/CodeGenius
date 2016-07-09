@@ -6,13 +6,21 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import AssessmentForm from './AssessmentForm'
 import styles from './graderStyles'
-import { getStudentTestInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
+import { getStudentTestInfo, putStudentTestInfo, putStudentTestsInfo } from '../actions/studentTestInfoActions'
 import { CardActions } from 'material-ui/Card'
 import Checkbox from 'material-ui/Checkbox'
+import Dialog from 'material-ui/Dialog'
 import { green500 } from 'material-ui/styles/colors'
 
 
 class AssessmentCard extends Component {
+
+  constructor(props){
+    super(props)
+    this.state = {
+      open: false
+    }
+  }
 
   handleStudentShift(direction) {
     const { assessment, dispatch, student, studentTests } = this.props
@@ -47,8 +55,74 @@ class AssessmentCard extends Component {
     dispatch(putStudentTestInfo(assessment.id, student.userId, {isGraded: !student.isGraded}))
   }
 
+  handleOpen() {
+    this.setState({open: true})
+  }
+
+  handleClose() {
+    this.setState({open: false})
+  }
+
+  handleSubmitToStudent() {
+    const { assessment, dispatch, student } = this.props;
+    this.setState({open: false});
+    dispatch(putStudentTestInfo(assessment.id, student.userId, {isSent: true}));
+  }
+
+  handleSubmitToStudents() {
+    const { assessment, dispatch, studentTests } = this.props;
+    this.setState({open: false});
+    studentTests.forEach(test => {
+      if (test.assessmentId === assessment.id && test.isGraded) {
+        dispatch(putStudentTestInfo(assessment.id, test.userId, {isSent: true}));
+      }
+    })
+    
+  }
+
+  renderSubmit(buttonTitle, dialogMessage) {
+    if (this.props.showSubmit) {
+      let handleTouchTap = this.props.showStudents ? this.handleSubmitToStudent.bind(this) : this.handleSubmitToStudents.bind(this)
+        const actions = [
+          <FlatButton
+            label="Cancel"
+            primary={true}
+            onTouchTap={this.handleClose.bind(this)}
+          />,
+          <FlatButton
+            label="Confirm"
+            primary={true}
+            keyboardFocused={true}
+            onTouchTap={handleTouchTap}
+          />,
+        ];
+
+      return (
+        <div>
+          <FlatButton
+            label={buttonTitle}
+            onTouchTap={this.handleOpen.bind(this)}
+            hoverColor={'#2196F3'}
+            rippleColor={'#90CAF9'}
+            style={{color: '#F5F5F5'}}
+          />
+          <Dialog
+            title="Confirm Submit"
+            actions={actions}
+            modal={true}
+            open={this.state.open}
+            onRequestClose={this.handleClose.bind(this)}
+          >
+            {dialogMessage}
+          </Dialog>
+        </div>
+      )
+    }
+  }
+
   renderStudentInfo() {
-    if (this.props.showStudents) {
+
+    if (this.props.showStudents) {  
       const { student } = this.props
       if (student.user) {
         return (
@@ -61,7 +135,6 @@ class AssessmentCard extends Component {
             inputStyle={{color: 'green', background: 'green'}}
             labelStyle={{color: 'white', fontWeight: 300}}
             iconStyle={{fill: 'white'}}
-            // style={{fill: 'green'}}
             checked={student.isGraded}
             onCheck={this.handleCheck.bind(this)}
           />
@@ -137,12 +210,23 @@ class AssessmentCard extends Component {
   }
 
   render () {
-    const { assessment, onSelect } = this.props
+    const { assessment, onSelect, student } = this.props
+    
+    let buttonTitle, dialogMessage, fn;
+    if (onSelect) fn = () => onSelect(assessment.id);
+
+    if (this.props.showStudents && student.user) {
+      buttonTitle = student.isSent ? 'Submitted' : 'Submit to Student'
+      dialogMessage = student.isSent ? `You have already sent ${student.user.name} your evaluation. Send again?` : `Send ${student.user.name} your evaluation?`
+    } else if (this.props.showSubmit) {
+      buttonTitle = 'Submit all graded';
+      dialogMessage = 'Send all fully graded students their evaluations?';
+    }
 
     return (
       <Paper style={Object.assign({}, styles.assessmentInfo, styles.skinny)}>
         <div>
-          <div onTouchTap={() => onSelect(assessment.id)}
+          <div onTouchTap={fn}
             style={Object.assign({}, styles.editAssessment, styles.gradingTitle)}>
             {assessment.name}
           </div>
@@ -151,7 +235,7 @@ class AssessmentCard extends Component {
           {this.renderTeamName()}
           {this.renderUrl()}
           {this.renderStudent()}
-          
+          {this.renderSubmit(buttonTitle, dialogMessage)}
       </Paper>
     )
   }
@@ -165,7 +249,8 @@ AssessmentCard.propTypes = {
 
 AssessmentCard.defaultProps = {
   showTeam: true,
-  showUrl: true
+  showUrl: true,
+  showSubmit: false
 }
 
 export default AssessmentCard

@@ -60,24 +60,6 @@ const styles = {
   }
 }
 
-class AnnotatedGrade extends Component {
-  constructor(props){
-    super(props)
-  }
-
-  render(){
-    return (
-      <div style={styles.main}>
-        <AnnotationHandler {...this.props} className='col-lg-8' >
-          <Grade />
-        </AnnotationHandler>
-        <GradeView tab={this.props.location.tab} className='col-lg-4' />
-      </div>
-    )
-  }
-}
-
-
 class GradeView extends Component {
   constructor(props) {
     super(props)
@@ -92,16 +74,20 @@ class GradeView extends Component {
       case 'Panel':
         return (
           <div>
-            {this.props.studentTest.comments
-              ? 'something'
-            : null
-            }
-        </div>
+            <StudentViewComments comments={this.props.studentTest.comments} />
+          </div>
         );
     }
   }
 
+  // <AssessmentCard
+  //   assessment= {this.props.studentTest.assessment}
+  //   editable={false}
+  //   showTeam={false}
+  //   showUrl={false}
+  //   />
   render () {
+    console.log(this.props)
       return (
           <div className={this.props.className}>
             <Paper style={styles.panelStyle}>
@@ -142,7 +128,7 @@ class Grade extends Component {
           <GraderView />
         </div>
         <div className='col-lg-4'>
-          <GradeView />
+          <GradeView studentTest={this.props.studentTest} />
         </div>
       </div>
     )

@@ -23,7 +23,8 @@ export default class GraderPanel extends Component {
     super(props)
   }
 
-  render () {
+  render ()
+  {
     return (
       <div style={{...styles.gradingPane, ...styles.paperStyle}}>
         <div style={styles.content}>

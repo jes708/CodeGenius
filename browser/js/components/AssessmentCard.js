@@ -18,14 +18,14 @@ class AssessmentCard extends Component {
     const { assessment, dispatch, student, studentTests } = this.props
 
     let currentId = String(student.id);
-    
+
     let actualStudentsTests = [];
     for (let testId in studentTests) {
       if (studentTests[testId].isStudent && studentTests[testId].repoUrl) actualStudentsTests.push(testId)
     }
 
     if (actualStudentsTests.length < 2) return;
- 
+
     let currentIndex = actualStudentsTests.indexOf(currentId);
     let newIndex;
 
@@ -72,10 +72,10 @@ class AssessmentCard extends Component {
   }
 
   renderStudent () {
-    
+
     if (this.props.showStudents) {
       const { assessment } = this.props
-      
+
       return(
         <div>
           {this.renderStudentInfo()}
@@ -136,22 +136,35 @@ class AssessmentCard extends Component {
     }
   }
 
-  render () {
+  renderEditAssessment() {
     const { assessment, onSelect } = this.props
+    if (onSelect) {
+      return (
+        <div onTouchTap={() => onSelect(assessment.id)}
+          style={Object.assign({}, styles.editAssessment, styles.gradingTitle)}>
+          {assessment.name}
+        </div>
+      )
+    } else {
+      return (
+        <div
+          style={Object.assign({}, styles.editAssessment, styles.gradingTitle)}>
+          {assessment.name}
+        </div>
+      )
+    }
+  }
 
+  render () {
     return (
       <Paper style={Object.assign({}, styles.assessmentInfo, styles.skinny)}>
         <div>
-          <div onTouchTap={() => onSelect(assessment.id)}
-            style={Object.assign({}, styles.editAssessment, styles.gradingTitle)}>
-            {assessment.name}
-          </div>
           {this.renderEdit()}
+          {this.renderEditAssessment()}
         </div>
           {this.renderTeamName()}
           {this.renderUrl()}
           {this.renderStudent()}
-          
       </Paper>
     )
   }

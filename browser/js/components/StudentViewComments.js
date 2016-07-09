@@ -13,10 +13,6 @@ import {getComments, postComment, getCommentsByStudentAndAssessment, postComment
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 
-// function buildGraderPanel(dispatch){
-//   return dispatch({type: 'COMMENT_EDIT_DONE', payload: {key: null} })
-// }
-
 const StudentViewComments = ({ comments }) => {
   if (comments) {
     return (
@@ -41,4 +37,3 @@ const StudentViewComments = ({ comments }) => {
 }
 
 export default StudentViewComments
-

@@ -39,8 +39,6 @@ class Navbar extends Component {
   componentWillMount () {
     const { user, dispatch, pathname } = this.props
 
-    console.log(pathname)
-
     if (!user) {
       dispatch(getLoggedInUser(pathname))
     }

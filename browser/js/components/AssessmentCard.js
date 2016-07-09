@@ -78,7 +78,6 @@ class AssessmentCard extends Component {
         dispatch(putStudentTestInfo(assessment.id, test.userId, {isSent: true}));
       }
     })
-
   }
 
   renderSubmit(buttonTitle, dialogMessage) {
@@ -232,7 +231,6 @@ class AssessmentCard extends Component {
 
   render () {
     const { assessment, onSelect, student } = this.props
-
     let buttonTitle, dialogMessage, fn;
     if (onSelect) fn = () => onSelect(assessment.id);
 

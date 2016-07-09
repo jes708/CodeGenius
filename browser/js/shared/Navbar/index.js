@@ -15,7 +15,7 @@ import { AUTH_USER_REQUEST, logout, getLoggedInUser } from '../../actions/AuthAc
 
 const styles = {
   shrinkMarginLeft: {
-    marginLeft: -8,
+    marginLeft: 5,
     marginRight: 0
   },
   fullHeightButton: {
@@ -31,15 +31,11 @@ const styles = {
   }
 }
 
-const NAV_ITEMS = [
-  { label: 'Grade', path: '/grade', auth: true }
-]
+const NAV_ITEMS = []
 
 class Navbar extends Component {
   componentWillMount () {
     const { user, dispatch, pathname } = this.props
-
-    console.log(pathname)
 
     if (!user) {
       dispatch(getLoggedInUser(pathname))
@@ -76,12 +72,13 @@ class Navbar extends Component {
       return (
         <ToolbarGroup style={styles.rightSide}>
           <Avatar src={this.props.user.photo } size={30} style={{alignSelf: 'center', marginRight: 10}} />
-          <ToolbarTitle text={this.props.user.name} style={{paddingRight: 0}} />
+          <ToolbarTitle text={this.props.user.name} />
           <RaisedButton
             label="Logout"
             primary={true}
             linkButton={true}
             onClick={this.handleLogout.bind(this)}
+            style={styles.shrinkMarginLeft}
           />
         </ToolbarGroup>
       )
@@ -101,14 +98,20 @@ class Navbar extends Component {
   }
 
   render () {
+    const { pathname } = this.props
     return (
-      <Toolbar>
-        <ToolbarGroup>
-          <ToolbarTitle text='CodeGenius' style={styles.growMarginRight} />
-          {this.renderNavItems()}
-        </ToolbarGroup>
-        {this.renderAuthButtons()}
-      </Toolbar>
+      <div>
+        { pathname !== '/'
+          ? <Toolbar>
+              <ToolbarGroup>
+                <ToolbarTitle text='CodeGenius' style={styles.growMarginRight} />
+                {this.renderNavItems()}
+              </ToolbarGroup>
+              {this.renderAuthButtons()}
+            </Toolbar>
+          : null
+        }
+      </div>
     )
   }
 }

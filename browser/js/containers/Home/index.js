@@ -10,6 +10,7 @@ import { Router } from 'react-router'
 
 const styles = {
   header: {
+    marginTop: '56px',
     textAlign: 'center',
     fontSize: '100px',
     color: '#fdfdfd',
@@ -20,7 +21,7 @@ const styles = {
   paperHeader: {
     backgroundColor: blue600,
     padding: '20px',
-    marginBottom:'60px'
+    marginBottom:'60px',
   },
   paperStyle: {
     background: 'url("http://i.imgur.com/3GPNYHn.jpg") no-repeat center center fixed',
@@ -29,7 +30,8 @@ const styles = {
     OBackgroundSize: 'cover',
     backgroundSize: 'cover',
     width: '100%',
-    height: 'calc(100vh - 56px)',
+    height: 'calc(100vh)',
+    // height: 'calc(100vh - 56px)',
     textAlign: 'center',
     padding: '25vh',
     paddingTop: '15vh',
@@ -52,6 +54,9 @@ const styles = {
     textShadow: '0px 0px 10px black, 0px 0px 10px black, 0px 0px 10px black',
     letterSpacing: '1px',
     marginBottom: '20px'
+  },
+  center: {
+    textAlign: 'center'
   }
 }
 
@@ -72,6 +77,7 @@ class Home extends Component {
               open={this.props.pathName}
               message="You must be logged in."
               autoHideDuration={4000}
+              style={styles.center}
               />
             : null
           }

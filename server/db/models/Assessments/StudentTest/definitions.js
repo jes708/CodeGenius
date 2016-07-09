@@ -20,6 +20,10 @@ module.exports = function(db){
         type: Sequelize.BOOLEAN,
         defaultValue: false
       },
+      isSent: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false        
+      },
       score: {
         type: Sequelize.FLOAT,
         defaultValue: 0

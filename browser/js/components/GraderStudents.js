@@ -78,6 +78,7 @@ class GraderStudents extends Component {
         open={this.state.open}
         message={this.state.message}
         autoHideDuration={4000}
+        style={styles.center}
       />
     )
   }
@@ -114,15 +115,10 @@ class GraderStudents extends Component {
         <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
           <AssessmentCard
-            assessment={this.props.assessment}
+            {...this.props}
+            refresh={this.handleRefreshAllStudents}
+            showSubmit={true}
             editable={false}
-            student={true}
-          />
-          <RaisedButton
-            label='Refresh Students'
-            primary={true}
-            onTouchTap={this.handleRefreshAllStudents}
-            style={styles.skinny}
           />
           {this.renderStudents()}
           {this.renderMessage()}

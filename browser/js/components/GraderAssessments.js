@@ -2,6 +2,7 @@
 
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux'
+import { grey50 } from 'material-ui/styles/colors'
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
@@ -122,15 +123,15 @@ class GraderAssessments extends Component {
     } else if (!isFetching && !assessments.length) {
       return <h1 style={{textAlign: 'center'}}>No Assessments</h1>
     } else {
-      return <CircularProgress style={styles.center} size={2} />
+      return <div style={styles.center}><CircularProgress size={2} /></div>
     }
   }
 
   renderToggleFormButton () {
-    const { isFetchingOrgs } = this.props
+    const { isFetchingOrgs, isFetching } = this.props
     const { isCreating, isEditting } = this.state
 
-    if (!isFetchingOrgs) {
+    if (!isFetchingOrgs && !isFetching) {
       return (
         <RaisedButton
           primary={true}

@@ -78,6 +78,7 @@ class GraderStudents extends Component {
         open={this.state.open}
         message={this.state.message}
         autoHideDuration={4000}
+        style={styles.center}
       />
     )
   }

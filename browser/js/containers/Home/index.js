@@ -52,6 +52,9 @@ const styles = {
     textShadow: '0px 0px 10px black, 0px 0px 10px black, 0px 0px 10px black',
     letterSpacing: '1px',
     marginBottom: '20px'
+  },
+  center: {
+    textAlign: 'center'
   }
 }
 
@@ -72,6 +75,7 @@ class Home extends Component {
               open={this.props.pathName}
               message="You must be logged in."
               autoHideDuration={4000}
+              style={styles.center}
               />
             : null
           }

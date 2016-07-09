@@ -25,7 +25,7 @@ export default class GraderPanel extends Component {
 
   render () {
     return (
-      <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
+      <div style={{...styles.gradingPane, ...styles.paperStyle}}>
         <div style={styles.content}>
           <List>
               {(this.props.comments.length) ? (
@@ -46,12 +46,3 @@ export default class GraderPanel extends Component {
     )
   }
 }
-
-const mapStateToProps = state => {
-  return {
-    comments: state.studentTestInfo.studentTest
-  }
-}
-
-
-export default connect(mapStateToProps)(GraderPanel)

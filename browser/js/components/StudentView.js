@@ -92,15 +92,11 @@ class GradeView extends Component {
       case 'Panel':
         return (
           <div>
-            <AssessmentCard
-              assessment={this.props.assessment}
-              editable={false}
-              showStudents={true}
-              showTeam={false}
-              showUrl={false}
-              />
-            <StudentViewComments />
-          </div>
+            {this.props.studentTest.comments
+              ? 'something'
+            : null
+            }
+        </div>
         );
     }
   }
@@ -116,10 +112,7 @@ class GradeView extends Component {
                 />
               </Tabs>
               <div style={styles.panel}>
-                {this.props.assessment
-                  ? this.switcher()
-                  : null
-                }
+                {this.switcher()}
               </div>
             </Paper>
           </div>
@@ -137,9 +130,9 @@ class Grade extends Component {
     }
   }
 
-  componentDidMount() {
-    const { assessmentId, studentTestId, userId} = this.props.params
-    this.props.dispatch(switchAssessment(assessmentId, userId, true))
+  componentWillMount() {
+    const {studentTestId} = this.props.params
+    this.props.dispatch(getOwnStudentTest(studentTestId))
   }
 
   render(){
@@ -157,12 +150,11 @@ class Grade extends Component {
 }
 
 const mapStateToProps = (state, { params }) => {
-  const { assessments } = state
-  let assessment = (assessments.current.base) ? assessments.current.base : {}
-  console.log('current assessment', assessment)
+  const { studentTest } = state.studentTestInfo
+  console.log('current assessment', studentTest.assessment)
   return {
     params,
-    assessment
+    studentTest
   }
 }
 

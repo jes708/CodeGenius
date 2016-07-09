@@ -55,7 +55,7 @@ export const updateAssessment = (assessment) => (dispatch) => {
   }))
   .catch(error => dispatch({ type: UPDATE_ASSESSMENT_FAILURE, error }))
 }
-export const switchAssessment = (id, userId, option) => (dispatch, getState) => {
+export const switchAssessment = (id, option) => (dispatch, getState) => {
   dispatch({ type: SWITCH_ASSESSMENT_REQUEST })
 
   const assessment = getAssessment(getState().assessments, id)
@@ -67,9 +67,7 @@ export const switchAssessment = (id, userId, option) => (dispatch, getState) => 
     return axios.get(`${ASSESSMENT_URL}/${id}`)
     .then(res => {
       dispatch({ type: SWITCH_ASSESSMENT_SUCCESS, assessment: res.data })
-      if (option) {
-        dispatch(getOwnStudentTest(res.data.id, userId))
-      } else {
+      if (!option) {
         dispatch(getStudentTestsInfo(res.data.id))
       }
     })

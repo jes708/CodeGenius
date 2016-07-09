@@ -16,6 +16,8 @@ export const UPDATE_STUDENTTEST_SUCCESS = 'UPDATE_STUDENTTEST_SUCCESS'
 export const UPDATE_STUDENTTEST_FAILURE = 'UPDATE_STUDENTTEST_FAILURE'
 export const UPDATE_STUDENTTESTINFO_SUCCESS = 'UPDATE_STUDENTTESTINFO_SUCCESS'
 
+import { switchAssessment } from '../actions/assessmentActions'
+
 export function getStudentTestsInfo (assessmentId) {
   return dispatch => {
     dispatch({ type: LOAD_STUDENTTESTS_REQUEST })
@@ -37,11 +39,16 @@ export function getStudentTestInfo (assessmentId, studentId) {
   }
 }
 
-export const getOwnStudentTest = (assessmentId, studentId) => (dispatch) => {
+export const getOwnStudentTest = (studentTestId) => (dispatch) => {
   dispatch({ type: LOAD_SINGLESTUDENTTEST_REQUEST })
   // getOwnStudentTest(res.data.id, userId)
-  return axios.get(`/api/v1/assessments/${assessmentId}/students/${studentId}/comments`)
-  .then(res => dispatch({ type: LOAD_SINGLESTUDENTTEST_SUCCESS, studentTest: res.data }))
+  return axios.get(`/api/v1/assessments/studentTest/${studentTestId}`)
+  .then(res => res.data)
+  .then(data => {
+    dispatch({ type: LOAD_SINGLESTUDENTTEST_SUCCESS, studentTest: data })
+    dispatch(switchAssessment(data.assessmentId, true))
+    }
+  )
   .catch(err => dispatch({ type: LOAD_SINGLESTUDENTTEST_FAILURE, err }))
 
 }

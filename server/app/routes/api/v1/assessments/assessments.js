@@ -199,8 +199,7 @@ router.get('/studentTest/:studentTestId', ensureAuthenticated, (req, res, next) 
     },
     include: [Assessment]
   })
-  .then(studentTest => studentTest.getComments())
-  .then(comments => res.send(comments))
+  .then(studentTest => res.send(studentTest))
   .catch(next)
 })
 

@@ -49,14 +49,10 @@ export const isFetching = (state = false, action) => {
   }
 }
 
-export const studentTest = (state=[], action) => {
-  const nextState = [...state]
+export const studentTest = (state={}, action) => {
   switch(action.type){
     case LOAD_SINGLESTUDENTTEST_SUCCESS:
-      action.studentTest.forEach(test => {
-        nextState.push(test)
-      })
-      return nextState
+      return {...state, ...action.studentTest}
     default:
       return state
   }

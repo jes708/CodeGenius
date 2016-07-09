@@ -116,14 +116,9 @@ class GraderStudents extends Component {
           <div style={styles.content}>
           <AssessmentCard
             {...this.props}
+            refresh={this.handleRefreshAllStudents}
             showSubmit={true}
             editable={false}
-          />
-          <RaisedButton
-            label='Refresh Students'
-            primary={true}
-            onTouchTap={this.handleRefreshAllStudents}
-            style={styles.skinny}
           />
           {this.renderStudents()}
           {this.renderMessage()}

@@ -59,11 +59,39 @@ router.get('/:commentId/tags', (req, res, next) => {
 router.post('/:commentId/tags', (req, res, next) => {
   console.log(req.params.id, req.params.commentId);
   Comment.findById(req.params.commentId).then( comment => {
-      if(!comment) throw 'no student test'
+      if(!comment) throw 'no comment!'
       return comment.createTag(req.body)} )
-      .then( tag => res.status(201).send( tag ) )
+      .then( comment => res.status(201).send( comment ) )
       .catch(next);
 })
+
+// associate tag with comment
+router.post('/:commentId/tags/:tagId', (req, res, next) => {
+  Comment.findById(req.params.commentId).then( comment => {
+    if(!comment) throw 'no comment!';
+    return comment.addTag(req.params.tagId)
+  }).then( associationAdded => {
+    let association = associationAdded[0][0].dataValues
+    return Comment.findById(req.params.commentId).then( comment =>
+      res.status(201).send({comment, associationAdded: association}))
+  }).catch(next);
+})
+
+// remove tag from comment
+router.delete('/:commentId/tags/:tagId', (req, res, next) => {
+  let tagToRemove;
+  Comment.findById(req.params.commentId).then( comment => {
+    if(!comment) throw 'no comment!';
+    tagToRemove = comment.dataValues.tags.find( tag => tag.id === req.params.tagId );
+    return comment.removeTag(req.params.tagId)
+  }).then( (result) => {
+    return Comment.findById(req.params.commentId).then( comment =>
+      res.status(200).send({comment: comment}))
+  } )
+    .catch(next);
+
+})
+
 
 
   // Comment.findById( req.params.id ).then( comment => {

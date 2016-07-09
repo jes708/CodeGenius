@@ -6,8 +6,10 @@ import IconButton from 'material-ui/IconButton'
 import FlatButton from 'material-ui/FlatButton'
 import AssessmentForm from './AssessmentForm'
 import styles from './graderStyles'
-import { getStudentTestInfo } from '../actions/studentTestInfoActions'
+import { getStudentTestInfo, putStudentTestInfo } from '../actions/studentTestInfoActions'
 import { CardActions } from 'material-ui/Card'
+import Checkbox from 'material-ui/Checkbox'
+import { green500 } from 'material-ui/styles/colors'
 
 
 class AssessmentCard extends Component {
@@ -39,16 +41,30 @@ class AssessmentCard extends Component {
     let studentId = studentTests[newId].userId
     dispatch(getStudentTestInfo(assessment.id, studentId))
   }
-  
+
+  handleCheck() {
+    const { assessment, dispatch, student, studentTests } = this.props
+    dispatch(putStudentTestInfo(assessment.id, student.userId, {isGraded: !student.isGraded}))
+  }
+
   renderStudentInfo() {
     if (this.props.showStudents) {
       const { student } = this.props
-
       if (student.user) {
         return (
-          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
+          <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect, styles.fullWidth)}>
             <img src={student.user.photo} alt={student.user.name} style={styles.student} />
             {student.user.name}
+            <p style={{marginTop: '15px'}}>Total Score: <span style={{fontWeight: 600}}>{student.score}</span></p>
+          <Checkbox
+            label='Fully graded'
+            inputStyle={{color: 'green', background: 'green'}}
+            labelStyle={{color: 'white', fontWeight: 300}}
+            iconStyle={{fill: 'white'}}
+            // style={{fill: 'green'}}
+            checked={student.isGraded}
+            onCheck={this.handleCheck.bind(this)}
+          />
           </div>
         )
       }
@@ -63,7 +79,7 @@ class AssessmentCard extends Component {
       return(
         <div>
           {this.renderStudentInfo()}
-          <CardActions>
+          <CardActions style={{padding: 0}}>
             <FlatButton
               label='Previous Student'
               onClick={this.handleStudentShift.bind(this, "prev")}

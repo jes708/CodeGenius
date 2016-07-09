@@ -34,7 +34,7 @@ module.exports = function(db){
         type: Sequelize.INTEGER
       },
       score: {
-        type: Sequelize.INTEGER
+        type: Sequelize.FLOAT
       },
       attachments: {
         type: Sequelize.STRING

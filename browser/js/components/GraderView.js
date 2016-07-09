@@ -106,8 +106,9 @@ class GraderView extends Component {
             onToggle={this.handleToggleSolutionCode}
             label={showSolution ? 'Hide Solution Code' : 'Show Solution Code'}
             labelPosition={'right'}
+            labelStyle={{ display: 'inline-block', width: 'auto' }}
+            style={{ width: 'auto' }}
             disabled={fileName === ''}
-            style={{display: 'inline-block'}}
           />
           <SubGradeView
             open={this.state.open}

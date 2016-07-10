@@ -38,13 +38,14 @@ class AddMarkdown extends Component{
 export default class CommentToolbar extends Component{
   constructor(props){
     super(props);
+    console.log('toolbar props', props);
     let contents = props.contents
     this.state = {
       buttons: {
         Markdown: {exists: contents.markdown },
         Score: {exists: contents.score},
         Annotation: {exists: contents.annotation},
-        Tag: {exists: contents.tags},
+        Tag: {exists: contents.tags.length !== 0 ? true : false},
         "Solution Code": {exists: contents.solutionCodeLink}
       }
     }
@@ -57,19 +58,27 @@ export default class CommentToolbar extends Component{
         Markdown: {exists: contents.markdown },
         Score: {exists: contents.score},
         Annotation: {exists: contents.annotation},
-        Tag: {exists: contents.tags},
+        Tag: {exists: contents.tags.length !== 0 ? true : false },
         "Solution Code": {exists: contents.solutionCodeLink}
       }
     })
   }
   AddButtonWithBadge(Child, name){
+    const {tagMethods, addMarkdownHandler, editMode} = this.props;
     const {buttonAdded, badgeStyle, badgeIconStyle} = commentStyles;
     const {exists} = this.state.buttons[name];
     const {badge} = commentStyles;
-    const removeItem = this.props.removeItem(name);
-    const editMode = this.props.editMode;
-    let clickHandler = editMode;
-    if(name === 'Markdown') clickHandler = this.props.addMarkdownHandler;
+    let removeItem = this.props.removeItem(name);
+    let clickHandler;
+    switch(name){
+      case 'Markdown': clickHandler = addMarkdownHandler;
+        break;
+      case 'Tag':
+        clickHandler = tagMethods.toggleCreateTagDialog;
+        removeItem = editMode;
+        break;
+      default: clickHandler = editMode;
+    }
     return (
       <span>
       {exists ? (

@@ -57,6 +57,7 @@ export default class RenderComment extends Component {
     this.removeItem = this.props.removeItem;
     this.updateContents = this.props.updateContents;
     this.renderDialogHandler = this.renderDialogHandler.bind(this);
+    this.tagMethods = this.props.tagMethods;
   }
   componentWillReceiveProps(nextProps){
     let {contents, isEditing} = nextProps;
@@ -183,11 +184,11 @@ function renderComment () {
         <span key={id++} >
           <CommentToolbar
             style={commentStyles.CommentToolbar}
-            {...this.props}
             removeItem={this.props.removeItem}
             editMode={this.props.editMode}
             contents={this.state.contents}
             addMarkdownHandler={this.renderDialogHandler}
+            {...this.props}
           />
         </ span>
         <span key={id++} >
@@ -200,12 +201,9 @@ function renderComment () {
           {/* (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : "" */}
         </span>
         <span key={id++}>
-          { (!contents.tags && isEditing) ? <span>< ActionLabel /><FlatButton style={buttonStyle} label="Add Tag" /></span> : (
-        <div>
-          <Tags tags={contents.tags} isEditing={isEditing} />
-        </div>
-      )
-      }
+            <Tags
+              {...this.props}
+            />
         </span>
         <span key={id++}>
           {/* (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""*/}

@@ -23,11 +23,13 @@ export default function commentReducer(state = comment_initialState, action){
       return Object.assign({}, state, {
         commentKey: action.payload,
       })
+      break;
     case 'COMMENT_EDIT_START':
       if(action.payload.key === null) console.log('key is null!');
       return Object.assign({}, state, {
         isEditing: action.payload
       })
+      break;
     case 'COMMENT_EDIT_DONE':
       if(!!nextState.isEditing.key){
         nextState
@@ -35,14 +37,17 @@ export default function commentReducer(state = comment_initialState, action){
         nextState.isEditing.key = null;
       }
       return nextState;
+      break;
     case 'LOAD_COMMENTS_REQUEST':
       nextState.isFetching = action.isFetching;
       nextState.failed = action.failed;
       return nextState;
+      break;
     case 'LOAD_COMMENTS_FAILURE':
       nextState.isFetching = action.isFetching;
       nextState.failed = action.failed;
       return nextState;
+      break;
     case 'LOAD_COMMENTS_SUCCESS':
       return Object.assign({}, state, {
         collection: action.payload.map( comment => {
@@ -53,14 +58,32 @@ export default function commentReducer(state = comment_initialState, action){
         isFetching: action.isFetching,
         failed: action.failed
       })
+      break;
+    case 'CREATE_TAG_SUCCESS':
+      commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.commentId);
+      commentToUpdate.tags.push(action.payload);
+      nextState.isFetching = action.isFetching;
+      nextState.failed = false;
+      return nextState;
+      break;
+    case 'REMOVE_TAG_SUCCESS':
+      commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.commentId);
+      console.log(commentToUpdate, action.payload)
+      commentToUpdate.tags = action.payload.tags;
+      nextState.isFetching = action.isFetching;
+      nextState.failed = false;
+      return nextState;
+      break;
     case 'CREATE_COMMENT_SUCCESS':
       action.payload.commentIndex = action.payload.id;
       nextState.collection.unshift(action.payload);
       return nextState;
+      break;
     case 'CREATE_ANNOTATION_SUCCESS':
       commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.payload.commentId)
       commentToUpdate.annotation = action.payload;
       return nextState;
+      break;
     case 'LOAD_STUDENTTEST_SUCCESS':
       nextState.current = {
         userId: action.studentTest.userId,
@@ -68,6 +91,7 @@ export default function commentReducer(state = comment_initialState, action){
       }
       nextState.collection = mapCommentsToIndex(action.studentTest.comments);
       return nextState;
+      break;
     case 'UPDATE_COMMENT_SUCCESS':
       commentToUpdate = nextState.collection.find(
         (comment) =>

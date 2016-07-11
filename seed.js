@@ -336,18 +336,18 @@ db.sync( {
     force: true,
     logging: false
   } )
-  .then( () => console.log( chalk.white('starting')))
-  .then( () => seedUsers() )
-  .then( () => seedOrganizations() )
-  .then( () => seedTeams() )
-  .then( () => seedAssessments() )
-  // .then( () => seedQuestions() )
-  .then( () => seedStudents() ).then(addStudentsToTeams)
-  .then( () => seedUs() ).then(addUsToTeams)
-  // .then( () => seedRubrics() )
-  .then( () => createTags() ).then(tags => addTagsToAssessments(tags, 10, 10) )
-  .then( () => seedStudentTests() )
-  // .then( () => seedAnnotations())
+  // .then( () => console.log( chalk.white('starting')))
+  // .then( () => seedUsers() )
+  // .then( () => seedOrganizations() )
+  // .then( () => seedTeams() )
+  // .then( () => seedAssessments() )
+  // // .then( () => seedQuestions() )
+  // .then( () => seedStudents() ).then(addStudentsToTeams)
+  // .then( () => seedUs() ).then(addUsToTeams)
+  // // .then( () => seedRubrics() )
+  // .then( () => createTags() ).then(tags => addTagsToAssessments(tags, 10, 10) )
+  // .then( () => seedStudentTests() )
+  // // .then( () => seedAnnotations())
   .then( function () {
     console.log( chalk.green( 'Seed successful!' ) );
     process.exit( 0 );

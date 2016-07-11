@@ -18,6 +18,18 @@ import AddSolutionCode from 'material-ui/svg-icons/av/playlist-add'; //Add Solut
 import CheckCircle from 'material-ui/svg-icons/action/check-circle';
 import commentStyles from './styles';
 import AddCircleOutline from 'material-ui/svg-icons/content/add-circle-outline';
+import IconMenu from 'material-ui/IconMenu';
+import Popover from 'material-ui/Popover';
+import Menu from 'material-ui/Menu';
+import FontIcon from 'material-ui/FontIcon';
+
+const fontMap = new Map();
+fontMap.set(1, 'looks_one')
+       .set(2, 'looks_two')
+       .set(3, 'looks_3')
+       .set(4, 'looks_4')
+       .set(5, 'looks_5')
+       .set(6, 'looks_6')
 
 class AddMarkdown extends Component{
   constructor(props){
@@ -38,49 +50,187 @@ class AddMarkdown extends Component{
 export default class CommentToolbar extends Component{
   constructor(props){
     super(props);
-    let contents = props.contents
+    let contents = props.contents;
     this.state = {
       buttons: {
         Markdown: {exists: contents.markdown },
         Score: {exists: contents.score},
         Annotation: {exists: contents.annotation},
-        Tag: {exists: contents.tags},
-        "Solution Code": {exists: contents.solutionCodeLink}
+        Tag: {exists: contents.tags.length !== 0 ? true : false},
+        // "Solution Code": {exists: contents.solutionCodeLink}
+      },
+      tagMenu: {
+        anchorEl: null
       }
     }
     this.AddButtonWithBadge.bind(this);
   }
+  componentWillReceiveProps(nextProps){
+    let {contents} = nextProps;
+    this.setState({
+      buttons: {
+        Markdown: {exists: contents.markdown },
+        Score: {exists: contents.score},
+        Annotation: {exists: contents.annotation},
+        Tag: {exists: contents.tags.length !== 0 ? true : false },
+        // "Solution Code": {exists: contents.solutionCodeLink}
+      }
+    })
+  }
   AddButtonWithBadge(Child, name){
+    const {tagMethods, addMarkdownHandler, editMode} = this.props;
     const {buttonAdded, badgeStyle, badgeIconStyle} = commentStyles;
     const {exists} = this.state.buttons[name];
     const {badge} = commentStyles;
-    const removeItem = this.props.removeItem(name);
-    const editMode = this.props.editMode;
+    let removeItem = this.props.removeItem(name);
+    let clickHandler = editMode;
+    let badgeContent = {add: null, remove: null};
+    switch(name){
+      case 'Tag':
+        let fontMapIcon = (
+          this.props.contents.tags.length < 7 ?
+            <FontIcon
+              color={badge.exists.color}
+              className="material-icons">
+              {fontMap.get(this.props.contents.tags.length)}
+            </FontIcon> :
+            <CheckCircle color={badge.exists.color} />
+          )
+        clickHandler = (e) => {
+          this.setState({
+            tagMenu: {
+              anchorEl: e.currentTarget
+            }
+          })
+          tagMethods.openTagDropdown()
+        };
+        let anchorEl=this.state.tagMenu.anchorEl;
+        removeItem = editMode;
+        badgeContent.add = (
+          <span>
+            <IconButton
+              iconStyle={badge.IconStyle}
+              tooltip={`Add ${name}`}
+              children={<AddCircleOutline color={badge.notExists.color} />}
+              onMouseDown={clickHandler}
+            />
+            <Popover
+              anchorEl={anchorEl}
+              open={this.props.tagSelector.open}
+              onRequestClose={tagMethods.toggleTagSelectorDropdown}
+              children={
+                <Menu
+                  children={this.props.tagSelector.populatedList}
+                  onChange={tagMethods.selectTagFromDropdown}
+                  maxHeight={250}
+                />
+              }
+            />
+          </span>
+        )
+        badgeContent.remove = (
+          <span>
+            <IconButton
+              iconStyle={badge.IconStyle}
+              onMouseDown={clickHandler}
+              tooltip={`Add another ${name}`}
+            >
+              {fontMapIcon}
+            </IconButton>
+            <Popover
+              anchorEl={anchorEl}
+              open={this.props.tagSelector.open}
+              onRequestClose={tagMethods.toggleTagSelectorDropdown}
+              children={
+                <Menu
+                  children={this.props.tagSelector.populatedList}
+                  onChange={tagMethods.selectTagFromDropdown}
+                  maxHeight={250}
+                />
+              }
+            />
+          </span>
+        )
+        break;
+      case 'Annotation':
+        clickHandler = editMode;
+        badgeContent.add = (
+          <IconButton
+            iconStyle={badge.IconStyle}
+            tooltip={`To add annotation,
+              click 'show files'
+              then select text.`}
+            touch={true}
+            children={<AddCircleOutline color={badge.notExists.color} />}
+            onMouseDown={clickHandler}
+          />
+        )
+        badgeContent.remove = (
+          <IconButton
+            iconStyle={badge.IconStyle}
+            onMouseDown={removeItem}
+            tooltip={`Remove ${name}`}
+          >
+            <CheckCircle color={badge.exists.color} />
+          </IconButton>
+        )
+        break;
+      // case 'Solution Code':
+      //   clickHandler = editMode;
+      //   badgeContent.add = (
+      //     <IconButton
+      //       iconStyle={badge.IconStyle}
+      //       tooltip={
+      //         `To add solution code,
+      //         click 'show solution code'
+      //         to the left.`}
+      //       tooltipPosition={'bottom-left'}
+      //       touch={true}
+      //       children={<AddCircleOutline color={badge.notExists.color} />}
+      //       onMouseDown={clickHandler}
+      //     />
+      //   )
+      //   badgeContent.remove = (
+      //     <IconButton
+      //       iconStyle={badge.IconStyle}
+      //       onMouseDown={removeItem}
+      //       tooltip={`Remove ${name}`}
+      //     >
+      //       <CheckCircle color={badge.exists.color} />
+      //     </IconButton>
+      //   )
+      //   break;
+      case 'Markdown':
+        clickHandler = addMarkdownHandler;
+      default:
+        badgeContent = {
+          add: (<IconButton
+            iconStyle={badge.IconStyle}
+            tooltip={`Add ${name}`}
+            children={<AddCircleOutline color={badge.notExists.color} />}
+            onMouseDown={clickHandler}
+          />),
+          remove: (<IconButton
+            iconStyle={badge.IconStyle}
+            onMouseDown={removeItem}
+            tooltip={`Remove ${name}`}
+          >
+            <CheckCircle color={badge.exists.color} />
+          </IconButton>)
+        }
+    }
     return (
       <span>
       {exists ? (
         <Badge
           badgeStyle={badge.style}
-          badgeContent={
-            <IconButton
-              iconStyle={badge.IconStyle}
-              onMouseDown={removeItem}
-              tooltip={`Remove ${name}`}
-            >
-              <CheckCircle color={badge.exists.color} />
-            </IconButton>}
+          badgeContent={badgeContent.remove}
           children={Child}
         />
       ) : (
         <Badge
           badgeStyle={badge.style}
-          badgeContent={
-            <IconButton
-              iconStyle={badge.IconStyle}
-              tooltip={`Add ${name}`}
-              children={<AddCircleOutline color={badge.notExists.color} />}
-              onMouseDown={editMode}
-            />}
+          badgeContent={badgeContent.add}
           children={Child}
         />
       )}
@@ -93,31 +243,22 @@ export default class CommentToolbar extends Component{
       [<AddScore />, "Score"],
       [<AddAnnotation />, "Annotation"],
       [<AddTag />, "Tag"],
-      [<AddSolutionCode />, "Solution Code"]
+      // [<AddSolutionCode />, "Solution Code"]
     ].map( ([Element, name]) => {
       return (<ToolbarGroup>
         {this.AddButtonWithBadge(Element, name)}
       </ToolbarGroup>)
     })
+    let ToolbarEditButton = (
+      <ToolbarGroup>
+        {this.props.editButton}
+      </ToolbarGroup>
+    )
+    let ToolbarChildren = buttons.concat([this.props.editButton])
     return(
       <Toolbar {...this.props}
-        children={buttons}
+        children={ToolbarChildren}
       >
-        {/*<ToolbarGroup >
-            {this.AddButtonWithBadge(<AddMarkdown />, "Markdown")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-            {this.AddButtonWithBadge(<AddScore />, "Score")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-          {this.AddButtonWithBadge(<AddAnnotation />, "Annotation")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-          {this.AddButtonWithBadge(<AddTag />, "Tag")}
-        </ToolbarGroup >
-        <ToolbarGroup >
-          {this.AddButtonWithBadge(<AddSolutionCode />, "Solution Code")}
-        </ToolbarGroup>*/}
       </Toolbar>
     )
   }

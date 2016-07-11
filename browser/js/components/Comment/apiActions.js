@@ -84,16 +84,24 @@ export const getCommentsByUserTest =
 export const getCommentsByStudentAndAssessment =
   (studentId, assessmentId) =>
     dispatch => {
-      dispatch({type: LOAD_COMMENTS_REQUEST})
+      dispatch({
+        type: LOAD_COMMENTS_REQUEST,
+        isFetching: true,
+        failed: false
+      })
       return axios.get(APIROUTES.commentByAssessmentStudent(assessmentId, studentId))
     .then( res => res.data )
       .then( resData => dispatch({
         type: LOAD_COMMENTS_SUCCESS,
-        payload: resData
+        payload: resData,
+        isFetching: false,
+        failed: false
       }))
       .catch( err => dispatch({
         type: LOAD_COMMENTS_FAILURE,
-        payload: err
+        payload: err,
+        isFetching: false,
+        failed: true
       }))}
 
 export const postComment =

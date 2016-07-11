@@ -186,32 +186,10 @@ router.get('/:id/students/:studentId/comments', (req, res, next) => {
         userId: req.params.studentId
       },
       include:  [Assessment]
-    }).then( studentTest => studentTest.getComments() )
+    }).then( studentTest => {
+      return studentTest.getComments()} )
       .then( comments => res.status(200).send( comments ) )
       .catch(next);
-})
-
-router.get('/studentTest/all', ensureAuthenticated, (req, res, next) => {
-  StudentTest.findAll({
-    where: {
-      userId: req.user.id
-    },
-    include: [Assessment]
-  })
-  .then(studentTests => res.send(studentTests))
-  .catch(next)
-})
-
-router.get('/studentTest/:studentTestId', ensureAuthenticated, (req, res, next) => {
-  StudentTest.findOne({
-    where: {
-      id: req.params.studentTestId,
-      userId: req.user.id
-    },
-    include: [Assessment]
-  })
-  .then(studentTest => res.send(studentTest))
-  .catch(next)
 })
 
 

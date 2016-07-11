@@ -25,6 +25,12 @@ const commentStyles = {
       width: '16px',
       height: '16px'
     }
+  },
+  CommentsList: {
+    refresh: {
+      display: 'inline-block',
+      position: 'relative',
+    }
   }
 }
 

@@ -20,6 +20,7 @@ function addAssociations(db){
   const User = db.models['user'];
   const Annotation = db.models['annotation'];
   const StudentTest = db.models['studentTest'];
+  const Tag = db.models['tag'];
   // const Location = db.models['location'];
 
   Comment.belongsTo(User, {as: 'creator'});
@@ -28,6 +29,7 @@ function addAssociations(db){
   Comment.addScope('defaultScope', {
     include: [
       { model: Annotation },
+      { model: Tag }
     ]
   }, { override: true })
   // Comment.belongsTo(Location)

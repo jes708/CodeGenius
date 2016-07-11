@@ -8,6 +8,7 @@ const utils = require( '../../../utils' );
 const { ensureAuthenticated, ensureIsAdmin, Credentials, respondWith404, _err, db } = utils;
 const Comment = db().models.comment;
 const Annotation = db().models.annotation;
+const Tag = db().models.tag;
 const User = db().models.user;
 const Resource = Comment;
 
@@ -15,7 +16,10 @@ const Resource = Comment;
 
 router.use( (req, res, next) => {
   req.options = {
-    include: [{model: Annotation}]
+    include: [
+      {model: Annotation},
+      {model: Tag}
+    ]
   }
   next();
 })
@@ -41,6 +45,52 @@ router.post( '/:id/annotation', ( req, res, next ) => {
     .then( ()=> next()).catch(next);
 
 } )
+
+router.get('/:commentId/tags', (req, res, next) => {
+  Comment.findById(req.params.commentId)
+         .then( comment => {
+      return comment.getTags()} )
+      .then( tags => res.status(200).send( tags ) )
+      .catch(next);
+})
+
+router.post('/:commentId/tags', (req, res, next) => {
+  Comment.findById(req.params.commentId).then( comment => {
+      if(!comment) throw 'no comment!'
+      return comment.createTag(req.body)} )
+      .then( comment => res.status(201).send( comment ) )
+      .catch(next);
+})
+
+// associate tag with comment
+router.post('/:commentId/tags/:tagId', (req, res, next) => {
+  Comment.findById(req.params.commentId).then( comment => {
+    if(!comment) throw 'no comment!';
+    return comment.addTag(req.params.tagId)
+  }).then( associationAdded => {
+    let association = associationAdded[0][0].dataValues
+    return Comment.findById(req.params.commentId).then( comment =>
+      res.status(201).send({comment, tags: comment.tags, associationAdded: association}))
+  }).catch(next);
+})
+
+// remove tag from comment
+router.delete('/:commentId/tags/:tagId', (req, res, next) => {
+  let tagToRemove;
+  Comment.findById(req.params.commentId).then( comment => {
+    if(!comment) throw 'no comment!';
+    tagToRemove = comment.dataValues.tags.find( tag => tag.id === req.params.tagId );
+    return comment.removeTag(req.params.tagId)
+  }).then( (result) => {
+    return Comment.findById(req.params.commentId).then( comment =>
+      res.status(200).send({comment: comment}))
+  } )
+    .catch(next);
+
+})
+
+
+
   // Comment.findById( req.params.id ).then( comment => {
   //   console.log(comment);
   //   return comment.createAnnotation( req.body ).then( annotation => res.status( 201 ).send( annotation ) )

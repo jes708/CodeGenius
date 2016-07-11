@@ -32,7 +32,7 @@ import omit from 'lodash/object/omit'
 
 router.get('/', sequelizeHandlers.query(Resource));
 router.get('/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
-router.post(  '/',  ensureAuthenticated, (req, res, next) => {
+router.post('/', ensureAuthenticated, (req, res, next) => {
   let newAssessment
   Promise.all([
     Team.findOrCreate({
@@ -74,7 +74,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
           }})
         })
         .then(user => {
-          let repo = ''
+          let repo = null
           let userFork = forkByOwner[user[0].username]
           if (userFork) {
             repo = userFork.html_url
@@ -90,7 +90,7 @@ router.post(  '/',  ensureAuthenticated, (req, res, next) => {
               }
             })
           }
-        }),
+        })
       ])
     })
     return Promise.all(creatingUsersAndTests)
@@ -144,12 +144,12 @@ router.put('/:id/students/:studentId', ensureAuthenticated, function(req, res, n
       },
       include:  [Assessment]
     }).then(test => {
-      if (req.body.isGraded && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
+      if (req.body.isSent && !test.isGraded && test.user.email && !test.user.email.includes('no-email.com')) {
         const sendEmail = transport.sendMail({
           from: '"Code Genius" <CodeGenius@codegenius.us>',
           to: test.user.email,
           subject: `${test.assessment.name} graded!`,
-          text: `Visit codegenius.us to check your assessment!`,
+          text: `Visit http://codegenius.us/studenttest/${req.params.id}/${test.id}/${req.params.studentId} to check your assessment!`,
         })
         return Promise.all([sendEmail, test.update(req.body)])
       } else {
@@ -193,7 +193,6 @@ router.get('/:id/students/:studentId/comments', (req, res, next) => {
       .then( comments => res.status(200).send( comments ) )
       .catch(next);
 })
-
 
 
 respondWith404(router);

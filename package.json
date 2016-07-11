@@ -5,11 +5,11 @@
   "main": "server/start.js",
   "scripts": {
     "start": "nodemon --watch server -e js,html server/start.js",
-    "postinstall": "webpack -p --config webpack.prod.config.js"
+    "postinstall": "NODE_ENV=production webpack -p --config webpack.prod.config.js"
   },
   "engines": {
-    "node": "4.1.1",
-    "npm": "2.14.4"
+    "node": "6.3.0",
+    "npm": "3.10.3"
   },
   "dependencies": {
     "axios": "^0.12.0",

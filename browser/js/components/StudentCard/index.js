@@ -13,19 +13,32 @@ import { green500, red500 } from 'material-ui/styles/colors'
 
 const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
 
-  const { user, userId, isStudent } = studentTest
+  const { user, userId, isStudent, score } = studentTest
   let style = isStudent ? styles.infoCard : styles.inactiveCard;
 
   const renderIcon = () => {
-    if (studentTest.isGraded) {
+    if (studentTest.isSent) {
+      return (
+        <IconButton
+          tooltip='Sent to Student'
+          tooltipPosition='bottom-left'
+          style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+        >
+          <ActionCheckCircle
+            style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+            color={green500}
+          />
+        </IconButton>
+      )
+    } else if (studentTest.isGraded) {
       return (
         <IconButton
           tooltip='Fully graded'
           tooltipPosition='bottom-left'
           style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
         >
-          <ActionCheckCircle
-            style={Object.assign({}, styles.toggle, styles.studentIcon, styles.svgOutline)}
+          <ImageLens
+            style={Object.assign({}, styles.toggle, styles.studentIcon)}
             color={green500}
           />
         </IconButton>
@@ -45,7 +58,7 @@ const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
       return (
         <ImageLens
           style={Object.assign({}, styles.toggle, styles.studentIcon)}
-          color={'transparent'}
+          color='transparent'
         />
       )
     }
@@ -57,7 +70,7 @@ const StudentCard = ({ studentTest, onSelect, onToggle, onRefresh }) => {
         <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}
           onClick={() => { onSelect(user.id) }}>
           <img src={user.photo} alt={user.name} style={styles.student}/>
-          {user.name}
+          <span style={styles.studentNameAndScore}>{user.name}<br/><span style={{fontSize: '15px'}}>Score: <span style={{fontWeight: 500}}>{score}</span></span></span>
         </div>
         {renderIcon()}
         <Toggle toggled={isStudent} onToggle={() => onToggle(userId, !isStudent)} style={styles.toggle}/>

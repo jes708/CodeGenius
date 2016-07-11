@@ -29,7 +29,10 @@ class GraderStudents extends Component {
       message: ''
     }
 
+    this.handleSelectStudent = this.handleSelectStudent.bind(this)
+    this.handleToggleStudent = this.handleToggleStudent.bind(this)
     this.handleRefreshStudent = this.handleRefreshStudent.bind(this)
+    this.handleRefreshAllStudents = this.handleRefreshAllStudents.bind(this)
   }
 
   handleSelectStudent (studentId) {
@@ -63,12 +66,19 @@ class GraderStudents extends Component {
     })
   }
 
+  handleRefreshAllStudents () {
+    const { studentTests } = this.props
+    const studentTestNoForks = studentTests.filter(studentTest => !studentTest.repoUrl)
+    studentTestNoForks.forEach(studentTest => this.handleRefreshStudent(studentTest))
+  }
+
   renderMessage () {
     return (
       <Snackbar
         open={this.state.open}
         message={this.state.message}
         autoHideDuration={4000}
+        style={styles.center}
       />
     )
   }
@@ -90,8 +100,8 @@ class GraderStudents extends Component {
               key={i}
               studentTest={studentTest}
               dispatch={dispatch}
-              onSelect={this.handleSelectStudent.bind(this)}
-              onToggle={this.handleToggleStudent.bind(this)}
+              onSelect={this.handleSelectStudent}
+              onToggle={this.handleToggleStudent}
               onRefresh={this.handleRefreshStudent}
             />
           )
@@ -102,15 +112,16 @@ class GraderStudents extends Component {
 
   render () {
       return (
-        <div style={Object.assign(styles.gradingPane, styles.paperStyle)}>
+        <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
           <div style={styles.content}>
           <AssessmentCard
-            assessment={this.props.assessment}
+            {...this.props}
+            refresh={this.handleRefreshAllStudents}
+            showSubmit={true}
             editable={false}
-            student={true}
-            />
-            {this.renderStudents()}
-            {this.renderMessage()}
+          />
+          {this.renderStudents()}
+          {this.renderMessage()}
           </div>
         </div>
       )

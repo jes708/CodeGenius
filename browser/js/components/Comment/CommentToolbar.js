@@ -37,7 +37,7 @@ class AddMarkdown extends Component{
   }
   render(){
     return(
-      < SvgIcon viewBox="0 0 1024 1024" {...this.props} >
+      <SvgIcon viewBox="0 0 1024 1024" {...this.props}>
         <path d="M950.154 192H73.846C33.127 192 0 225.12699999999995 0 265.846v492.308C0 798.875 33.127 832 73.846 832h876.308c40.721 0 73.846-33.125 73.846-73.846V265.846C1024 225.12699999999995 990.875 192 950.154 192zM576 703.875L448 704V512l-96 123.077L256 512v192H128V320h128l96 128 96-128 128-0.125V703.875zM767.091 735.875L608 512h96V320h128v192h96L767.091 735.875z"/>
       </SvgIcon>
     )
@@ -57,7 +57,7 @@ export default class CommentToolbar extends Component{
         Score: {exists: contents.score},
         Annotation: {exists: contents.annotation},
         Tag: {exists: contents.tags.length !== 0 ? true : false},
-        "Solution Code": {exists: contents.solutionCodeLink}
+        // "Solution Code": {exists: contents.solutionCodeLink}
       },
       tagMenu: {
         anchorEl: null
@@ -73,7 +73,7 @@ export default class CommentToolbar extends Component{
         Score: {exists: contents.score},
         Annotation: {exists: contents.annotation},
         Tag: {exists: contents.tags.length !== 0 ? true : false },
-        "Solution Code": {exists: contents.solutionCodeLink}
+        // "Solution Code": {exists: contents.solutionCodeLink}
       }
     })
   }
@@ -175,31 +175,31 @@ export default class CommentToolbar extends Component{
           </IconButton>
         )
         break;
-      case 'Solution Code':
-        clickHandler = editMode;
-        badgeContent.add = (
-          <IconButton
-            iconStyle={badge.IconStyle}
-            tooltip={
-              `To add solution code,
-              click 'show solution code'
-              to the left.`}
-            tooltipPosition={'bottom-left'}
-            touch={true}
-            children={<AddCircleOutline color={badge.notExists.color} />}
-            onMouseDown={clickHandler}
-          />
-        )
-        badgeContent.remove = (
-          <IconButton
-            iconStyle={badge.IconStyle}
-            onMouseDown={removeItem}
-            tooltip={`Remove ${name}`}
-          >
-            <CheckCircle color={badge.exists.color} />
-          </IconButton>
-        )
-        break;
+      // case 'Solution Code':
+      //   clickHandler = editMode;
+      //   badgeContent.add = (
+      //     <IconButton
+      //       iconStyle={badge.IconStyle}
+      //       tooltip={
+      //         `To add solution code,
+      //         click 'show solution code'
+      //         to the left.`}
+      //       tooltipPosition={'bottom-left'}
+      //       touch={true}
+      //       children={<AddCircleOutline color={badge.notExists.color} />}
+      //       onMouseDown={clickHandler}
+      //     />
+      //   )
+      //   badgeContent.remove = (
+      //     <IconButton
+      //       iconStyle={badge.IconStyle}
+      //       onMouseDown={removeItem}
+      //       tooltip={`Remove ${name}`}
+      //     >
+      //       <CheckCircle color={badge.exists.color} />
+      //     </IconButton>
+      //   )
+      //   break;
       case 'Markdown':
         clickHandler = addMarkdownHandler;
       default:
@@ -243,7 +243,7 @@ export default class CommentToolbar extends Component{
       [<AddScore />, "Score"],
       [<AddAnnotation />, "Annotation"],
       [<AddTag />, "Tag"],
-      [<AddSolutionCode />, "Solution Code"]
+      // [<AddSolutionCode />, "Solution Code"]
     ].map( ([Element, name]) => {
       return (<ToolbarGroup>
         {this.AddButtonWithBadge(Element, name)}

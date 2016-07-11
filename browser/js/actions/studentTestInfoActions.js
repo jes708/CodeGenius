@@ -8,10 +8,18 @@ export const LOAD_STUDENTTEST_FAILURE = 'LOAD_STUDENTTEST_FAILURE'
 export const LOAD_STUDENTTESTS_REQUEST = 'LOAD_STUDENTTESTS_REQUEST'
 export const LOAD_STUDENTTESTS_SUCCESS = 'LOAD_STUDENTTESTS_SUCCESS'
 export const LOAD_STUDENTTESTS_FAILURE = 'LOAD_STUDENTTEST_FAILURE'
+export const LOAD_SINGLESTUDENTTEST_REQUEST = 'LOAD_SINGLESTUDENTTEST_REQUEST'
+export const LOAD_SINGLESTUDENTTEST_SUCCESS = 'LOAD_SINGLESTUDENTTEST_SUCCESS'
+export const LOAD_SINGLESTUDENTTEST_FAILURE = 'LOAD_SINGLESTUDENTTEST_FAILURE'
 export const UPDATE_STUDENTTEST_REQUEST = 'UPDATE_STUDENTTEST_REQUEST'
 export const UPDATE_STUDENTTEST_SUCCESS = 'UPDATE_STUDENTTEST_SUCCESS'
 export const UPDATE_STUDENTTEST_FAILURE = 'UPDATE_STUDENTTEST_FAILURE'
 export const UPDATE_STUDENTTESTINFO_SUCCESS = 'UPDATE_STUDENTTESTINFO_SUCCESS'
+export const LOAD_ALLSTUDENTTESTSBYSTUDENTID_REQUEST = 'LOAD_ALLSTUDENTTESTSBYSTUDENTID_REQUEST'
+export const LOAD_ALLSTUDENTTESTSBYSTUDENTID_SUCCESS = 'LOAD_ALLSTUDENTTESTSBYSTUDENTID_SUCCESS'
+export const LOAD_ALLSTUDENTTESTSBYSTUDENTID_FAILURE = 'LOAD_ALLSTUDENTTESTSBYSTUDENTID_FAILURE'
+
+import { switchAssessment } from '../actions/assessmentActions'
 
 export function getStudentTestsInfo (assessmentId) {
   return dispatch => {
@@ -34,6 +42,29 @@ export function getStudentTestInfo (assessmentId, studentId) {
   }
 }
 
+export const getOwnStudentTest = (studentTestId) => (dispatch) => {
+  dispatch({ type: LOAD_SINGLESTUDENTTEST_REQUEST })
+  // getOwnStudentTest(res.data.id, userId)
+  return axios.get(`/api/v1/assessments/studentTest/${studentTestId}`)
+  .then(res => res.data)
+  .then(data => {
+    dispatch({ type: LOAD_SINGLESTUDENTTEST_SUCCESS, studentTest: data })
+    dispatch(switchAssessment(data.assessmentId, true))
+    }
+  )
+  .catch(err => dispatch({ type: LOAD_SINGLESTUDENTTEST_FAILURE, err }))
+}
+
+export const getStudentTestByStudentId = () => (dispatch) => {
+  dispatch({ type: LOAD_ALLSTUDENTTESTSBYSTUDENTID_REQUEST})
+  return axios.get(`/api/v1/assessments/studentTest/all`)
+  .then(res => res.data)
+  .then(data => {
+    dispatch({type: LOAD_ALLSTUDENTTESTSBYSTUDENTID_SUCCESS, studentTests:data})
+  })
+  .catch(err => dispatch({ type: LOAD_ALLSTUDENTTESTSBYSTUDENTID_FAILURE, err}))
+}
+
 export function putStudentTestInfo (assessmentId, studentId, data, addToCurrent = true) {
   return dispatch => {
     return axios.put(`/api/v1/assessments/${assessmentId}/students/${studentId}`, data)
@@ -47,5 +78,4 @@ export function putStudentTestInfo (assessmentId, studentId, data, addToCurrent 
     })
     .catch(err => dispatch({ type: UPDATE_STUDENTTEST_FAILURE, err }))
   }
-
 }

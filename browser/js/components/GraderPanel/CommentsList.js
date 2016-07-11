@@ -19,8 +19,13 @@ class Robot extends Component {
     let {CommentsListStyles} = GraderPanelStyles;
     return (
       <div style={CommentsListStyles.robotContainer}>
-      <img style={CommentsListStyles.robot} {...this.props} src="images/helpful-robot.png" />
-      <p style={CommentsListStyles.robotText}>{"You haven't added a comment yet. Try it out!"}</p>
+        <img style={CommentsListStyles.robot} {...this.props} src="images/helpful-robot.png" />
+        <p style={CommentsListStyles.robotText}>
+          {`Friendly the robot says,`} <br />
+          {`"Hi! You haven't added `} <br />
+          {`a comment yet. `} <br />
+          {`Try it out!"`} <br />
+        </p>
       </div>
     )
   }

@@ -27,7 +27,7 @@ class MarkdownIcon extends Component{
   }
   render(){
     return(
-      < SvgIcon viewBox="0 0 1024 1024" {...this.props} >
+      <SvgIcon viewBox="0 0 1024 1024" {...this.props}>
         <path d="M950.154 192H73.846C33.127 192 0 225.12699999999995 0 265.846v492.308C0 798.875 33.127 832 73.846 832h876.308c40.721 0 73.846-33.125 73.846-73.846V265.846C1024 225.12699999999995 990.875 192 950.154 192zM576 703.875L448 704V512l-96 123.077L256 512v192H128V320h128l96 128 96-128 128-0.125V703.875zM767.091 735.875L608 512h96V320h128v192h96L767.091 735.875z"/>
       </SvgIcon>
     )
@@ -96,9 +96,10 @@ export default class RenderComment extends Component {
   renderScore(){
     let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
+    let scoreStyle = {fontSize: '20px'};
     return (
       <div>
-        <p>
+        <p style={scoreStyle}>
           {(contents.score) ? (<span>Score: {contents.score}</span>) : null }
         </p>
         <div>
@@ -193,19 +194,14 @@ function renderComment () {
             {...this.props}
           />
         </ span>
+        <span key={id++}>
+          {this.renderScore()}
+        </span>
         <span key={id++} >
           {this.renderMarkdown()}
         </span>
         <span key={id++}>
-          {this.renderScore()}
-        </span>
-        <span key={id++}>
           {/* (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : "" */}
-        </span>
-        <span key={id++}>
-            <Tags
-              {...this.props}
-            />
         </span>
         <span key={id++}>
           {/* (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""*/}
@@ -221,6 +217,11 @@ function renderComment () {
           {/*< FlatButton href="/grade">Go to Code</ FlatButton>*/}
         </div>
       ) }
+        </span>
+        <span key={id++}>
+            <Tags
+              {...this.props}
+            />
         </span>
         <span key={id++}>
       {/* (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria */}

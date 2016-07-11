@@ -28,6 +28,7 @@ import renderComment from './renderComment';
 import { annotationAdded } from '../Annotator/actions';
 import { deleteComment, updateComment } from './apiActions';
 import RenderComment from './renderComment';
+import { putStudentTestInfo } from '../../actions/studentTestInfoActions'
 import TagsHandlerWrapper from '../../containers/Tag/TagsHandler';
 import ActionDone from 'material-ui/svg-icons/action/done';
 import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
@@ -153,13 +154,23 @@ class Comment extends Component {
     let studentId = this.props.studentId;
     let assessmentId = this.props.assessmentId;
     this.props.dispatch(deleteComment(this.props.commentIndex, studentId, assessmentId));
+    let score = this.props.studentScore - this.props.contents.score
+    this.props.dispatch(putStudentTestInfo(this.props.assessmentId, this.props.studentId, {score: score}))
   }
 
   editMode(){
     this.props.dispatch({type: 'COMMENT_EDIT_START', payload: {key: this.props.commentIndex}})
   }
   editModeDone(){
-    this.handleUpdateComment(this.state.contents)
+    // this.handleUpdateComment(this.state.contents)
+    this.props.dispatch(updateComment(this.state.contents, this.props.commentIndex));
+    if (this.props.allComments.length) {
+      const totalScore = this.props.allComments.reduce((sum, comment) => {
+        if (comment.commentIndex != this.props.commentIndex) return sum + comment.score;
+        else return sum + this.state.contents.score;
+      }, 0)
+      this.props.dispatch(putStudentTestInfo(this.props.assessmentId, this.props.studentId, {score: totalScore}))
+    }
   }
 
   removeItem(itemName){
@@ -258,6 +269,9 @@ const mapStateToProps = (state, props) => {
   if(!!state.annotation.selectionString && nextProps.isEditing && !stateToUpdate.annotation.added){
     nextProps.contents.selection = stateToUpdate.annotation.selection;
   }
+
+  nextProps.allComments = stateToUpdate.comment.collection;
+  nextProps.studentScore = stateToUpdate.assessments.current.student.score
 
   return nextProps;
 }

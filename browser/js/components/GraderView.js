@@ -56,15 +56,13 @@ class GraderView extends Component {
 
   handleFileSelect (filePath) {
     const { dispatch, assessment, studentTest } = this.props
-    let basePath
-    if (studentTest.basePath) {
-      basePath = studentTest.basePath.split('/')
-    } else {
-      basePath = assessment.solutionPath.split('/')
-    }
+    const { showSolution, open } = this.state
+    let basePath = !showSolution && studentTest.basePath
+      ? studentTest.basePath.split('/')
+      : assessment.solutionPath.split('/')
     const user = basePath[0]
     const repo = basePath[1]
-    this.setState({ fileName: filePath, open: !this.state.open })
+    this.setState({ fileName: filePath, open: !open })
     dispatch(getRepoContents(user, repo, filePath))
   }
 
@@ -106,8 +104,9 @@ class GraderView extends Component {
             onToggle={this.handleToggleSolutionCode}
             label={showSolution ? 'Hide Solution Code' : 'Show Solution Code'}
             labelPosition={'right'}
+            labelStyle={{ display: 'inline-block', width: 'auto' }}
+            style={{ width: 'auto' }}
             disabled={fileName === ''}
-            style={{display: 'inline-block'}}
           />
           <SubGradeView
             open={this.state.open}

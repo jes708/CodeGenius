@@ -7,7 +7,7 @@ import Promise from 'bluebird'
 
 const router = express.Router()
 
-router.get('/compare_repo_files', ensureAuthenticated, (req, res, next) => {
+router.get('/compare_repo_files', ensureAuthenticated, (req, res) => {
   const baseRepoSplit = req.query.baseRepo.split('/')
   const solutionRepoSplit = req.query.solutionRepo.split('/')
 

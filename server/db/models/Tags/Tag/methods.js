@@ -18,14 +18,25 @@ module.exports = {
 
 function addAssociations( db ) {
   const Assessment = db.models['assessment'];
+  const StudentTest = db.models['studentTest'];
   const Tag = db.models[ 'tag' ];
   const ItemTag = db.models['itemTag'];
-  Assessment.belongsToMany(Tag, {
+  const Comment = db.models['comment'];
+
+  Comment.belongsToMany(Tag, {
     through: {model: ItemTag, unique: false},
     otherKey: 'tagId'
   });
-  Tag.belongsToMany(Assessment, {
+
+  Tag.belongsToMany(Comment, {
     through: {model: ItemTag, unique: false},
-    otherKey: 'assessmentId'
+    otherKey: 'commentId'
   });
+
+  // ItemTag.addScope('defaultScope', {
+  //   include: [
+  //     { model: Tag },
+  //   ]
+  // }, { override: true })
+
 }

@@ -13,6 +13,7 @@ import styles from '../graderStyles';
 import {getComments, postComment, getCommentsByStudentAndAssessment, postCommentByStudentAndAssessment} from '../Comment/apiActions';
 import Checkbox from 'material-ui/Checkbox'
 import { getStudentTestInfo, putStudentTestInfo } from '../../actions/studentTestInfoActions'
+import CommentsList from './CommentsList';
 import AssessmentCard from '../AssessmentCard'
 
 
@@ -24,21 +25,30 @@ class GraderPanel extends Component {
 
   constructor(props){
     super(props)
-    this.getComments();
     this.createNewComment = this.createNewComment.bind(this);
     this.state = {
-      commentCollection: []
+      commentCollection: [],
+      loaded: false
     }
+    this.getComments = this.getComments.bind(this);
   }
 
   componentWillReceiveProps(nextProps){
+    if( nextProps.current && nextProps.current.studentId && nextProps.current.assessmentId) this.setState({loaded: true});
     this.setState({
       commentCollection: nextProps.commentCollection
     })
+    if(nextProps.current && nextProps.current.studentId && nextProps.current.assessmentId && this.state.loaded === false ){
+      this.getComments();
+    }
+  }
+
+  componentDidMount(){
+    // this.getComments();
   }
 
   componentWillMount(){
-    buildGraderPanel(this.props.dispatch);
+    // buildGraderPanel(this.props.dispatch);
   }
 
   createNewComment(){
@@ -49,7 +59,9 @@ class GraderPanel extends Component {
   getComments(){
     let {studentId, assessmentId} = this.getStudentAndAssessment()
     // this.props.dispatch(getComments());
-    this.props.dispatch(getCommentsByStudentAndAssessment(assessmentId, studentId))
+    if(studentId && assessmentId) {
+      this.props.dispatch(getCommentsByStudentAndAssessment(studentId, assessmentId))
+    }
   }
 
   getStudentAndAssessment(){
@@ -58,8 +70,13 @@ class GraderPanel extends Component {
     return {studentId, assessmentId}
   }
 
+//     let newId = Number(studentTestArray[newIndex])
+//     let studentId = this.props.studentTests[newId].userId;
+//     this.props.dispatch(getStudentTestInfo(this.props.assessment.id, studentId))
+//   }
+
   render () {
-    let {studentId, assessmentId} = this.getStudentAndAssessment();
+    // let {studentId, assessmentId} = this.getStudentAndAssessment();
     return (
       <div style={Object.assign({}, styles.gradingPane, styles.paperStyle)}>
         <div style={styles.content}>
@@ -78,24 +95,11 @@ class GraderPanel extends Component {
             style={styles.skinny}
             onClick={this.createNewComment}
           />
-          <List>
-              {(this.state.commentCollection.length) ? (
-                this.state.commentCollection.map((contents, index) => {
-                    return (
-                      <CommentCard
-                        key={index}
-                        commentIndex={contents.commentIndex}
-                        contents={contents}
-                        studentId={studentId}
-                        assessmentId={assessmentId}
-                          >
-                      </ CommentCard>
-                    )
-                  })) : (
-                    <h2>Add a comment!</h2>
-                  )
-              }
-          </List>
+          <div>
+            <CommentsList
+              {...this.props}
+            />
+          </div>
         </div>
       </div>
     )
@@ -104,12 +108,21 @@ class GraderPanel extends Component {
 
 const mapStateToProps = state => {
   const { assessments, studentTestInfo, comment } = Object.assign({}, state);
-  return {
+  let nextState = {
     assessment: assessments.current.base,
     commentCollection: comment.collection ? comment.collection.map( comment => comment ) : null,
     student: assessments.current.student,
-    studentTests: studentTestInfo.byId
+    studentTests: studentTestInfo.byId,
+    commentsList: {
+      isFetching: comment.isFetching,
+      failed: comment.failed
+    }
   }
+  if(comment.current){
+    nextState.studentId = comment.current.userId;
+    nextState.assessmentId = comment.current.assessmentId;
+  }
+  return nextState;
 }
 
 

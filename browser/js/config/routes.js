@@ -12,10 +12,9 @@ const routes = (
   <Route path='/' component={App}>
     <IndexRoute component={Home} />
     <Route path='grade' component={Grade} />
-    <Route path='/studenttest/:assessmentId/:studentTestId/:userId' component={StudentView} />
+    <Route path='/studenttest/:studentTestId' component={StudentView} />
     <Route path='*' component={NotFound} />
   </Route>
 );
 
 export default routes;
-

@@ -1,8 +1,6 @@
 'use strict';
 
 import React, { Component, PropTypes } from 'react';
-import axios from "axios"
-import { PrismCode } from 'react-prism';
 import RaisedButton from 'material-ui/RaisedButton';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
@@ -14,7 +12,6 @@ import { Toolbar } from 'material-ui/Toolbar';
 import { Tab, Tabs } from 'material-ui/Tabs';
 import GraderAssessments from './GraderAssessments';
 import GraderStudents from './GraderStudents';
-import EditorInsertDriveFile from 'material-ui/svg-icons/editor/insert-drive-file';
 import ActionHome from 'material-ui/svg-icons/action/home';
 import SocialGroup from 'material-ui/svg-icons/social/group';
 import ActionAssignmentTurnedIn from 'material-ui/svg-icons/action/assignment-turned-in';
@@ -23,62 +20,10 @@ import GraderView from './GraderView'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { switchAssessment } from '../actions/assessmentActions'
-import { getOwnStudentTest } from '../actions/studentTestInfoActions'
-
-const styles = {
-  main: {
-    paddingTop: 20
-  },
-  paperStyle: {
-    height: '89vh',
-    overflow: 'scroll',
-    position: 'relative'
-  },
-  panelStyle: {
-    height: '89vh',
-    position: 'relative'
-  },
-  menu: {
-    background: 'white',
-    position: 'absolute',
-    width: '100%',
-    height: 50,
-    zIndex: 4
-  },
-  panel: {
-    paddingTop: 50,
-    height: '100%',
-    overflow: 'scroll'
-  },
-  content: {
-    padding: 16
-  },
-  container: {
-    padding: 10
-  },
-  skinny: {
-    margin: 0,
-    marginBottom: 15
-  }
-}
-
-class AnnotatedGrade extends Component {
-  constructor(props){
-    super(props)
-  }
-
-  render(){
-    return (
-      <div style={styles.main}>
-        <AnnotationHandler {...this.props} className='col-lg-8' >
-          <Grade />
-        </AnnotationHandler>
-        <GradeView tab={this.props.location.tab} className='col-lg-4' />
-      </div>
-    )
-  }
-}
-
+import { getOwnStudentTest, getStudentTestByStudentId } from '../actions/studentTestInfoActions'
+import { getStudentTestById } from '../reducers/studentTestInfo'
+import StudentTestCard from './StudentTestCard'
+import styles from './graderStyles'
 
 class GradeView extends Component {
   constructor(props) {
@@ -90,11 +35,25 @@ class GradeView extends Component {
   }
 
   switcher() {
+    const { comments } = this.props.studentTest
+    let score = 0
+    if (comments) {
+      Object.keys(comments).forEach(key => {
+        score += comments[key].score
+      })
+    }
     switch (this.state.current) {
       case 'Panel':
         return (
           <div>
-            <StudentViewComments />
+            {this.props.studentTest.assessment
+              ? <StudentTestCard
+                assessment= {this.props.studentTest.assessment}
+                score={score}
+                />
+              :null
+            }
+            <StudentViewComments comments={this.props.studentTest.comments} />
           </div>
         );
     }
@@ -129,20 +88,19 @@ class Grade extends Component {
     }
   }
 
-  componentDidMount() {
-    const { assessmentId, studentTestId, userId} = this.props.params
-    this.props.dispatch(switchAssessment(assessmentId, userId, true))
+  componentWillMount() {
+    const {studentTestId} = this.props.params
     this.props.dispatch(getOwnStudentTest(studentTestId))
   }
 
   render(){
     return (
-      <div>
+      <div style={styles.main}>
         <div className='col-lg-8'>
           <GraderView />
         </div>
         <div className='col-lg-4'>
-          <GradeView />
+          <GradeView studentTest={this.props.studentTest} />
         </div>
       </div>
     )
@@ -150,8 +108,10 @@ class Grade extends Component {
 }
 
 const mapStateToProps = (state, { params }) => {
+  const { studentTest } = state.studentTestInfo
   return {
-    params
+    params,
+    studentTest
   }
 }
 

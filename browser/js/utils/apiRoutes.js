@@ -7,12 +7,28 @@ function api(routes, id){
 }
 
 const APIROUTES = {
-  annotation: api('/annotations'),
-  annotationByCommentId: (commentId) => api(`/comments/${commentId}/annotation`),
-  comments: api('/comments'),
-  commentById: (id) => api('/comments', id),
-  commentByAssessmentStudent: (assessmentId, studentId) => api(`/assessments/${assessmentId}/students/${studentId}/comments`),
-  commentByStudentTest: (studentTestId) => api(`/studenttest/${studentTestId}/comments`)
+  annotation:
+    api('/annotations'),
+  annotationByCommentId: (commentId) =>
+    api(`/comments/${commentId}/annotation`),
+  comments:
+    api('/comments'),
+  commentById: (id) =>
+    api('/comments', id),
+  commentByAssessmentStudent: (assessmentId, studentId) =>
+    api(`/assessments/${assessmentId}/students/${studentId}/comments`),
+  commentByStudentTest: (studentTestId) =>
+    api(`/studenttest/${studentTestId}/comments`),
+  tagsByCommentId: (commentId) =>
+    api(`/comments/${commentId}/tags`),
+  tagByCommentId: (commentId, tagId) =>
+    api(`/comments/${commentId}/tags/${tagId}`),
+  tagsByAssessmentStudent: (assessmentId, studentId) =>
+    api(`assesments/${assessmentId}/students/${studentId}/tags`),
+  tagById: (tagId) =>
+    api(`/tags`, tagId),
+  tagList: () =>
+    api(`/tags`)
 }
 
 export default APIROUTES;

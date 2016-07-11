@@ -23,7 +23,7 @@ const styles = {
     lineHeight: '56px',
     height: '100%'
   },
-  growMarginRight: {
+  growMarginRight: { 
     marginRight: 8
   },
   home: {

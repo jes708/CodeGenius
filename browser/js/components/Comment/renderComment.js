@@ -47,14 +47,18 @@ export default class RenderComment extends Component {
         open: false
       }
     }
-    this.updateContents = this.updateContents.bind(this);
+    // this.updateContents = this.updateContents.bind(this);
     this.toggleDialog = this.toggleDialog.bind(this);
     this.renderDialog = this.renderDialog.bind(this);
     this.renderComment = this.renderComment.bind(this);
     this.handleSubmitDialog = this.handleSubmitDialog.bind(this);
     this.renderMarkdown = this.renderMarkdown.bind(this);
     this.renderScore = this.renderScore.bind(this);
-    this.removeItem = this.removeItem.bind(this);
+    this.removeItem = this.props.removeItem;
+    this.updateContents = this.props.updateContents;
+    this.renderDialogHandler = this.renderDialogHandler.bind(this);
+    this.tagMethods = this.props.tagMethods;
+    this.handleSlider = this.handleSlider.bind(this);
   }
   componentWillReceiveProps(nextProps){
     let {contents, isEditing} = nextProps;
@@ -84,33 +88,36 @@ export default class RenderComment extends Component {
     }
   }
   handleSlider(event, value){
-    this.updateContents({score: value});
+    this.updateContents({score: this.state.sliderValue});
+  }
+  recordSliderValue(event, value){
+    this.setState({sliderValue: value})
   }
   renderScore(){
     let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
+    let scoreStyle = {fontSize: '20px'};
     return (
       <div>
-        <p>
+        <p style={scoreStyle}>
           {(contents.score) ? (<span>Score: {contents.score}</span>) : null }
         </p>
         <div>
         {(
           isEditing ? (
             <span>
-              <p>Set a score for this comment</p>
-              <span>0</span>
               <Slider
+              description={'Choose a score for this comment, between -5 and 5.'}
               max={5}
-              min={0}
+              min={-5}
               step={0.5}
               defaultValue={contents.score || 1}
               value={contents.score}
-              onChange={
-                this.handleSlider.bind(this)
+              onChange={this.recordSliderValue.bind(this)}
+              onMouseUp={
+                this.handleSlider
               }
               />
-              <span>5</span>
             </span>
           ) : (null)
         )}
@@ -118,29 +125,32 @@ export default class RenderComment extends Component {
       </div>
     )
   }
+  renderDialogHandler(){
+    let {contents, isEditing} = this.state;
+    let buttonStyle = styles.assessmentButtons;
+    return this.renderDialog(
+        {
+          title: "Add Markdown",
+          nested: (
+            <div>
+            <MarkdownWrapper
+            handleOnBlur={(event, updateContents = this.updateContents) => {
+              updateContents({markdown: event.target.value})
+            }}
+            markdown={"#Add Markdown here"}
+            editable={true}
+            />
+            </div>
+          )
+        }
+      )()
+  }
   renderMarkdown(){
     let {contents, isEditing} = this.state;
     let buttonStyle = styles.assessmentButtons;
     return (
       <span>
-    { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" onClick={
-      this.renderDialog(
-        {
-          title: "Add Markdown",
-          nested: (
-            <div>
-              <MarkdownWrapper
-                handleOnBlur={(event, updateContents = this.updateContents) => {
-                  updateContents({markdown: event.target.value})
-                }}
-                markdown={"#Add Markdown here"}
-                editable={true}
-                />
-            </div>
-          )
-        }
-      )
-    }  /> : (
+    { (!contents.markdown && isEditing) ? null : (
       <div>
         <MarkdownWrapper
           markdown={contents.markdown}
@@ -157,19 +167,6 @@ export default class RenderComment extends Component {
   }
   handleSubmitDialog(){
     this.toggleDialog();
-  }
-  removeItem(itemName){
-    return () => {
-      let contentsToUpdate = {};
-      contentsToUpdate[itemName.toLowerCase()] = null;
-      this.updateContents(contentsToUpdate);
-    }
-  }
-  updateContents(contentsToUpdate){
-    let newContents = Object.assign({}, this.state.contents);
-    let updatedContents = Object.assign(newContents, contentsToUpdate);
-    this.state.contents = updatedContents;
-    this.props.handleUpdateComment(this.state.contents);
   }
   render(){
     return (
@@ -189,28 +186,22 @@ function renderComment () {
         <span key={id++} >
           <CommentToolbar
             style={commentStyles.CommentToolbar}
-            {...this.props}
-            removeItem={this.removeItem}
+            removeItem={this.props.removeItem}
             editMode={this.props.editMode}
+            editButton={this.props.editButton}
             contents={this.state.contents}
+            addMarkdownHandler={this.renderDialogHandler}
+            {...this.props}
           />
         </ span>
+        <span key={id++}>
+          {this.renderScore()}
+        </span>
         <span key={id++} >
           {this.renderMarkdown()}
         </span>
         <span key={id++}>
-          {this.renderScore()}
-        </span>
-        <span key={id++}>
           {/* (!contents.solutionCodeLink && isEditing) ? <RaisedButton style={buttonStyle} label="Add Solution Code" /> : "" */}
-        </span>
-        <span key={id++}>
-          { (!contents.tags && isEditing) ? <span>< ActionLabel /><FlatButton style={buttonStyle} label="Add Tag" /></span> : (
-        <div>
-          <Tags tags={contents.tags} isEditing={isEditing} />
-        </div>
-      )
-      }
         </span>
         <span key={id++}>
           {/* (!contents.attachments && isEditing) ? <RaisedButton style={buttonStyle} label="Add Attachment" /> : ""*/}
@@ -226,6 +217,11 @@ function renderComment () {
           {/*< FlatButton href="/grade">Go to Code</ FlatButton>*/}
         </div>
       ) }
+        </span>
+        <span key={id++}>
+            <Tags
+              {...this.props}
+            />
         </span>
         <span key={id++}>
       {/* (!contents.criteria && isEditing) ? <RaisedButton style={buttonStyle} label="Add Criteria" /> : contents.criteria */}

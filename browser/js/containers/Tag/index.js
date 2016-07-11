@@ -47,14 +47,16 @@ export class Tags extends Component{
   handleChange(e){
     this.setState({textAreaValue: e.target.value })
   }
-  deleteTag(index, tags){
-      let currentTags = tags();
-      const tagToDelete =
-        currentTags.map((tag) => {return tag.id}).indexOf(index);
-      let nextTags = currentTags.slice();
-      nextTags.splice(tagToDelete, 1);
-      this.setState({tags: nextTags})
-  };
+  // deleteTag(index, tags){
+  //   this.props.removeTagFromComment
+  //
+  //     // let currentTags = tags();
+  //     // const tagToDelete =
+  //     //   currentTags.map((tag) => {return tag.id}).indexOf(index);
+  //     // let nextTags = currentTags.slice();
+  //     // nextTags.splice(tagToDelete, 1);
+  //     // this.setState({tags: nextTags});
+  // };
   getTags(){
     return this.state.tags;
   }
@@ -81,41 +83,41 @@ export class Tags extends Component{
     let that = this;
     return (
         <div >
-          <FlipMove style={styles.tags} easing="cubic-bezier(0.4, 0.0, 0.2, 1)">
-            {this.state.tags ? (
-              this.state.tags.map((tag, i) => {
-                let thisTagStyle = _.cloneDeep(this.state.tagStyle);
-                return (
+            <FlipMove style={styles.tags} easing="cubic-bezier(0.4, 0.0, 0.2, 1)">
+              {this.props.tags ? (
+                this.props.tags.map((tag, i) => {
+                  // let thisTagStyle = _.cloneDeep(this.state.tagStyle);
+                  return (
 
-                  <Tag
-                    key={tag.id}
-                    tag={tag}
-                    tagStyle={styles.tag}
-                    deleteTag={ this.deleteTag.bind(that, tag.id, this.getTags) }
-                  />
-                )
-              })
-            )  : (null)}
-            <div>
-            {
-              this.state.isEditing ? (
-                <span>
-                <IconButton style={styles.addTag} onClick={this.addTag} >
-                < AddCircleOutline color={grey400} hoverColor={lightBlack} style={ styles.addTagIcon }  />
-                </IconButton>
-                <Dialog
-                actions={addTagActions}
-                modal={false}
-                open={this.state.open}
-                onRequestClose={this.handleClose}
-                >
-                <TextField value={this.state.textAreaValue} floatingLabelText="Add a Tag" onChange={this.handleChange} />
-                </Dialog>
-                </span>
-              ) : (null)
-            }
-            </div>
-          </FlipMove>
+                    <Tag
+                      key={tag.id}
+                      tag={tag}
+                      tagStyle={styles.tag}
+                      {...this.props}
+                    />
+                  )
+                })
+              )  : (null)}
+              <div>
+              {
+                this.state.isEditing ? (
+                  <span>
+                  <IconButton style={styles.addTag} onClick={this.addTag} >
+                  < AddCircleOutline color={grey400} hoverColor={lightBlack} style={ styles.addTagIcon }  />
+                  </IconButton>
+                  <Dialog
+                  actions={addTagActions}
+                  modal={false}
+                  open={this.state.open}
+                  onRequestClose={this.handleClose}
+                  >
+                  <TextField value={this.state.textAreaValue} floatingLabelText="Add a Tag" onChange={this.props.tagMethods.toggleCreateTagDialog} />
+                  </Dialog>
+                  </span>
+                ) : (null)
+              }
+              </div>
+            </FlipMove>
         </div>
     )
   }
@@ -155,7 +157,7 @@ class Tag extends Component{
       <Chip
           style={this.getStyle()}
           backgroundColor={this.state.backgroundColor}
-          onRequestDelete={() => this.state.deleteTag() }
+          onRequestDelete={() => this.props.tagMethods.removeTagFromComment(this.props.tag.id, this.props.commentIndex) }
       >
         {this.state.tagName}
       </Chip>

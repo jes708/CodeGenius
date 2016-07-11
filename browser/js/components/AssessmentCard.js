@@ -27,14 +27,14 @@ class AssessmentCard extends Component {
     const { assessment, dispatch, student, studentTests } = this.props
 
     let currentId = String(student.id);
-    
+
     let actualStudentsTests = [];
     for (let testId in studentTests) {
       if (studentTests[testId].isStudent && studentTests[testId].repoUrl) actualStudentsTests.push(testId)
     }
 
     if (actualStudentsTests.length < 2) return;
- 
+
     let currentIndex = actualStudentsTests.indexOf(currentId);
     let newIndex;
 
@@ -78,7 +78,6 @@ class AssessmentCard extends Component {
         dispatch(putStudentTestInfo(assessment.id, test.userId, {isSent: true}));
       }
     })
-    
   }
 
   renderSubmit(buttonTitle, dialogMessage) {
@@ -123,12 +122,12 @@ class AssessmentCard extends Component {
 
   renderStudentInfo() {
 
-    if (this.props.showStudents) {  
+    if (this.props.showStudents) {
       const { student } = this.props
       if (student.user) {
         return (
           <div style={Object.assign({}, styles.gradingSubtitle, styles.studentCardSelect)}>
-            <img src={student.user.photo} alt={student.user.name} style={styles.studentLarge} />            
+            <img src={student.user.photo} alt={student.user.name} style={styles.studentLarge} />
           </div>
         )
       }
@@ -136,7 +135,7 @@ class AssessmentCard extends Component {
   }
 
   renderStudent () {
-    
+
     if (this.props.showStudents) {
       const { student } = this.props
       let studentName = student.user ? student.user.name : ""
@@ -232,7 +231,6 @@ class AssessmentCard extends Component {
 
   render () {
     const { assessment, onSelect, student } = this.props
-    
     let buttonTitle, dialogMessage, fn;
     if (onSelect) fn = () => onSelect(assessment.id);
 

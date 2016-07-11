@@ -22,6 +22,5 @@ function addAssociations(db){
   // const Location = db.models['location'];
 
   Annotation.belongsTo(User, {as: 'creator'})
-  // Annotation.belongsTo(Location)
   Annotation.belongsTo(Comment);
 }

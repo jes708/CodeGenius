@@ -21,10 +21,11 @@ class Robot extends Component {
       <div style={CommentsListStyles.robotContainer}>
         <img style={CommentsListStyles.robot} {...this.props} src="images/helpful-robot.png" />
         <p style={CommentsListStyles.robotText}>
-          {`Friendly the robot says,`} <br />
-          {`"Hi! You haven't added `} <br />
-          {`a comment yet. `} <br />
-          {`Try it out!"`} <br />
+          {`GeniusBot says,`} <br />
+          {`"Hi! I noticed you haven't`} <br />
+          {`added a comment yet.`} <br />
+          {`Try it out: your students` <br/>
+          {`will love you!"`} <br />
         </p>
       </div>
     )

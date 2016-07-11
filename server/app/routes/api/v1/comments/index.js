@@ -47,7 +47,6 @@ router.post( '/:id/annotation', ( req, res, next ) => {
 } )
 
 router.get('/:commentId/tags', (req, res, next) => {
-  console.log(req.params.id, req.params.commentId);
   Comment.findById(req.params.commentId)
          .then( comment => {
       console.log(comment);
@@ -57,7 +56,6 @@ router.get('/:commentId/tags', (req, res, next) => {
 })
 
 router.post('/:commentId/tags', (req, res, next) => {
-  console.log(req.params.id, req.params.commentId);
   Comment.findById(req.params.commentId).then( comment => {
       if(!comment) throw 'no comment!'
       return comment.createTag(req.body)} )

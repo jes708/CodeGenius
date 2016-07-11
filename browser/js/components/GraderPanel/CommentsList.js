@@ -24,7 +24,7 @@ class Robot extends Component {
           {`GeniusBot says,`} <br />
           {`"Hi! I noticed you haven't`} <br />
           {`added a comment yet.`} <br />
-          {`Try it out: your students` <br/>
+          {`Try it out: your students`} <br/>
           {`will love you!"`} <br />
         </p>
       </div>

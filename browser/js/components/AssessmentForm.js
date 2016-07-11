@@ -37,7 +37,6 @@ class AssessmentForm extends Component {
       form: {
         id: assessment ? assessment.id : '',
         name: assessment ? assessment.name : '',
-        description: assessment ? assessment.description : '',
         repoUrl: assessment ? assessment.repoUrl : '',
         solutionRepoUrl: assessment ? assessment.solutionRepoUrl : '',
         org: assessment ? assessment.org : '',
@@ -197,9 +196,25 @@ class AssessmentForm extends Component {
   }
 
   handleChange = (e, field) => {
+    const newErrors = Object.assign({}, this.state.errors)
     const nextForm = Object.assign({}, this.state.form)
-    nextForm[field] = e.target.value
-    this.setState({ form: nextForm })
+    const input = e.target.value
+    const newCanSubmit =
+      (this.state.form.solutionRepoUrl !== ''
+       && this.state.form.repoUrl !== ''
+       && this.state.form.org !== ''
+       && input !== '')
+    nextForm[field] = input
+    if (input === '') {
+      newErrors[field] = { statusText: 'Required' }
+    } else {
+      delete newErrors[field]
+    }
+    this.setState({
+      form: nextForm,
+      errors: newErrors,
+      canSubmit: newCanSubmit
+    })
   }
 
   handlePathChange = (e) => {
@@ -207,42 +222,98 @@ class AssessmentForm extends Component {
   }
 
   handleOrgSelect = (orgName) => {
+    const newErrors = Object.assign({}, this.state.errors)
     const nextForm = Object.assign({}, this.state.form)
+    const newCanSubmit =
+      (this.state.form.solutionRepoUrl !== ''
+       && orgName || orgName !== ''
+       && this.state.form.repoUrl !== ''
+       && this.state.form.name !== ''
+       && this.state.form.teamId !== '')
     nextForm.org = orgName
-    this.setState({ form: nextForm })
+    if (!orgName || orgName === '') {
+      newErrors.org = { statusText: 'Required' }
+    } else {
+      delete newErrors.org
+    }
+    this.setState({
+      form: nextForm,
+      canSubmit: newCanSubmit,
+      errors: newErrors
+    })
     this.props.dispatch(getOrgTeams(orgName))
   }
 
   handleTeamSelect = (team) => {
+    const newErrors = Object.assign({}, this.state.errors)
     const nextForm = Object.assign({}, this.state.form)
-    nextForm.teamId = team.id
-    nextForm.teamName = team.name
-    this.setState({ form: nextForm })
+    const newCanSubmit =
+      (this.state.form.solutionRepoUrl !== ''
+       && this.state.form.org !== ''
+       && this.state.form.repoUrl !== ''
+       && this.state.form.org !== ''
+       && team.id)
+    nextForm.teamId = team.id || ''
+    nextForm.teamName = team.name || ''
+    if (!team || team === '') {
+      newErrors.teamId = { statusText: 'Required' }
+    } else {
+      delete newErrors.teamId
+    }
+    this.setState({
+      form: nextForm,
+      canSubmit: newCanSubmit,
+      errors: newErrors
+    })
     this.props.dispatch(getOrgRepo(nextForm.org))
   }
 
   handleRepoUrl = (repoUrl) => {
+    const newErrors = Object.assign({}, this.state.errors)
     const nextForm = Object.assign({}, this.state.form)
-    const newCanSubmit = repoUrl !== '' && nextForm.solutionRepoUrl !== ''
+    const newCanSubmit =
+      (nextForm.solutionRepoUrl !== ''
+       && repoUrl !== ''
+       && this.state.form.org !== ''
+       && this.state.form.teamId !== ''
+       && this.state.form.name !== '')
     nextForm.repoUrl = repoUrl
+    if (!repoUrl || repoUrl === '') {
+      newErrors.repoUrl = { statusText: 'Required' }
+    } else {
+      delete newErrors.repoUrl
+    }
     this.setState({
       form: nextForm,
-      canSubmit: newCanSubmit
+      canSubmit: newCanSubmit,
+      errors: newErrors
     })
   }
 
   handleSolutionUrl = (solutionRepoUrl) => {
     const nextForm = Object.assign({}, this.state.form)
-    const newCanSubmit = solutionRepoUrl !== '' && nextForm.repoUrl !== ''
+    const newErrors = Object.assign({}, this.state.errors)
+    const newCanSubmit =
+      (solutionRepoUrl !== ''
+       && nextForm.repoUrl !== ''
+       && this.state.form.teamId !== ''
+       && this.state.form.org !== ''
+       && this.state.form.name !== '')
     nextForm.solutionRepoUrl = solutionRepoUrl
+    if (!solutionRepoUrl || solutionRepoUrl === '') {
+      newErrors.solutionRepoUrl = { statusText: 'Required' }
+    } else {
+      delete newErrors.solutionRepoUrl
+    }
     this.setState({
       form: nextForm,
-      canSubmit: newCanSubmit
+      canSubmit: newCanSubmit,
+      errors: newErrors
     })
   }
 
   renderOrgInput () {
-    const { form } = this.state
+    const { form, errors } = this.state
     const { orgs, assessment } = this.props
 
     if (!assessment) {
@@ -255,6 +326,8 @@ class AssessmentForm extends Component {
           searchText={form.org}
           fullWidth={true}
           onNewRequest={this.handleOrgSelect}
+          onUpdateInput={this.handleOrgSelect}
+          errorText={errors.org && errors.org.statusText}
         />
       )
     } else {
@@ -270,7 +343,7 @@ class AssessmentForm extends Component {
   }
 
   renderTeamInput () {
-    const { form } = this.state
+    const { form, errors } = this.state
     const { assessment, isFetchingTeams, teams } = this.props
 
     if (form.org !== '' && !isFetchingTeams && teams.length && !assessment) {
@@ -284,6 +357,8 @@ class AssessmentForm extends Component {
           searchText={form.teamName}
           fullWidth={true}
           onNewRequest={this.handleTeamSelect}
+          onUpdateInput={this.handleTeamSelect}
+          errorText={errors.teamId && errors.teamId.statusText}
         />
       )
     } else if (assessment) {
@@ -306,26 +381,26 @@ class AssessmentForm extends Component {
       return (
         <div>
           <AutoComplete
-          floatingLabelText="Repo Url"
-          filter={AutoComplete.fuzzyFilter}
-          dataSource={orgrepo.map(repo => `${repo}`)}
-          maxSearchResults={5}
-          searchText={form.repoUrl}
-          onNewRequest={this.handleRepoUrl}
-          onUpdateInput={this.handleRepoUrl}
-          fullWidth={true}
-          errorText={errors.repoUrl && errors.repoUrl.statusText}
+            floatingLabelText="Repo Url"
+            filter={AutoComplete.fuzzyFilter}
+            dataSource={orgrepo.map(repo => `${repo}`)}
+            maxSearchResults={5}
+            searchText={form.repoUrl}
+            onNewRequest={this.handleRepoUrl}
+            onUpdateInput={this.handleRepoUrl}
+            fullWidth={true}
+            errorText={errors.repoUrl && errors.repoUrl.statusText}
           />
           <AutoComplete
-          floatingLabelText="Solution Url"
-          filter={AutoComplete.fuzzyFilter}
-          dataSource={orgrepo.map(repo => `${repo}`)}
-          maxSearchResults={5}
-          searchText={form.solutionRepoUrl}
-          onNewRequest={this.handleSolutionUrl}
-          onUpdateInput={this.handleSolutionUrl}
-          fullWidth={true}
-          errorText={errors.solutionRepoUrl && errors.solutionRepoUrl.statusText}
+            floatingLabelText="Solution Url"
+            filter={AutoComplete.fuzzyFilter}
+            dataSource={orgrepo.map(repo => `${repo}`)}
+            maxSearchResults={5}
+            searchText={form.solutionRepoUrl}
+            onNewRequest={this.handleSolutionUrl}
+            onUpdateInput={this.handleSolutionUrl}
+            fullWidth={true}
+            errorText={errors.solutionRepoUrl && errors.solutionRepoUrl.statusText}
           />
         </div>
       )
@@ -373,7 +448,7 @@ class AssessmentForm extends Component {
   }
 
   renderInfoForm () {
-    const { form } = this.state
+    const { form, errors } = this.state
 
     return (
       <Paper zDepth={0} style={styles.formPaperStyle}>
@@ -382,16 +457,9 @@ class AssessmentForm extends Component {
             floatingLabelText="Name"
             value={form.name}
             fullWidth={true}
+            errorText={errors.name && errors.name.statusText}
             onChange={(e) => this.handleChange(e, 'name')}
-          />
-          <TextField
-            floatingLabelText="Description"
-            multiLine={true}
-            rows={1}
-            rowsMax={Infinity}
-            value={form.description}
-            fullWidth={true}
-            onChange={(e) => this.handleChange(e, 'description')}
+            onBlur={(e) => this.handleChange(e, 'name')}
           />
           {this.renderOrgInput()}
           {this.renderTeamInput()}

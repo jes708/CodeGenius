@@ -49,7 +49,6 @@ router.post( '/:id/annotation', ( req, res, next ) => {
 router.get('/:commentId/tags', (req, res, next) => {
   Comment.findById(req.params.commentId)
          .then( comment => {
-      console.log(comment);
       return comment.getTags()} )
       .then( tags => res.status(200).send( tags ) )
       .catch(next);

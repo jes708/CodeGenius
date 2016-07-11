@@ -187,7 +187,6 @@ router.get('/:id/students/:studentId/comments', (req, res, next) => {
       },
       include:  [Assessment]
     }).then( studentTest => {
-      console.log(studentTest);
       return studentTest.getComments()} )
       .then( comments => res.status(200).send( comments ) )
       .catch(next);

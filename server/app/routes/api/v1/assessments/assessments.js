@@ -180,7 +180,6 @@ router.post('/:id/students/:studentId/comments', (req, res, next) => {
 })
 
 router.get('/:id/students/:studentId/comments', (req, res, next) => {
-  console.log(req.params.id, req.params.studentId);
   StudentTest.findOne({
       where: {
         assessmentId: req.params.id,

@@ -275,7 +275,7 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
            .find( comment => {
              return comment.commentIndex === props.commentIndex
            } )
-    let tags = thisComment.tags || [];
+    let tags = thisComment ? thisComment.tags : [];
     let nextProps = Object.assign({}, props);
     nextProps.tags = tags;
     nextProps.tagSelector = state.comment.allTags;

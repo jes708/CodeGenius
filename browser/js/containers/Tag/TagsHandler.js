@@ -94,12 +94,7 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
         tagSelector: nextTagSelector
       })
     }
-
-    // getDefaultProps(){
-    //   return propsToReceive;
-    // }
-
-
+    
     //external Tag Wrapper Methods
     populateTagDropdown(){
       let {deleteTag} = this.deleteTag

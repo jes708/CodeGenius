@@ -9,14 +9,29 @@ import styles from '../graderStyles';
 import RaisedButton from 'material-ui/RaisedButton';
 import ErrorIcon from 'material-ui/svg-icons/alert/error';
 import IconButton from 'material-ui/IconButton';
+import FlipMove from 'react-flip-move';
 
+class Robot extends Component {
+  constructor(props){
+    super(props)
+  }
+  render(){
+    let {CommentsListStyles} = GraderPanelStyles;
+    return (
+      <div style={CommentsListStyles.robotContainer}>
+      <img style={CommentsListStyles.robot} {...this.props} src="images/helpful-robot.png" />
+      <p style={CommentsListStyles.robotText}>{"You haven't added a comment yet. Try it out!"}</p>
+      </div>
+    )
+  }
+}
 
 export default class CommentsList extends Component {
   constructor(props){
     super(props);
     this.state={
       isFetching: props.commentsList.isFetching,
-      commentCollection: props.commentCollection
+      commentCollection: props.commentCollection || []
     }
     this.renderRefreshIndicator = this.renderRefreshIndicator.bind(this);
     this.renderCommentsList = this.renderCommentsList.bind(this);
@@ -31,24 +46,28 @@ export default class CommentsList extends Component {
     })
   }
   renderCommentsList(){
+    let {CommentsListStyles} = GraderPanelStyles;
+    let robot = !this.state.commentCollection.length ? (
+      <Robot key={999} style={CommentsListStyles.robot} />
+    ) : null;
+    let commentCollection = this.state.commentCollection.map((contents, index) => {
+      return (
+        <CommentCard
+        key={index}
+        commentIndex={contents.commentIndex}
+        contents={contents}
+        studentId={this.state.studentId}
+        assessmentId={this.state.assessmentId}
+        >
+        </ CommentCard>
+      )
+    })
     return (
       <List>
-      {(this.state.commentCollection.length) ? (
-        this.state.commentCollection.map((contents, index) => {
-          return (
-            <CommentCard
-            key={index}
-            commentIndex={contents.commentIndex}
-            contents={contents}
-            studentId={this.state.studentId}
-            assessmentId={this.state.assessmentId}
-            >
-            </ CommentCard>
-          )
-        })) : (
-          <RaisedButton>Add a comment!</RaisedButton>
-        )
-      }
+      <FlipMove easing="cubic-bezier(0.4, 0.0, 0.2, 1)" >
+          {commentCollection}
+          {robot}
+      </FlipMove>
       </List>
     )
   }

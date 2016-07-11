@@ -18,6 +18,7 @@ import * as api from './apiActions';
 import Label from 'material-ui/svg-icons/action/label';
 import MenuItem from 'material-ui/MenuItem';
 import DropDownMenu from 'material-ui/DropDownMenu';
+import RemoveContent from 'material-ui/svg-icons/content/remove-circle';
 
 const colors = [
   ['Red', red500],
@@ -44,6 +45,10 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
     constructor(props){
       super(props);
 
+
+      this.openTagDropdown = this.openTagDropdown.bind(this);
+      this.getCommentTags = this.getCommentTags.bind(this);
+      this.toggleTagSelectorDropdown = this.toggleTagSelectorDropdown.bind(this);
       this.createTag = this.createTag.bind(this);
       this.deleteTag = this.deleteTag.bind(this);
       this.addTagToComment = this.addTagToComment.bind(this);
@@ -55,6 +60,10 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
       this.handleChooseColor = this.handleChooseColor.bind(this);
       this.getCommentTags = this.getCommentTags.bind(this);
       this.renderDialog = this.renderDialog.bind(this);
+      this.populateTagDropdown = this.populateTagDropdown.bind(this);
+      this.getTagList = this.getTagList.bind(this);
+      this.selectTagFromDropdown = this.selectTagFromDropdown.bind(this);
+
 
       this.state = {
         tagDialog: {
@@ -62,26 +71,87 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
           name: null,
           color: blue500
         },
+        tagSelector: {
+          open: false,
+          list: [],
+          isFetching: false,
+          failed: false,
+          error: null,
+          populatedList: []
+        },
         tags: props.tags
       }
+
     }
+
     componentWillReceiveProps(nextProps){
       this.setState({
         tags: nextProps.tags,
       })
-    }
-    getDefaultProps(){
-      return propsToReceive;
+      let nextTagSelector = Object.assign({}, nextProps.tagSelector);
+      nextTagSelector.open = this.state.tagSelector.open;
+      this.setState({
+        tagSelector: nextTagSelector
+      })
     }
 
+    // getDefaultProps(){
+    //   return propsToReceive;
+    // }
+
+
     //external Tag Wrapper Methods
+    populateTagDropdown(){
+      let {deleteTag} = this.deleteTag
+      let {tagSelector} = this.state;
+      const addNewTag = (
+        <MenuItem
+          key={0}
+          primaryText={'Add New Tag'}
+          rightIcon ={<AddCircleOutline /> }
+          onMouseDown={this.toggleCreateTagDialog}
+        />
+      )
+      let tagList = this.getTagList();
+      let mappedTagList = tagList
+        .then( function(){
+          return this.props.tagSelector.list}.bind(this)  )
+        .then( function(tagList){
+          return tagList.map( (tag, index) => (
+            <MenuItem
+              key={tag.id+1}
+              tagId = {index}
+              primaryText={tag.name}
+              value={tag.id}
+              leftIcon={<Label color={tag.color} /> }
+            />
+          ) )
+        }.bind(this) ).then( function(addNewTag, menuItemList){
+          let menuItemListWithAdd = [addNewTag].concat(menuItemList);
+          return menuItemListWithAdd;
+        }.bind(this, addNewTag) ).then( function(menuItemListWithAdd){
+          tagSelector.populatedList = menuItemListWithAdd;
+          this.setState({tagSelector});
+          return menuItemListWithAdd;
+        }.bind(this) ).catch( function(err){return console.log('error populating tag list', err)})
+        return mappedTagList;
+    }
+    openTagDropdown(){
+      this.populateTagDropdown()
+        .then( ()=> this.toggleTagSelectorDropdown() )
+    }
+    selectTagFromDropdown(e, key, payload){
+      this.toggleTagSelectorDropdown();
+      this.props.dispatch(api.addTagByCommentId(key, this.props.commentIndex))
+    }
+
     createTag(name, color){
       let tag = {name, color}
       let {commentIndex} = this.props
       return this.props.dispatch(api.createTagByCommentId(tag, commentIndex));
     }
     deleteTag(tagId){
-      return this.props.dispatch(api.deleteTag(tagId));
+      return ()=>this.props.dispatch(api.deleteTag(tagId));
     }
     addTagToComment(tagId, commentIndex){
       return this.props.dispatch(api.addTagToComment(tagId, commentIndex));
@@ -130,6 +200,18 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
       return api.getTags(this.props.commentIndex)
     }
 
+    //internal methods
+    getTagList(){
+      return this.props.dispatch(api.loadTagList())
+    }
+    toggleTagSelectorDropdown(){
+      let nextProps = Object.assign({}, this.props);
+      let tagSelector = nextProps.tagSelector;
+      tagSelector.open = tagSelector.open === true ? false : true;
+      tagSelector.populatedList = this.state.tagSelector.populatedList;
+      this.setState({tagSelector});
+    }
+
     renderDialog(){
       let tagDialogOpen = this.state.tagDialog.open;
       const addTagActions = [
@@ -167,12 +249,15 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
         createTag: this.createTag,
         deleteTag: this.deleteTag,
         toggleCreateTagDialog: this.toggleCreateTagDialog,
+        openTagDropdown: this.openTagDropdown,
         addTagToComment: this.addTagToComment,
-        removeTagFromComment: this.removeTagFromComment
+        removeTagFromComment: this.removeTagFromComment,
+        toggleTagSelectorDropdown: this.toggleTagSelectorDropdown,
+        selectTagFromDropdown: this.selectTagFromDropdown
       }
       return (
         <div>
-          <WrappedComponent {...this.props} tagMethods={tagMethods} />
+          <WrappedComponent {...this.props} tagMethods={tagMethods} tagSelector={this.state.tagSelector} />
           {this.renderDialog()}
           </div>
         )
@@ -195,9 +280,10 @@ const TagsHandlerWrapper = (propsToReceive) => (WrappedComponent) => {
            .find( comment => {
              return comment.commentIndex === props.commentIndex
            } )
-    let tags = thisComment.tags;
+    let tags = thisComment.tags || [];
     let nextProps = Object.assign({}, props);
     nextProps.tags = tags;
+    nextProps.tagSelector = state.comment.allTags;
     return nextProps;
   }
 

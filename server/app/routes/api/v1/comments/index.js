@@ -73,7 +73,7 @@ router.post('/:commentId/tags/:tagId', (req, res, next) => {
   }).then( associationAdded => {
     let association = associationAdded[0][0].dataValues
     return Comment.findById(req.params.commentId).then( comment =>
-      res.status(201).send({comment, associationAdded: association}))
+      res.status(201).send({comment, tags: comment.tags, associationAdded: association}))
   }).catch(next);
 })
 

@@ -3,7 +3,10 @@
 const comment_initialState = {
   commentKey: null,
   collection: [],
-  isEditing: {key: null}
+  isEditing: {key: null},
+  allTags: {
+    list: []
+  }
 }
 
 function mapCommentsToIndex(comments){
@@ -16,8 +19,7 @@ function mapCommentsToIndex(comments){
 
 export default function commentReducer(state = comment_initialState, action){
   let nextState = Object.assign({}, state);
-  if(action.isFetching) nextState.isFetching = action.isFetching;
-  let commentToUpdate;
+  let commentToUpdate, isFetching, error, failed, tagId, commentId, payload;
   switch(action.type){
     case 'SELECT_COMMENT':
       return Object.assign({}, state, {
@@ -59,6 +61,29 @@ export default function commentReducer(state = comment_initialState, action){
         failed: action.failed
       })
       break;
+    case 'ADD_TAG_REQUEST':
+      ({isFetching, error, failed, tagId, commentId} = action )
+      nextState.addTag = Object.assign({}, state.addTag, {
+        isFetching, error, failed, tagId, commentId
+      })
+      return nextState;
+      break;
+    case 'ADD_TAG_SUCCESS':
+      ({isFetching, error, failed, tagId, commentId, payload} = action );
+      nextState.addTag = Object.assign({}, state.addTag, {
+        isFetching, error, failed, tagId, commentId, payload
+      })
+      commentToUpdate = nextState.collection.find( comment => comment.commentIndex === commentId);
+      commentToUpdate.tags = payload.tags;
+      return nextState;
+      break;
+    case 'ADD_TAG_FAILURE':
+      ({isFetching, error, failed, tagId, commentId} = action );
+      nextState.addTag = Object.assign({}, state.addTag, {
+        isFetching, error, failed, tagId, commentId
+      } )
+      return nextState;
+      break;
     case 'CREATE_TAG_SUCCESS':
       commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.commentId);
       commentToUpdate.tags.push(action.payload);
@@ -68,7 +93,6 @@ export default function commentReducer(state = comment_initialState, action){
       break;
     case 'REMOVE_TAG_SUCCESS':
       commentToUpdate = nextState.collection.find( comment => comment.commentIndex === action.commentId);
-      console.log(commentToUpdate, action.payload)
       commentToUpdate.tags = action.payload.tags;
       nextState.isFetching = action.isFetching;
       nextState.failed = false;
@@ -77,6 +101,7 @@ export default function commentReducer(state = comment_initialState, action){
     case 'CREATE_COMMENT_SUCCESS':
       action.payload.commentIndex = action.payload.id;
       nextState.collection.unshift(action.payload);
+      if(!action.payload.tags) action.payload.tags = [];
       return nextState;
       break;
     case 'CREATE_ANNOTATION_SUCCESS':
@@ -108,6 +133,36 @@ export default function commentReducer(state = comment_initialState, action){
       // nextState.collection = mapCommentsToIndex( finalCollection )
       let finalState = Object.assign( {}, nextState, {collection: finalCollection})
       return finalState;
+      break;
+    case 'LOAD_TAGLIST_REQUEST':
+      ({isFetching, error, failed} = action);
+      nextState.allTags = {
+        list: state.allTags.list,
+        isFetching,
+        error,
+        failed
+      }
+      return nextState;
+      break;
+    case 'LOAD_TAGLIST_SUCCESS':
+      ({isFetching, error, failed} = action);
+      nextState.allTags = {
+        list: action.payload,
+        isFetching,
+        error,
+        failed
+      }
+      return nextState;
+      break;
+    case 'LOAD_TAGLIST_FAILURE':
+      ({isFetching, error, failed} = action);
+      nextState.allTags = {
+        list: state.allTags.list,
+        isFetching,
+        error,
+        failed
+      }
+      return nextState;
     default:
       return state
   }

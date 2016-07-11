@@ -151,95 +151,133 @@ export const deleteTagFailure =
       })
     }
 
-    export const addTagByCommentId = (
-      tagId,
-      commentId
-      ) =>
-        dispatch => {
-          dispatch({
-            type: ADD_TAG_REQUEST,
-            payload: tagId,
-            isFetching: true,
-            failed: false,
-            error: null,
-            commentId
-          })
-          return axios.post(
-            APIROUTES.tagByCommentId(commentId, tagId),
-            tag
-          )
-          .then(res => dispatch(addTagSuccess(res.data, commentId)) )
-          .catch( err => dispatch(addTagFailure(err, tagId, commentId)))}
+export const addTagByCommentId = (
+  tagId,
+  commentId
+  ) =>
+    dispatch => {
+      dispatch({
+        type: ADD_TAG_REQUEST,
+        tagId,
+        isFetching: true,
+        failed: false,
+        error: null,
+        commentId
+      })
+      return axios.post(
+        APIROUTES.tagByCommentId(commentId, tagId)
+      )
+      .then(res => dispatch(addTagSuccess(res.data, commentId, tagId)) )
+      .catch( err => dispatch(addTagFailure(err, tagId, commentId)))}
 
 
-    export const addTagSuccess =
-      (resData, commentId) =>
-        dispatch => {
-          let tag = resData
-          dispatch({
-            type: ADD_TAG_SUCCESS,
-            payload: tag,
-            commentId,
-            isFetching: false,
-            error: null,
-            failed: false
-          })
-        }
+export const addTagSuccess =
+  (payload, commentId, tagId) =>
+    dispatch => {
+      let {comment, tags, associationAdded} = payload;
+      dispatch({
+        type: ADD_TAG_SUCCESS,
+        payload,
+        commentId,
+        tagId,
+        isFetching: false,
+        error: null,
+        failed: false
+      })
+    }
 
-    export const addTagFailure =
-      (err, tag) =>
-        dispatch => {
-          dispatch({
-            type: ADD_TAG_FAILURE,
-            isFetching: false,
-            failed: true,
-            payload: tag,
-            error: err
-          })
-        }
+export const addTagFailure =
+  (err, tagId, commentId) =>
+    dispatch => {
+      dispatch({
+        type: ADD_TAG_FAILURE,
+        isFetching: false,
+        failed: true,
+        tagId,
+        commentId,
+        error: err
+      })
+    }
 
-        export const removeTagFromComment = (
-          tagId,
-          commentId
-          ) =>
-            dispatch => {
-              dispatch({
-                type: REMOVE_TAG_REQUEST,
-                payload: tagId,
-                isFetching: true,
-                failed: false,
-                error: null,
-                commentId
-              })
-              return axios.delete(
-                APIROUTES.tagByCommentId(commentId, tagId)
-              )
-              .then(res => dispatch(removeTagSuccess(res.data, tagId, commentId)) )
-              .catch( err => dispatch(removeTagFailure(err, tagId)))}
+export const removeTagFromComment = (
+  tagId,
+  commentId
+  ) =>
+    dispatch => {
+      dispatch({
+        type: REMOVE_TAG_REQUEST,
+        payload: tagId,
+        isFetching: true,
+        failed: false,
+        error: null,
+        commentId
+      })
+      return axios.delete(
+        APIROUTES.tagByCommentId(commentId, tagId)
+      )
+      .then(res => dispatch(removeTagSuccess(res.data, tagId, commentId)) )
+      .catch( err => dispatch(removeTagFailure(err, tagId)))}
 
 
-        export const removeTagSuccess =
-          (resData, tagId, commentId) =>
-            dispatch => {
-              dispatch({
-                type: REMOVE_TAG_SUCCESS,
-                payload: resData.comment,
-                commentId,
-                tagId,
-                isFetching: false,
-                error: null,
-                failed: false
-              })
-            }
+export const removeTagSuccess =
+  (resData, tagId, commentId) =>
+    dispatch => {
+      dispatch({
+        type: REMOVE_TAG_SUCCESS,
+        payload: resData.comment,
+        commentId,
+        tagId,
+        isFetching: false,
+        error: null,
+        failed: false
+      })
+    }
 
-        export const removeTagFailure =
-          (err, tag) =>
-            dispatch => {
-              dispatch({
-                type: REMOVE_TAG_FAILURE,
-                isFetching: false,
-                failed: true,
-                payload: tag,
-                error: err
-              })
-            }
+export const removeTagFailure =
+  (err, tag) =>
+    dispatch => {
+      dispatch({
+        type: REMOVE_TAG_FAILURE,
+        isFetching: false,
+        failed: true,
+        payload: tag,
+        error: err
+      })
+    }
+
+export const loadTagList =
+  ()=>
+    dispatch =>{
+      dispatch({
+        type: LOAD_TAGLIST_REQUEST,
+        isFetching: true,
+        failed: false,
+        error: null
+      })
+      return axios.get(APIROUTES.tagList())
+      .then( res => dispatch(loadTagListSuccess(res.data)) )
+      .catch( err => dispatch(loadTagListFailure(err)) )
+    }
+
+export const loadTagListSuccess =
+  tagList =>
+    dispatch => {
+      dispatch({
+        type: LOAD_TAGLIST_SUCCESS,
+        payload: tagList,
+        isFetching: false,
+        failed: false,
+        error: null
+      })
+    }
+
+export const loadTagListFailure =
+  err =>
+    dispatch => {
+      dispatch({
+        type: LOAD_TAGLIST_FAILURE,
+        isFetching: false,
+        failed: true,
+        error: err
+      })
+    }

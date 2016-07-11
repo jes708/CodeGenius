@@ -29,6 +29,8 @@ import { annotationAdded } from '../Annotator/actions';
 import { deleteComment, updateComment } from './apiActions';
 import RenderComment from './renderComment';
 import TagsHandlerWrapper from '../../containers/Tag/TagsHandler';
+import ActionDone from 'material-ui/svg-icons/action/done';
+import DeleteForever from 'material-ui/svg-icons/action/delete-forever';
 
 let criteria = (
 <RadioButtonGroup name="criteria">
@@ -112,24 +114,20 @@ class Comment extends Component {
 
 //tagMethods
   addTag(){
-    console.log('add tag')
     this.tagMethods.toggleAddTag();
   };
   toggleAddTag(){
     this.setState({Tag: {AdderOpen: !this.state.Tag.AdderOpen}});
   }
   handleCloseTag(){
-    console.log('handle close tag');
     this.tagMethods.toggleAddTag();
     this.setState({Tag: {textAreaValue: ""} })
   };
   handleChangeTag(e){
-    console.log('handle change tag');
     this.setState({Tag: {textAreaValue: e.target.value }})
     // dispatch update tag?
   }
   deleteTag(index, tags){
-    console.log('handle delete tag');
       let currentTags = tags();
       const tagToDelete =
         currentTags.map((tag) => {return tag.id}).indexOf(index);
@@ -139,12 +137,10 @@ class Comment extends Component {
       // dispatch delete tag?
   };
   getTags(){
-    console.log('get tags')
     return this.state.Tag.collection;
     // dispatch load tags?
   }
   submitNewTag(){
-    console.log('submit new tag');
     let nextTags = this.state.Tag.collection.slice()
     nextTags.push({name: this.state.Tag.textAreaValue})
     this.setState({Tag: {collection: nextTags}});
@@ -194,7 +190,12 @@ class Comment extends Component {
       comment: this.state.contents,
       isEditing: this.state.isEditing
     }
-    const iconButtonElement = (
+
+    let isEditing = this.state.isEditing;
+
+    const iconButtonElement = this.props.isEditing ? (
+      <IconButton onClick={this.onClickDoneHandler} children={<ActionDone color={grey400}/>} />
+    ) : (
       <IconButton
         touch={true}
         tooltip="edit comment"
@@ -204,42 +205,34 @@ class Comment extends Component {
         <ModeEdit color={grey400} />
       </IconButton>
     );
-
-    const rightIconMenu = (
-      <IconMenu iconButtonElement={iconButtonElement}>
-        <MenuItem>Reply</MenuItem>
-        <MenuItem>Forward</MenuItem>
-        <MenuItem>Delete</MenuItem>
-      </IconMenu>
-    );
-
+    let deleteButton = (
+      isEditing ? (
+        <IconButton children={<DeleteForever />} onClick={this.deleteComment} />
+      ) : (null)
+    )
 
     return (
-        <Card key={0}  style={styles.skinny} >
-          <ListItem primaryText={this.props.contents.title} initiallyOpen={true} primaryTogglesNestedList={true}  rightIconButton={!this.props.isEditing ? iconButtonElement : <FlatButton onClick={this.onClickDoneHandler}>Done</FlatButton> } nestedItems = {[
-            <CardText key={0} expandable={true} style={styles.noTopPadding}>
-            <hr style={styles.skinny} />
-            <RenderComment
-              contents={this.state.contents}
-              isEditing={this.state.isEditing}
-              handleUpdateComment={this.handleUpdateComment}
-              editMode={this.editMode}
-              editModeDone={this.editModeDone}
-              removeItem={this.removeItem}
-              updateContents={this.updateContents}
-              {...this.props}
-            />
-            </CardText>
-          ]}>
-          </ListItem>
-          {
-            this.state.isEditing ? (
-              <FlatButton onClick={this.deleteComment}>
-              Delete
-              </FlatButton>
-            ) : ("")
+        <Card key={0}
+          style={styles.skinny}
+          children = {
+            <div>
+              <CardText>
+                <RenderComment
+                  contents={this.state.contents}
+                  isEditing={this.state.isEditing}
+                  handleUpdateComment={this.handleUpdateComment}
+                  editMode={this.editMode}
+                  editModeDone={this.editModeDone}
+                  removeItem={this.removeItem}
+                  updateContents={this.updateContents}
+                  editButton={iconButtonElement}
+                  {...this.props}
+                />
+              </CardText>
+              {deleteButton}
+            </div>
           }
-        </Card>
+        />
       )
   }
 }

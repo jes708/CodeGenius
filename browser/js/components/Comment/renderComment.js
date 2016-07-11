@@ -58,6 +58,7 @@ export default class RenderComment extends Component {
     this.updateContents = this.props.updateContents;
     this.renderDialogHandler = this.renderDialogHandler.bind(this);
     this.tagMethods = this.props.tagMethods;
+    this.handleSlider = this.handleSlider.bind(this);
   }
   componentWillReceiveProps(nextProps){
     let {contents, isEditing} = nextProps;
@@ -87,7 +88,10 @@ export default class RenderComment extends Component {
     }
   }
   handleSlider(event, value){
-    this.updateContents({score: value});
+    this.updateContents({score: this.state.sliderValue});
+  }
+  recordSliderValue(event, value){
+    this.setState({sliderValue: value})
   }
   renderScore(){
     let {contents, isEditing} = this.state;
@@ -101,19 +105,18 @@ export default class RenderComment extends Component {
         {(
           isEditing ? (
             <span>
-              <p>Set a score for this comment</p>
-              <span>0</span>
               <Slider
+              description={'Choose a score for this comment, between -5 and 5.'}
               max={5}
-              min={0}
+              min={-5}
               step={0.5}
               defaultValue={contents.score || 1}
               value={contents.score}
-              onChange={
-                this.handleSlider.bind(this)
+              onChange={this.recordSliderValue.bind(this)}
+              onMouseUp={
+                this.handleSlider
               }
               />
-              <span>5</span>
             </span>
           ) : (null)
         )}
@@ -146,9 +149,7 @@ export default class RenderComment extends Component {
     let buttonStyle = styles.assessmentButtons;
     return (
       <span>
-    { (!contents.markdown && isEditing) ? <RaisedButton style={buttonStyle} label="Add Markdown" onClick={
-      this.renderDialogHandler}
-        /> : (
+    { (!contents.markdown && isEditing) ? null : (
       <div>
         <MarkdownWrapper
           markdown={contents.markdown}
@@ -186,6 +187,7 @@ function renderComment () {
             style={commentStyles.CommentToolbar}
             removeItem={this.props.removeItem}
             editMode={this.props.editMode}
+            editButton={this.props.editButton}
             contents={this.state.contents}
             addMarkdownHandler={this.renderDialogHandler}
             {...this.props}
@@ -237,25 +239,3 @@ function renderComment () {
         </span>
       </div>)
   }
-
-
-
-
-
-  /*this.renderDialog(
-    {
-      title: "Add Markdown",
-      nested: (
-        <div>
-          <MarkdownWrapper
-            handleOnBlur={(event, updateContents = this.updateContents) => {
-              updateContents({markdown: event.target.value})
-            }}
-            markdown={"#Add Markdown here"}
-            editable={true}
-            />
-        </div>
-      )
-    }
-  )
-*/

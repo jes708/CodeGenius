@@ -26,7 +26,9 @@ const APIROUTES = {
   tagsByAssessmentStudent: (assessmentId, studentId) =>
     api(`assesments/${assessmentId}/students/${studentId}/tags`),
   tagById: (tagId) =>
-    api(`/tags`, tagId)
+    api(`/tags`, tagId),
+  tagList: () =>
+    api(`/tags`)
 }
 
 export default APIROUTES;

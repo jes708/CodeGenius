@@ -8,6 +8,15 @@ const GraderPanelStyles = {
     refresh: {
       display: 'inline-block',
       position: 'relative',
+    },
+    robot: {
+      width: '50%'
+    },
+    robotContainer: {
+      textAlign: 'center'
+    },
+    robotText: {
+      fontSize: '25px'
     }
   }
 }

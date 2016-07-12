@@ -60,4 +60,4 @@
 ```
 
 
-# Want to add your skills? Please See Our [Contributor Guidelines]("./contributing.md")
+# Want to add your skills? Please See Our [Contributor Guidelines](/contributing.md)

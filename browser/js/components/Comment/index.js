@@ -164,13 +164,6 @@ class Comment extends Component {
   editModeDone(){
     // this.handleUpdateComment(this.state.contents)
     this.props.dispatch(updateComment(this.state.contents, this.props.commentIndex));
-    if (this.props.allComments.length) {
-      const totalScore = this.props.allComments.reduce((sum, comment) => {
-        if (comment.commentIndex != this.props.commentIndex) return sum + comment.score;
-        else return sum + this.state.contents.score;
-      }, 0)
-      this.props.dispatch(putStudentTestInfo(this.props.assessmentId, this.props.studentId, {score: totalScore}))
-    }
   }
 
   removeItem(itemName){
@@ -184,7 +177,18 @@ class Comment extends Component {
     let newContents = Object.assign({}, this.state.contents);
     let updatedContents = Object.assign(newContents, contentsToUpdate);
     this.state.contents = updatedContents; // should this be this.setState?
+    this.updateTotalScore();
     this.handleUpdateComment(this.state.contents);
+  }
+
+  updateTotalScore() {
+    if (this.props.allComments.length) {
+      const totalScore = this.props.allComments.reduce((sum, comment) => {
+        if (comment.commentIndex != this.props.commentIndex) return sum + comment.score;
+        else return sum + this.state.contents.score;
+      }, 0)
+      this.props.dispatch(putStudentTestInfo(this.props.assessmentId, this.props.studentId, {score: totalScore}))
+    }
   }
 
   handleUpdateComment(commentState){

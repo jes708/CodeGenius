@@ -14,11 +14,7 @@ module.exports = function(db){
         }
       },
       description: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        validate: {
-          notEmpty: true
-        }
+        type: Sequelize.TEXT
       },
       repoUrl: {
         type: Sequelize.STRING,

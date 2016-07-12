@@ -215,7 +215,6 @@ class AssessmentCard extends Component {
   }
 
   renderRefresh() {
-    console.log(this.props.refresh)
     if (this.props.refresh) {
       return (
         <FlatButton

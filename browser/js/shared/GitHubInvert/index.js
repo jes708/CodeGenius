@@ -3,7 +3,6 @@
 import React, { Component, PropTypes } from 'react'
 import RaisedButton from 'material-ui/RaisedButton'
 import FontIcon from 'material-ui/FontIcon'
-import { createDemoAssessment } from '../../actions/assessmentActions'
 
 const styles = {
   transparent: {
@@ -23,7 +22,6 @@ export default class GitHubInvert extends Component {
         style={Object.assign({}, styles.transparent, styles.invert)}
         label={this.props.label || "Sign In with Github"}
         linkButton={true}
-        // onClick={this.handleClick}
         href={this.props.href}
         icon={<FontIcon className="fa fa-github" />}
       />

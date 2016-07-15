@@ -8,6 +8,8 @@ var Promise = require('bluebird');
 module.exports = function(app, db) {
 
   var User = db.model('user');
+  var Assessment = db.model('assessment');
+  var StudentTest = db.model('studentTest');
 
   var githubConfig = app.getValue('env').GITHUB;
 
@@ -48,6 +50,27 @@ module.exports = function(app, db) {
             email: profile.email ? profile.email.value : [profile.username, 'no-email.com'].join('@'),
             photo: profile.photos[0].value,
             github_token: accessToken
+          })
+          .then(createdUser => {
+            Assessment.create({
+              name: "Getting Started",
+              repoUrl: "https://github.com/Code-Genius/express-checkpoint-1",
+              solutionRepoUrl: 'https://github.com/Code-Genius/express-checkpoint-1-solution',
+              basePath: 'Code-Genius/express-checkpoint-1',
+              solutionPath: 'Code-Genius/express-checkpoint-1-solution',
+              org: 'Code-Genius',
+              solutionFiles: ['README.md', 'app.js', 'models/_db.js', 'models/author.js', 'models/book.js', 'models/chapter.js', 'models/index.js', 'package.json', 'public/static/index.html', 'seed.js', 'test.js'],
+              instructorId: createdUser.dataValues.id,
+              teamId: 1
+            })
+            .then(assessment => {
+              StudentTest.bulkCreate([
+              {repoUrl: 'https://github.com/jancodes/express-checkpoint-1', basePath: 'jancodes/express-checkpoint-1', userId: 1, assessmentId: assessment.id},
+              {repoUrl: 'https://github.com/jdhang/express-checkpoint-1', basePath: 'jdhang/express-checkpoint-1', userId: 2, assessmentId: assessment.id},
+              {userId: 3, assessmentId: assessment.id}
+              ])
+            })
+            return createdUser
           });
           return Promise.all([userCreate, getEmails])
         }

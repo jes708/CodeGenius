@@ -12,9 +12,10 @@ const styles = {
     backgroundColor: 'white',
     color: 'black'
   }
-}
+} 
 
 export default class GitHubInvert extends Component {
+
   render () {
     return (
       <RaisedButton

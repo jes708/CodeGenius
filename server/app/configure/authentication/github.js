@@ -53,7 +53,7 @@ module.exports = function(app, db) {
           })
           .then(createdUser => {
             Assessment.create({
-              name: "Getting Started",
+              name: "Sample Assessment",
               repoUrl: "https://github.com/Code-Genius/express-checkpoint-1",
               solutionRepoUrl: 'https://github.com/Code-Genius/express-checkpoint-1-solution',
               basePath: 'Code-Genius/express-checkpoint-1',
@@ -67,7 +67,8 @@ module.exports = function(app, db) {
               StudentTest.bulkCreate([
                 {repoUrl: 'https://github.com/jancodes/express-checkpoint-1', basePath: 'jancodes/express-checkpoint-1', userId: 1, assessmentId: assessment.id},
                 {repoUrl: 'https://github.com/jdhang/express-checkpoint-1', basePath: 'jdhang/express-checkpoint-1', userId: 2, assessmentId: assessment.id},
-                {userId: 3, assessmentId: assessment.id}
+                {repoUrl: 'https://github.com/jes708/express-checkpoint-1', basePath: 'jes708/express-checkpoint-1', userId: 3, assessmentId: assessment.id},
+                {userId: 4, assessmentId: assessment.id}
               ])
             })
             return createdUser

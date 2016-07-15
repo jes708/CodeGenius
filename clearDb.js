@@ -19,6 +19,11 @@ const seedUsers = function() {
     github_id: 5394681,
     photo: "https://avatars.githubusercontent.com/u/5394681?v=3"
   }, {
+    username: 'jes708',
+    name: 'Jonathan Schwarz',
+    github_id: 16601510,
+    photo: 'https://avatars.githubusercontent.com/u/16601510?v=3'
+  }, {
     username: 'thejohnbackes',
     name: 'thejohnbackes',
     github_id: 13596692,

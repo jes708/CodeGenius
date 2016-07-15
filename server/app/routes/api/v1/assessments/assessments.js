@@ -33,6 +33,7 @@ import omit from 'lodash/object/omit'
 router.get('/', sequelizeHandlers.query(Resource));
 router.get('/:id', ensureAuthenticated, sequelizeHandlers.get(Resource));
 router.post('/', ensureAuthenticated, (req, res, next) => {
+  console.log("req.body is the following", req.body)
   let newAssessment
   Promise.all([
     Team.findOrCreate({

@@ -32,6 +32,45 @@ export const getUserAssessments = () => (dispatch) => {
   .catch(error => dispatch({ type: LOAD_ASSESSMENTS_FAILURE, error }))
 }
 
+// export const createDemoAssessment = () => (dispatch) => {
+//   dispatch({ type: CREATE_ASSESSMENT_REQUEST })
+
+//   assessment = {
+//     id: '',
+//     name: 'Getting Started',
+//     repoUrl: 'https://github.com/Code-Genius/express-checkpoint-1',
+//     solutionRepoUrl: 'https://github.com/Code-Genius/express-checkpoint-1-solution',
+//     org: 'Code-Genius',
+//     teamName: 'The Dev Team',
+//     teamId: 2059661,
+//     solutionFiles: 
+//       [ 
+//        'README.md',
+//        'app.js',
+//        'models/_db.js',
+//        'models/author.js',
+//        'models/book.js',
+//        'models/chapter.js',
+//        'models/index.js',
+//        'package.json',
+//        'public/static/index.html',
+//        'seed.js',
+//        'test.js' 
+//       ],
+//     basePath: 'Code-Genius/express-checkpoint-1',
+//     solutionPath: 'Code-Genius/express-checkpoint-1-solution',
+//     instructorId: 3
+//   }
+
+//   return axios.post(ASSESSMENT_URL, assessment).then(res => res.data)
+//   .then(resData => dispatch({
+//     type: CREATE_ASSESSMENT_SUCCESS,
+//     assessment: resData
+//   }))
+//   .catch(error => dispatch({ type: CREATE_ASSESSMENT_FAILURE, error }))
+// }
+
+
 export const createAssessment = (assessment) => (dispatch, getState) => {
   dispatch({ type: CREATE_ASSESSMENT_REQUEST })
 

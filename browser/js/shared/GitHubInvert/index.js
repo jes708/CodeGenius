@@ -16,15 +16,6 @@ const styles = {
 } 
 
 export default class GitHubInvert extends Component {
-  // constructor (props) {
-  //   super(props)
-  //   this.handleClick = this.handleClick.bind(this)
-  // }
-
-  // handleClick () {
-  //   const { dispatch } = this.props
-  //   dispatch(createDemoAssessment(assessment.id, studentId, {isStudent: status}, false))
-  // }
 
   render () {
     return (

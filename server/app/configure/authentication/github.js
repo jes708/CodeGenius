@@ -65,9 +65,9 @@ module.exports = function(app, db) {
             })
             .then(assessment => {
               StudentTest.bulkCreate([
-              {repoUrl: 'https://github.com/jancodes/express-checkpoint-1', basePath: 'jancodes/express-checkpoint-1', userId: 1, assessmentId: assessment.id},
-              {repoUrl: 'https://github.com/jdhang/express-checkpoint-1', basePath: 'jdhang/express-checkpoint-1', userId: 2, assessmentId: assessment.id},
-              {userId: 3, assessmentId: assessment.id}
+                {repoUrl: 'https://github.com/jancodes/express-checkpoint-1', basePath: 'jancodes/express-checkpoint-1', userId: 1, assessmentId: assessment.id},
+                {repoUrl: 'https://github.com/jdhang/express-checkpoint-1', basePath: 'jdhang/express-checkpoint-1', userId: 2, assessmentId: assessment.id},
+                {userId: 3, assessmentId: assessment.id}
               ])
             })
             return createdUser

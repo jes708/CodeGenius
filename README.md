@@ -1,63 +1,17 @@
-[![Stories in Ready](https://badge.waffle.io/jes708/CodeGenius.png?label=ready&title=Ready)](https://waffle.io/jes708/CodeGenius)
-# A touch of GENIUS
-
-
 # CodeGenius
 
+#[Live Demo](http://www.codegenius.co)
 
-### User Flows
+CodeGenius is a web application that makes it easy for instructors of code to review their students' tests. Many coding schools around the world use exams as a way of evaluating student progress.  While these assessments are beneficial in many aspects, they are particularly challenging to grade, as there are no tools specifically designed to facilitate this process.
 
-[see some visuals of user flows here](https://www.evernote.com/pub/jwbackes/codegenius)
+Through its integration with the Github API, CodeGenius ensures that the grading process is efficient.  Upon initializing an exam, CodeGenius can grab all necessary student repositories and files, and organize them in an intuitive fashion.  An extensive toolset provides instructors with a variety of methods for giving their students clear and meaningful feedback.
 
+By deeply integrating with the Github API, CodeGenius is able to provide dynamic features for instructors, such as:
 
-### File Tree Structure
-```
-.
-+-- browser
-|   +-- components <== react components go here
-|   |   +-- app
-|   |   +-- sidebar
-|   |   +-- annotations
-|   |   +-- assessments
-|   |   |   +-- instructor
-|   |   |   |   +-- questions
-|   |   |   +-- student
-|   |   |   |   +-- evaluations
-|   |   +-- dashboards
-|   |   |   +-- users
-|   |   |   +-- organizations
-|   |   |   +-- teams
-|   |   +-- collections
-|   +-- scss
-|  |    ^-- should this be stored
-|  |        with REACT components instead of separate?
-+-- resources
-|   +-- images
-|   +-- mockups and UI/UX
-+-- seed
-    +-- index.js <== replacing seed.js
-    +-- ...other seed files
-+-- server
-|   +-- app
-|   +-- db
-|   +-- env
-|   +-- io
-|   +- main.js
-|   +- start.js
-+-- tests
-|  +-- browser
-|  +-- server
-|  |   ^-- this structure should
-|  |       match the browser and
-|  |       server filetrees, or the
-|  |       spec files should just be
-|  |       included in each route
-|  |       folder, which I am also in favor of
-+-- gulpfile.js <== automagical command line goodness
-+-- package.json <== every npm you ever need
-+-- Procfile <== for heroku setup
-+-- conf.json <== jsdoc configuration
-```
+-automatically populating student code submissions.
 
+-tagging solution code into easy-to-understand comments so that students can see their progress.
 
-# Want to add your skills? Please See Our [Contributor Guidelines](/contributing.md)
+-keeping track of cohort progress across all assessments.
+
+-scoring students based on their performance on code assessments.

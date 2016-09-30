@@ -21,10 +21,11 @@ const byName = (state = {}, action) => {
 }
 
 const isFetchingFiles = (state = false, action) => {
-  switch (action.typ) {
+  switch (action.type) {
     case FETCH_FILE_DIFF_REQUEST:
       return true
     case FETCH_FILE_DIFF_SUCCESS:
+      return false
     case FETCH_FILE_DIFF_FAILURE:
       return false
     default:
